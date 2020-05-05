@@ -8,9 +8,9 @@ jobs:
     steps: 
       - uses: actions/checkout@v2
       - run: mkdir output
-      - uses: docker://pandoc/latex:latest
+      - uses: docker://opinon/pandoc_svgbob:latest
         with:
-          args: -s -N --template eisvogel.tex --lua-filter ./svgbob.lua --filter pandoc-citeproc Rapport.md -o output/Rapport.pdf
+          args: -s -N --template eisvogel.tex --lua-filter ./svgbob.lua --filter pandoc-citeproc Rapport.md -o Rapport.pdf 
       - uses: actions/upload-artifact@master
         with: 
           name: rendered
