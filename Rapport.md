@@ -116,12 +116,6 @@ L'objectif du projet de recherche que j'ai mené était de faciliter l'écriture
 
 ref: Guidelines Rust
 
-```{.svgbob}
-+------+   +------+
-| Tes  |---| Good |
-+------+   +------+
-```
-
 ### Les macros procédurales  
 
 ## La gestion d'un projet de recherche
