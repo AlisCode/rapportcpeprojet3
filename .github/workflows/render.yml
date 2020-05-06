@@ -10,7 +10,7 @@ jobs:
       - run: mkdir output
       - uses: docker://opinon/pandoc_svgbob:latest
         with:
-          args: -s -N --template eisvogel.tex --lua-filter ./svgbob.lua --filter pandoc-citeproc Rapport.md -o Rapport.pdf 
+          args: ./compile.sh 
       - uses: actions/upload-artifact@master
         with: 
           name: rendered

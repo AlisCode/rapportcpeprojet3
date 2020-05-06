@@ -1,1 +1,1 @@
-docker run --workdir "/data" -v "/home/olivier/Workspace/Notes/rapportcpeprojet3":"/data" pandoc_svgbob:latest pandoc -s -N --template eisvogel.tex --filter svgbob.py --filter pandoc-citeproc Rapport.md -o Rapport.pdf  
+docker run --rm -v "$(pwd)":"/data" opinon/pandoc_svgbob:latest "./compile.sh" 

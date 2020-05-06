@@ -118,7 +118,7 @@ ref: Guidelines Rust
 
 ```{.svgbob}
 +------+   +------+
-| Test |---| Good |
+| Tes  |---| Good |
 +------+   +------+
 ```
 
