@@ -2,8 +2,7 @@ return {
     {
         CodeBlock = function(elem) 
             if elem.classes[1] == "svgbob" then 
-                local img = pandoc.pipe("svgbob", {"--font-family", "noto"}, elem.text);	
-                --local img = pandoc.pipe("svgbob", {"--font-family", "arial"}, elem.text);
+                local img = pandoc.pipe("svgbob", {"--font-family", "monospace"}, elem.text);	
                 local filename = pandoc.sha1(elem.text) .. ".svg";
                 local schema_name = elem.attributes["name"] or 'Schema';
                 schema_name_str = pandoc.Span(schema_name);
@@ -17,7 +16,7 @@ return {
 		return { 
 			pandoc.RawBlock('latex', '\\begin{figure}'),
 			pandoc.Para { pandoc.Image({ schema_name_str }, filename, schema_name, attrs) },
-			pandoc.RawBlock('latex', '\\caption{Schema}'),
+			pandoc.RawBlock('latex', '\\caption{'.. schema_name ..'}'),
 			pandoc.RawBlock('latex', '\\end{figure}') 
 		};
 		--return { pandoc.Div(
