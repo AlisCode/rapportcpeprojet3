@@ -1,1 +1,1 @@
-pandoc -s -N --template eisvogel.tex --lua-filter ./svgbob.lua --filter pandoc-citeproc Rapport.md -o Rapport.pdf
+pandoc $(cat pandoc_args) 
