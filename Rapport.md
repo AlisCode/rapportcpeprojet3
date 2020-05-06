@@ -125,10 +125,7 @@ Le processus de développement suit le schéma suivant
                                           |
 ```
 
-* L'équipe en charge des relations clients s'assure de la bonne réalisation des tickets en effectuant des tests manuels sur le serveur de pré-production, qui suivent rigoureusement le processus de test établi dans la description d'un ticket. 
-* Méthode agile
-* Outils de gestion de projet
-* tâche de spécification avec PO et UX 
+La phase de rafinement correspond à l'identification du problème, suite à un besoin remonté par un client ou une volonté d'évolution du logiciel. Au cours de nombreuses réunions, appellées **refinement meeting**, le besoin client est analysé. Elle a lieu avec le Product Owner de l'entreprise qui a la vision du produit, le directeur artistique qui garde en tête l'experience utilisateur de l'application, et le directeur technique de qui connaît l'architecture de la solution et estime la faisabilité des demandes. On cherche à définir une fonctionnalité qui comblera le besoin identifié de la façon la plus générique possible (en évitant par exemple d'avoir une fonctionnalité qui ne servira qu'à un seul client).
 
 ## Environnement technique
 
@@ -184,22 +181,31 @@ Dans un soucis de pérennité, il est prévu de publier la librairie sous licenc
 
 Afin de comprendre comment nous pouvons aborder ce problème, il faut d'abord comprendre le fonctionnement d'un framework web.
 
-[^ORM]: Object Relational Mapping, couche logicielle permettant de faciliter l'intéraction avec la base de données.
-[^SQL]: Structured Query Language, language utilisé pour effectuer des requêtes sur des bases de données relationelles.
-* but: 
-	* abstraire la logique de fonctionnement des frameworks = flexibilité + open-source 
-	* réduire le code à écrire = meilleure maintenabilité + rapidité 
+[^orm]: Object Relational Mapping, couche logicielle permettant de faciliter l'intéraction avec la base de données.
+[^sql]: Structured Query Language, language utilisé pour effectuer des requêtes sur des bases de données relationelles.
 
 ## Etat de l'art
 
 ### Qu'est ce qu'un Framework Web
 
-### Solutions existantes
+Un Framework Web est une couche logicielle permettant d'exposer des fonctionnalités sur un serveur, le plus souvent dans le but de répondre à des requêtes utilisant le protocole de communication Client-Serveur HTTP.
 
-* Rocket: approche avec guards. sync.
-* actix-web: guards + acteurs en interne. async.
-* warp: filters. async.
-* Autres = références
+Le framework a pour but d'exposer des routes, que l'on appelle communément des Endpoints. Par exemple, le site de CPE contient l'article suivant: `https://www.cpe.fr/actualite/actu-chimie-nouveau-diplome-en-chimie/`. Le endpoint qui pourrait être exposé pour accéder à cet article est le suivant: `GET /actualite/<nom_article>`. Elle se décompose de la façon suivante : 
+
+* `GET` est le Verbe HTTP. Il en existe 9 cf. doc mozilla, nous en utilisons communément 5 :  
+	* GET - pour récupérer la définition d'une ressource
+	* POST - pour créer une ressource 
+	* PUT - pour remplacer la ressource par la nouvelle définition que l'on donne 
+	* PATCH - pour appliquer des modifications partielles sur une ressource 
+	* DELETE - pour supprimer la ressource 
+
+
+
+### Premier cas d'étude : Rocket
+
+### Second cas d'étude : Actix-Web
+
+### Troisième cas d'étude : Warp
 
 ## Abstraction de Framework Web 
 
