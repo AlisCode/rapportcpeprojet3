@@ -160,8 +160,6 @@ L'objectif du projet de recherche que j'ai mené était de faciliter l'écriture
 
 [^api]: Application Programming Interface, ou interface logicielle permettant d'intéragir avec notre système.
 
-~~ Page 8
-
 # Recherche - Couche d'abstraction pour Framework Web
 
 ## Contexte et objectif 
@@ -188,7 +186,7 @@ Afin de comprendre comment nous pouvons aborder ce problème, il faut d'abord co
 
 ### Qu'est ce qu'un Framework Web
 
-Un Framework Web est une couche logicielle permettant d'exposer des fonctionnalités sur un serveur, le plus souvent dans le but de répondre à des requêtes utilisant le protocole de communication Client-Serveur HTTP.
+Un Framework Web est une brique logicielle permettant d'exposer des fonctionnalités sur un serveur, dans le but de répondre à des requêtes utilisant le protocole de communication client-serveur HTTP (et HTTPS, si celui-ci le supporte), standards du Web.
 
 Le framework a pour but d'exposer des routes, que l'on appelle communément des Endpoints. Par exemple, le site de CPE contient l'article suivant: `https://www.cpe.fr/actualite/actu-chimie-nouveau-diplome-en-chimie/`. Le endpoint qui pourrait être exposé pour accéder à cet article est le suivant: `GET /actualite/<nom_article>`. Elle se décompose de la façon suivante : 
 
@@ -198,10 +196,82 @@ Le framework a pour but d'exposer des routes, que l'on appelle communément des 
 	* PUT - pour remplacer la ressource par la nouvelle définition que l'on donne 
 	* PATCH - pour appliquer des modifications partielles sur une ressource 
 	* DELETE - pour supprimer la ressource 
+* `/actualite/` est la suite de la route, ou le chemin, auquel l'utilisateur souhaite avoir accès. 
+* `<nom_article>` est une notation qui permet d'indiquer que ce qui est à cet endroit de la route est une variable que l'on va devoir traîter côté serveur. Ici, `nom_article = actu-chimie-nouveau-diplome-en-chimie` pourraît être un identifiant qui permettrait de signaler au serveur à quel post du blog nous souhaitons accéder. 
 
+Un Framework web expose donc un moyen de déclarer à quelle "route", ou plutôt "format de route" comme expliqué ci-dessus, nous pouvons répondre. En face de cette route, le serveur doit mettre une logique associée. Dans le cadre de notre exemple, il pourrait s'agir d'aller chercher le titre du blog et son contenu associé dans une base de données, de formatter le contenu, puis de retourner au client une page web valide à afficher sur son navigateur. 
 
+```{.svgbob}
+
+Base de données           Framework Web                           Client 
+     _                          _                                    _
+     |                          |    GET / actualite / actuXXX       |
+     |                        +-+<-----------------------------------|
+     |                Routing | |                                    |
+     |                        +>|                                    |
+     | SELECT ... FROM articles |--+-+----------------+              | 
+     | WHERE name = 'actuXXX'   |  |/ Logique interne |              | 
+     |<-------------------------+  +------------------+              | 
+     | Ok(article)              |                                    | 
+     |- - - - - - - - - - - - ->|    Ok(page internet)               | 
+     |                          |- - - - - - - - - - - - - - - - - ->| 
+     |                          |                                    | 
+      
+```
+
+Dans ce cas, la logique interne peut valider l'accès d'un client via un cookie ou un header HTTP, puis initier une connection à la base de données, récupérer le contenu de l'article, le formatter et l'afficher. 
+
+Le formattage de la donnée peut varier selon l'architecture du backend, comme dans les cours vus en 4ème année : 
+
+* En Web dynamique, le serveur gèrera le rendu de la page et retournera une page HTML valide,
+* En Web statique, la donnée est retournée telle qu'elle, après l'avoir **sérialisée** dans un format compréhensible par le client. 
+
+En Rust, un Framework expose un **Trait** (contrainte similaire à une interface en POO[^poo]) ou une **Structure** qu'il sait transformer en réponse HTTP à renvoyer au client. De cette façon, l'utilisateur du Framework peut retourner ses propres types dont il a défini la conversion en réponse HTTP, ce qui lui donne un contrôle total.  
+
+[^poo]: Programmation Orientée Objet, paradigme de programmation centré sur la définition et l'interaction de briques logicielles appelées objets (Wikipédia). 
+
+Un Framework Web va le plus souvent définir un moyen permettant d'accéder à des ressources internes qu'il pourra partager entre plusieurs requêtes. Par exemple: 
+* Un établisseur de connexion à une base de données (comme PostgreSQL), ou à un cache (comme Redis),
+* Une variable dont le contenu peut être utilisé par les routes, comme une constante par exemple, ou le contenu d'un fichier de configuration, 
+* Un accès à un système de journalisation (logs),
+* Une brique logicielle permettant de gérer l'autorisation ou l'authentification d'un utilisateur. 
+
+Pour comprendre le travail d'abstraction, de PEWS il s'agit ensuite d'étudier au cas par cas les différents Framework Web existants dans l'écosystème Rust, dans le but de comprendre comment chacun gère : 
+
+* La déclaration d'une route et le routing, 
+* La réponse à un client,
+* Le partage de ressources en interne,
+
+Et ainsi de savoir comment exposer les fonctionnalités de chacun. Nous étudierons donc le fonctionnement des deux frameworks majeurs, et d'un troisième dont l'approche plus proche du paradigme de programmation fonctionnelle est intéressante. 
 
 ### Premier cas d'étude : Rocket
+
+Rocket est un framework qu'on peut considérer comme l'un des plus matures de l'écosystème Rust. C'est celui que l'entreprise utilise pour développer le backend de la solution Impero. 
+
+Selon son site internet : 
+
+> Rocket est un framework web écrit avec Rust, qui permet d'écrire des applications Web rapides et sécurisées sans sacrifier la flexibilité, l'utilisabilité ni la sûreté.
+
+La particularité de Rocket est qu'il utilise la chaine de compilation Rust **nightly** (comprendre: instable), qui lui permet d'accéder à certaines fonctionnalités des macros procédurales du langage, au prix de l'utilisation d'un chaîne Rust qui peut potentiellement casser d'une semaine à l'autre. Ce n'est pas nécéssairement un désavantage, il n'y a pas eu de problème de ce genre pour l'instant, et celui-ci serait de toute façon contournable simplement.  
+
+L'utilisation des macros procédurales permet à l'utilisateur d'être très expressif dans la définition des routes : 
+
+```rust
+#[get("/hello/<name>/<age>")]
+fn hello(name: String, age: u8) -> String {
+    format!("Hello, {} year old named {}!", age, name)
+}
+```
+Note pour la compréhension: 
+* u8 est un entier non-signé codé sur 8 bits (valeurs dans l'intervalle 0 -> 255).  
+* `format!()` est une macro formattant le contenu comme une variable de type String. 
+* Ici, pour un client qui envoie une requête sur `GET /hello/Olivier/22`, on retourne `Hello, 22 year old named Olivier!`.
+
+Comme on peut le constater, on trouve ici la définition du verbe HTTP, de la route, et de la logique interne associée, ici le formattage de la réponse en String. 
+
+Rocket définit un système de "Gardes de requête" pour accéder à des ressources internes. Ceux-ci permettent de tirer avantage de la sureté apportée par Rust pour écrire des services Web qui seront plus résistants aux erreurs. Dans l'exemple précédent, l'âge est de type `u8`. Si un client envoyait la requête `GET /hello/Olivier/abc`, abc n'étant pas transformable en un nombre compris entre 0 et 255, la requête doit échouer. Rocket effectue cette analyse tout seul, se rend compte que la transformation a échoué, et continue à chercher une autre route qui correspond à ce que l'utilisateur a demandé. Eventuellement, si le serveur ne définit pas de route qui correspond, il retournera le code d'erreur HTTP `404 Not Found`.
+
+Les gardes sont appellés sous la forme d'un type que l'on donne en paramètre d'une fonction, puis grâce à ses macros procédurales, Rocket se charge d'écrire tout seul le code permettant d'appliquer le comportement de ceux-ci. 
 
 ### Second cas d'étude : Actix-Web
 
