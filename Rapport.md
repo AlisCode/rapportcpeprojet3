@@ -56,8 +56,38 @@ Ce partenariat vise à pousser l'entreprise à répondre aux attentes de gros gr
 
 ## Logiciel Impero
 
+Le logiciel se présente sous la forme d'une application web. Le principe de la solution est d'être très générique dans sa résolution des besoins, de sorte que le client puisse utiliser le produit comme il l'entend pour correspondre aux contraintes propres à son entreprise.    
 
-* Clients
+> Note: Afin de ne pas polluer le document avec trop de captures d'écran, seules 2 sont présentées ici. Il s'agit de parties de l'application qui ont été développées durant l'alternance. D'autres écrans du logiciel sont disponibles en Annexes de ce rapport. 
+
+Afin de comprendre l'intérêt du logiciel, il faut d'abord voir comment il résoud le problème de gestion des risques dans une entreprise. 
+
+![Capture d'écran Impero - RiskMap](img/ScreenImpero1.png)
+
+Ceci est la **Risk Map**, ou "Carte des risques". Elle permet de lister certains risques auxquels l'entreprise cliente doit faire face. Par exemple, un des risques de l'entreprise X qui produit des bateaux pourrait être d'avoir un fournisseur qui n'a pas pu honorer sa commande. Comme on peut le voir, un risque est placé sur la carte par deux caractéristiques : 
+
+* Son **impact** (s'il s'avère que l'évènement a réellement eu lieu, *e.g.* le fournisseur n'a pas livré sa commande, au combien est-ce grave pour l'entreprise sur une échelle de 1 à 5), et 
+* Sa **probabilité** (combien de chances cet évènement a-t-il d'arriver, sur une échelle de 1 à 5). 
+
+Il va de soi que plus un risque inhérent à l'entreprise a un fort impact et une grande probabilité d'arriver, plus c'est un risque critique pour celle-ci. Il convient alors de mettre en place un processus face à celui-ci pour en limiter les effets. On parle alors d'**atténuation de risque**, et le risque une fois atténué est dénommé "risque résiduel", qu'on peut observer en cliquant sur le bouton de séléction en haut à droite. Lorsque l'on cherche à appliquer un processus en face d'un risque, c'est là qu'interviennent les **contrôles** et les **programmes de contrôle**.
+
+Un contrôle est une partie d'un processus que l'on met en oeuvre. L'outil Impero permet à l'utilisateur de personnaliser ceux-ci, dans le but qu'il puisse coller au mieux à son processus interne. Concrètement, un contrôle est un formulaire qui peut contenir : 
+
+* Des champs de textes, qu'ils soient numériques ou non.
+* Des réponses par bouton radio (une seule réponse possible parmis n choix)
+* Des réponses par checkbox (plusieurs réponses possible parmis n choix)
+* Un choix via un dropdown (une seule réponse possible parmis n choix)
+* Des fichiers associés (PDF comme un bon de livraison, Image comme une photo témoignant du bon déroulé de l'opération)
+
+Chaque utilisateur de l'application peut être assigné au remplissage d'un contrôle, générant alors un **résultat de contrôle**. Celui-ci sera stocké sur les serveurs d'Impero, et pourra être relu *a posteriori* par un utilisateur ayant les droits afin qu'il puisse attester à tout moment de la réalisation correcte de toutes les étapes du processus. Optionellement, on peut paramétrer des **contrôles récurrents**. Par exemple, les paies sont à gérer tous les mois. On peut assigner tous les employés au remplissage du contrôle "Saisie des congés et heures supplémentaires" tous les 20 du mois, ce qui permet d'éviter un suivi individuel autrement plus fastidieux. On pourra également appliquer des rappels sur ces contrôles (X heures ou Y jours avant une date, par exemple). 
+
+Voici par exemple le contrôle que l'entreprise utilise pour le suivi des congés de ses employés. (Il faut noter que la confiance est de mise : aucun contrôle des horaires individuel n'est mis en place car chacun sait quel objectif il a à remplir dans la semaine, et il appartient à la personne d'arranger ses horaires de manière adéquate - en évitant toutefois de subir trop de pression). 
+
+Capture d'écran ...
+
+L'outil étant en développement constant depuis 5 ans, il est actuellement en cours de restructuration au niveau de son interface et de son ergonomie, mais également en cours de ré-écriture côté serveur afin d'effacer la dette technique sur la couche logicielle existante (dite "legacy") que nous évoquerons plus loin. 
+
+Le but actuel de l'entreprise est de prendre en compte les remarques des clients et d'engager la ré-écriture des modules existants sur une nouvelle technologie, afin de repartir sur des bases saines pour l'évolution du logiciel.  
 
 ## Organisation interne 
 
@@ -101,21 +131,21 @@ L'entreprise est composée de 14 collaborateurs dont 6 ont des compétences tech
 
 ```
 
-La société favorise le travail à distance (pas seulement en contexte de pandémie), chaque employé est autorisé au télétravail, ce qui permet à l'entreprise de ne pas s'encombrer de recrutements conditionnés par la situation géographiques des candidats.  
+Le travail à distance (pas seulement en contexte de pandémie mondiale!) a été intégré dans la culture de l'entreprise depuis quelques années. Chaque employé est autorisé au télétravail, ce qui permet à celle-ci de ne pas s'encombrer de recrutements conditionnés par la situation géographique des candidats. Le recrutement est donc parfaitement équitable puisqu'il s'effectue donc sur les **compétences** du candidat, et non sur d'autres critères arbitraires. 
 
-L'équipe de développement est intégralement décentralisée (sur le même fuseau horaire tout de même), avec 3 développeurs en France, deux en Allemagne, et le CTO[^cto] au siège de l'entreprise, à Aarhus. 
+L'équipe de développement est intégralement décentralisée (sur le même fuseau horaire tout de même), avec trois ingénieurs en France (dont je fais partie), un en Allemagne, un en Hongrie, et le CTO[^cto] au siège de l'entreprise, à Aarhus. 
 
-A titre personnel, cette méthode de travail qualifiée de "remote" (comprendre: à distance) était très nouvelle, mais j'y ai pris goût pour la liberté d'action qu'elle me laisse. Elle implique cependant d'avoir une organisation correcte de son temps afin de ne pas mixer vie professionelle et vie personnelle. 
+A titre personnel, cette méthode de travail dite "**remote**" (comprendre: à distance) était très nouvelle, mais j'y ai pris goût pour la liberté d'action qu'elle me laisse. Elle implique cependant d'avoir une organisation correcte de son temps afin de ne pas mixer vie professionelle et personnelle.  
 
 [^cto]: Chief Technical Officer, Directeur Technique.
 
 ## Méthode de travail 
 
-Impero met en valeur son organisation jeune et dynamique, d'entreprise de type Startup. Il est donc logique qu'elle applique une méthode de gestion de projet agile. Si l'entreprise en applique certains principes et met en place la plupart des artéfacts agiles, elle ne se définit pas par un méthode précise type Scrum ou Kanban.
+Impero met en valeur son organisation jeune et dynamique, d'entreprise de type Startup ; elle applique une méthode de gestion de projet agile. Si l'entreprise emprunte certains principes et met en place la plupart des artéfacts agiles, elle ne définit pas son fonctionnement par un méthode précise type Scrum ou Kanban. On notera notamment : 
 
-* Des réunions "**Dev Meeting**" se tiennent tous les lundis et mercredis à 10h, elles servent à la fois de rétrospection sur la semaine passée, et de planning pour la semaine à suivre, permettant au passage de vérifier que personne n'est bloqué sur le travail d'un autre.
-* Un outil de suivi de tâches est utilisé quotidiennement par toute l'équipe. Il s'agit de Clubhouse, qui offre certains avantages comme la possibilité d'être intégré à Slack et à Bitbucket pour faciliter le flux de travail de tout un chacun. A l'heure actuelle, le CTO de l'entreprise gère la rédaction de la majorité des tickets, nous verrons par la suite que ceci est en train de changer. 
-* L'évolution des tâches est suivie par l'un des co-fondateurs, Morten Balle, Product Owner du logiciel Impero.
+* Des réunions nommées "**Dev Meeting**" se tiennent tous les lundis et mercredis à 10h, elles servent à la fois de rétrospection sur la semaine passée, et de planning pour la semaine à suivre, permettant au passage de vérifier que personne n'est bloqué sur le travail d'un autre.
+* Un outil de suivi de tâches est utilisé quasi-quotidiennement par toute l'équipe. Il s'agit de Clubhouse, qui offre certains avantages comme la possibilité d'être intégré à Slack et à Bitbucket pour faciliter le flux de travail de tout un chacun. A l'heure actuelle, le CTO de l'entreprise gère la rédaction de la majorité des tickets, nous verrons par la suite que ceci est en train de changer. 
+* L'évolution des tâches est suivie par l'un des co-fondateurs, Morten Balle, Product Owner du logiciel Impero, qui veille à ce que le produit reste dans sa vision et atteigne l'objectif définit par la stratégie d'entreprise.
 
 Le processus de développement suit le schéma suivant  
 
@@ -128,7 +158,7 @@ Le processus de développement suit le schéma suivant
  +-+--------------+     +-+-------------+ | +----------------+   ++-------+                 |
    |                      |               |                       |                         |
   "Refinement meeting"   Rédaction du     |             Chaque développeur peut             |
-                         (Clubhouse)      |             revoir le code d'une personne       |
+  (Slack - MS Teams)     (Clubhouse)      |             relire le code d'une personne       |
                                           |             et demander des changements pour    |
                                           |             améliorer la qualité de celui-ci    |
                                           |                                                 |
@@ -189,14 +219,14 @@ Afin de résoudre la problématique d'ouverture de l'API que nous venons d'énon
 
 Le travail s'articule autour de l'outil Diesel que nous qualifierons d'ORM[^orm]. Cette librairie ajoute de la sureté lorsque l'on travaille avec du SQL[^sql], uniquement sur les systèmes de gestion de base de données relationnelles, au prix de l'écriture d'un code un peu plus verbeux. Cette sureté se traduit concrètement de la façon suivante : 
 
-* La requête SQL que l'on écrit est vérifiée **statiquement** (comprendre: à la compilation), et est garantie d'être valide. Il n'y a **aucune** possibilité de faire une faute de frappe, de requêter des champs d'une autre table par mégarde, mais surtout lorsqu'une modification est apportée à la structure de la base de données, si la requête devenait invalide, le compilateur en avertirait aussitôt le programmeur ce qui représente un gain de temps et une sécurité non-négligeables. 
+* La requête SQL que l'on écrit est vérifiée **statiquement** (comprendre: à la compilation), et est garantie d'être valide. Il n'y a **aucune** possibilité de faire une faute de frappe, de requêter des champs d'une autre table par mégarde, mais surtout lorsqu'une modification est apportée à la structure de la base de données, si la requête devenait invalide, le compilateur en avertirait aussitôt le programmeur ce qui représente un gain de temps et de sécurité non-négligeable. 
 * Les structures de données qu'un programmeur écrit sont également vérifiées pour qu'elle puisse accueillir le résultat d'une requête, sans quoi le compilateur bloquera l'éxécution également. 
 
 Comme indiqué précédemment, cet outil a un prix: les structures et les requêtes à écrire sont plutôt verbeuses, et écrire plus de code amènera immédiatement des problèmes de maintenabilité. De plus, il faut également écrire le code de glue entre le serveur HTTP et l'outil Diesel, afin de mettre des actions en face d'une requête HTTP.  
 
-Le projet de recherche s'appelle **PEWS**. C'est un anagramme récursif pour **PEWS: Easy Web Services**. Son but est de faciliter, voire retirer la nécéssité d'écrire cette glue, ce qui permet d'exposer l'interface en écrivant moins de code, et donc d'obtenir une meilleure maintenabilité, et de la rapidité de développement sans pour autant sacrifier les performances de Rust ni la sûreté de Diesel. Il faut voir celui-ci comme une surcouche à un framework Web, qui aura pour tâche d'écrire l'intégration nécéssaire à la place du développeur. 
+Le projet de recherche s'appelle **PEWS**. C'est un anagramme récursif pour **PEWS: Easy Web Services**. Son but est de faciliter, voire retirer la nécéssité d'écrire cette glue, ce qui permet d'exposer l'interface en écrivant moins de code, et donc d'obtenir une meilleure maintenabilité, et de la rapidité de développement sans pour autant sacrifier les performances de Rust ni la sûreté de Diesel. Il faut voir PEWS comme **une surcouche à un framework Web**, qui aura pour tâche d'écrire l'intégration nécéssaire à la place du développeur. 
 
-Dans un soucis de pérennité, il est prévu de publier la librairie sous licence Open-Source, puisqu'il nous a semblé qu'elle correspondait à un besoin de la communauté Rust de manière générale. Afin de favoriser l'utilisation au sein de ladite communauté, et de rendre l'outil le plus flexible et correct possible, il s'agit de faire en sorte que PEWS puisse faire abstraction du framework Web qu'il décore. 
+Dans un soucis de pérennité, il est prévu de publier la librairie sous une licence Open-Source (type **MIT**), puisqu'il nous a semblé que PEWS correspondait à un besoin de la communauté Rust de manière générale. Afin de favoriser l'utilisation au sein de ladite communauté, et de rendre l'outil le plus flexible et correct possible, il s'agit de faire en sorte que PEWS puisse faire abstraction du framework Web qu'il décore. 
 
 Afin de comprendre comment nous pouvons aborder ce problème, il faut d'abord comprendre le fonctionnement d'un framework web.
 
@@ -222,7 +252,7 @@ Le framework a pour but d'exposer des routes, que l'on appelle communément des 
 
 Un Framework web expose donc un moyen de déclarer à quelle "route", ou plutôt "format de route" comme expliqué ci-dessus, nous pouvons répondre. En face de cette route, le serveur doit mettre une logique associée. Dans le cadre de notre exemple, il pourrait s'agir d'aller chercher le titre du blog et son contenu associé dans une base de données, de formatter le contenu, puis de retourner au client une page web valide à afficher sur son navigateur. 
 
-```{.svgbob}
+```{.svgbob name="UML - Diagramme de séquence montrant le fonctionnement d'un Endpoint"}
 
 Base de données           Framework Web                           Client 
      _                          _                                    _
@@ -283,8 +313,9 @@ fn hello(name: String, age: u8) -> String {
     format!("Hello, {} year old named {}!", age, name)
 }
 ```
-Note pour la compréhension: 
-* u8 est un entier non-signé codé sur 8 bits (valeurs dans l'intervalle 0 -> 255).  
+Note pour la compréhension:
+
+* u8 est un entier non-signé codé sur 8 bits (valeurs dans l'intervalle 0 -> 255).
 * `format!()` est une macro formattant le contenu comme une variable de type String. 
 * Ici, pour un client qui envoie une requête sur `GET /hello/Olivier/22`, on retourne `Hello, 22 year old named Olivier!`.
 
@@ -297,6 +328,16 @@ Les gardes sont appellés sous la forme d'un type que l'on donne en paramètre d
 ### Second cas d'étude : Actix-Web
 
 ### Troisième cas d'étude : Warp
+
+### Comparaison 
+
+Suite à ces trois études de cas, on peut tirer le tableau suivant : 
+
+| Framework | Création de route                    | Type de réponse   | Partage de ressource | Synchrone            |
+|:---------:|:------------------------------------:|:-----------------:|:--------------------:|:--------------------:|
+| Rocket    | Macro procédurale                    | Trait "Responder" | Gardes de requête    | Oui (pour l'instant) |
+| Actix-web | Manuelle ou Macro procédurale        | Trait "Responder" | Gardes de requête    | Non                  |
+| Warp      | Manuelle ou Macro                    | Struct Reply      | Filtre associé       | Non                  |
 
 ## Abstraction de Framework Web 
 
