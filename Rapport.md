@@ -33,6 +33,25 @@ Blablabla
 
 ## Société Impero 
 
+**Impero A/S** est une société **Danoise** basée à **Aarhus**, dont l'activité réside dans le développement d'une solution logicielle permettant à ses clients de s'assurer du bon suivi de leurs processus internes en ce qui concerne la **compliance**, c'est à dire les **obligations légales** de celles-ci. Par sa fléxibilité, l'outil permet notamment de suivre : 
+
+* La déclarations des taxes,
+* La gestion des risques liés à l'activité de l'entreprise, 
+* L'application de processus internes à l'entreprise, notamment : 
+	* Le processus de production 
+	* Le contrôle de qualité
+	* La logistique
+* La gestion des ressources humaines, notamment :
+	* Congés
+	* Processus de recrutement
+* L'application correcte de la RGPD[^rgpd] 
+
+L'entreprise a été crée en 2014 ... chiffres 
+
+Le siège social de l'entreprise est situé au Danemark, mais l'entreprise emploie 14 collaborateurs distribués entre le Danemark, l'Allemagne, la France et la Hongrie. 
+
+[^rgpd]: Règlement Général sur la Protection des Données
+
 * Chiffres 
 * Situation géographique
 * Présentation logiciel Impero
