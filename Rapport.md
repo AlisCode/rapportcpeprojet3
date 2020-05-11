@@ -33,7 +33,7 @@ Blablabla
 
 ## Société Impero 
 
-**Impero A/S** est une société **Danoise** basée à **Aarhus**, dont l'activité réside dans le développement d'une solution logicielle permettant à ses clients de s'assurer du bon suivi de leurs processus internes en ce qui concerne la **compliance**, c'est à dire les **obligations légales** de celles-ci. Par sa fléxibilité, l'outil permet notamment de suivre : 
+**Impero A/S** est une société **Danoise** basée à **Aarhus**, dont l'activité réside dans le développement d'une solution logicielle permettant à ses clients de s'assurer du bon suivi en ce qui concerne la **compliance**, c'est à dire les **obligations légales** de celles-ci. Par sa fléxibilité, l'outil permet notamment de suivre : 
 
 * La déclarations des taxes,
 * La gestion des risques liés à l'activité de l'entreprise, 
@@ -48,13 +48,15 @@ Blablabla
 
 L'entreprise a été crée en 2014 ... chiffres 
 
-Le siège social de l'entreprise est situé au Danemark, mais l'entreprise emploie 14 collaborateurs distribués entre le Danemark, l'Allemagne, la France et la Hongrie. 
+Les clients de l'entreprise sont en général de **grandes** (voire **très grandes**) entreprises, telles **Siemens** ou **Volkswagen**, qui mettent en place des processus complexes et bénéficient donc du logiciel de manière acrue. Depuis plus d'un an, l'entreprise a revu son fonctionnement pour acquérir de nouveaux clients, et a opté pour un partenariat avec une grosse entreprise de consulting / audit: **KPMG**.
 
-[^rgpd]: Règlement Général sur la Protection des Données
+Ce partenariat vise à pousser l'entreprise à répondre aux attentes de gros groupes qui choisissent KPMG comme consultant, permettant à Impero d'être **utilisé et éprouvé par des clients sérieux** - qui de plus sont en général très satisfaits de la solution proposée - et ainsi d'avoir une **bonne image**, et des clients qui lui rapportent un chiffre d'affaires relativement (par rapport à la taille de l'entreprise) conséquent.  
 
-* Chiffres 
-* Situation géographique
-* Présentation logiciel Impero
+[^rgpd]: Règlement Général sur la Protection des Données, règlement visant à renforcer et unifier la protection des données pour les individus au sein de l'UE 
+
+## Logiciel Impero
+
+
 * Clients
 
 ## Organisation interne 
