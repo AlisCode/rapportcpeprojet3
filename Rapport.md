@@ -8,7 +8,7 @@ title: Conception et implémentation d'une suite d'outils géospatiaux 3D
 subtitle: Designing and implementing a 3D geospatial toolchain
 caption: Projet 3 - Informatique et Réseaux de Communication 
 lang: "fr-FR"
-keywords: [Rust, API, REST, Framework Web, Open-Source]
+keywords: [Rust, Web-Services, REST, Framework Web, Open-Source]
 titlepage: true
 logo: img/LogoAll.png
 logo-width: 350
@@ -46,7 +46,9 @@ Blablabla
 	* Processus de recrutement
 * L'application correcte de la RGPD[^rgpd] 
 
-L'entreprise a été crée en 2014 ... chiffres 
+L'entreprise a été crée en 2014. Elle développe son unique produit, qui lui rapporte sur l'année 2019 un chiffre d'affaires de plus de 7.500.000 DKK (soit 1.000.000 EUR). Elle est en forte croissance, puisque malgré les circonstances économiques actuelles[^covid], Impero affiche un CA prévisoire de 8.600.000 DKK (1.460.0000 EUR) mi-Q2 2020, soit une augmentation de plus de 100% sur moins de la moitié du temps de l'exercice précédent. 
+
+[^covid]: Ce document est écrit en Mai 2020 dans le contexte de la crise sanitaire liée à COVID-19
 
 Les clients de l'entreprise sont en général de **grandes** (voire **très grandes**) entreprises, telles **Siemens** ou **Volkswagen**, qui mettent en place des processus complexes et bénéficient donc du logiciel de manière acrue. Depuis plus d'un an, l'entreprise a revu son fonctionnement pour acquérir de nouveaux clients, et a opté pour un partenariat avec une grosse entreprise de consulting / audit: **KPMG**.
 
@@ -62,7 +64,7 @@ Le logiciel se présente sous la forme d'une application web. Le principe de la 
 
 Afin de comprendre l'intérêt du logiciel, il faut d'abord voir comment il résoud le problème de gestion des risques dans une entreprise. 
 
-![Capture d'écran Impero - RiskMap](img/ScreenImpero1.png)
+![Capture d'écran Impero - RiskMap](img/ScreenImpero1.png){width="75%"}
 
 Ceci est la **Risk Map**, ou "Carte des risques". Elle permet de lister certains risques auxquels l'entreprise cliente doit faire face. Par exemple, un des risques de l'entreprise X qui produit des bateaux pourrait être d'avoir un fournisseur qui n'a pas pu honorer sa commande. Comme on peut le voir, un risque est placé sur la carte par deux caractéristiques : 
 
@@ -83,7 +85,7 @@ Chaque utilisateur de l'application peut être assigné au remplissage d'un cont
 
 Voici par exemple le contrôle que l'entreprise utilise pour le suivi des congés de ses employés. (Il faut noter que la confiance est de mise : aucun contrôle des horaires individuel n'est mis en place car chacun sait quel objectif il a à remplir dans la semaine, et il appartient à la personne d'arranger ses horaires de manière adéquate - en évitant toutefois de subir trop de pression). 
 
-Capture d'écran ...
+![Capture d'écran Impero - Remplissage d'un contrôle](img/ScreenImpero2.png){width="70%"}
 
 L'outil étant en développement constant depuis 5 ans, il est actuellement en cours de restructuration au niveau de son interface et de son ergonomie, mais également en cours de ré-écriture côté serveur afin d'effacer la dette technique sur la couche logicielle existante (dite "legacy") que nous évoquerons plus loin. 
 
@@ -104,7 +106,7 @@ L'entreprise est composée de 14 collaborateurs dont 6 ont des compétences tech
 +------+----------+ +-------------+----------+ | +--------------+       |  +----------------+
 | Karsten Mayland | | Jacob Engedal Sørensen | | | Morten Balle |       |  | Thomas Norsted |
 +-----------------+ +------------------------+ | +--------------+       |  +----------------+
-                                               |  Product Owner         |
+ Directeur commercial                          |  Product Owner         |
                                                |                        |-----------------------------
                                                | +---------------+      | Responsable de communication
                                                | | Thomas Aagard |      | +-----------------+
@@ -115,7 +117,7 @@ L'entreprise est composée de 14 collaborateurs dont 6 ont des compétences tech
                                                | +--------------------+ |
 
 
-                                 Pôle DevOps : Développement + Infra
+                           Pôle DevOps : Développement + Infrastructures
  +-------------------------------------------------------------------------------------------------+
  |                                                                                                 | 
  | +------------------+                                 +-----------------------+                  | 
@@ -133,7 +135,7 @@ L'entreprise est composée de 14 collaborateurs dont 6 ont des compétences tech
 
 Le travail à distance (pas seulement en contexte de pandémie mondiale!) a été intégré dans la culture de l'entreprise depuis quelques années. Chaque employé est autorisé au télétravail, ce qui permet à celle-ci de ne pas s'encombrer de recrutements conditionnés par la situation géographique des candidats. Le recrutement est donc parfaitement équitable puisqu'il s'effectue donc sur les **compétences** du candidat, et non sur d'autres critères arbitraires. 
 
-L'équipe de développement est intégralement décentralisée (sur le même fuseau horaire tout de même), avec trois ingénieurs en France (dont je fais partie), un en Allemagne, un en Hongrie, et le CTO[^cto] au siège de l'entreprise, à Aarhus. 
+L'équipe de développement est intégralement décentralisée (sur le même fuseau horaire tout de même), avec trois ingénieurs en France, un en Allemagne, un en Hongrie, et le CTO[^cto] au siège de l'entreprise, à Aarhus. 
 
 A titre personnel, cette méthode de travail dite "**remote**" (comprendre: à distance) était très nouvelle, mais j'y ai pris goût pour la liberté d'action qu'elle me laisse. Elle implique cependant d'avoir une organisation correcte de son temps afin de ne pas mixer vie professionelle et personnelle.  
 
@@ -228,7 +230,7 @@ Le projet de recherche s'appelle **PEWS**. C'est un anagramme récursif pour **P
 
 Dans un soucis de pérennité, il est prévu de publier la librairie sous une licence Open-Source (type **MIT**), puisqu'il nous a semblé que PEWS correspondait à un besoin de la communauté Rust de manière générale. Afin de favoriser l'utilisation au sein de ladite communauté, et de rendre l'outil le plus flexible et correct possible, il s'agit de faire en sorte que PEWS puisse faire abstraction du framework Web qu'il décore. 
 
-Afin de comprendre comment nous pouvons aborder ce problème, il faut d'abord comprendre le fonctionnement d'un framework web.
+Afin de comprendre comment nous pouvons aborder ce problème et les raisons qui ont poussé vers l'architecture de PEWS, il faut d'abord appréhender le fonctionnement d'un framework web.
 
 [^orm]: Object Relational Mapping, couche logicielle permettant de faciliter l'intéraction avec la base de données.
 [^sql]: Structured Query Language, language utilisé pour effectuer des requêtes sur des bases de données relationelles.
@@ -237,7 +239,7 @@ Afin de comprendre comment nous pouvons aborder ce problème, il faut d'abord co
 
 ### Qu'est ce qu'un Framework Web
 
-Un Framework Web est une brique logicielle permettant d'exposer des fonctionnalités sur un serveur, dans le but de répondre à des requêtes utilisant le protocole de communication client-serveur HTTP (et HTTPS, si celui-ci le supporte), standards du Web.
+Un Framework Web est une brique logicielle permettant d'exposer des fonctionnalités sur un serveur, dans le but de répondre à des requêtes utilisant le protocole de communication client-serveur HTTP (et HTTPS, si le serveur supporte l'encryption via TLS), standards du Web.
 
 Le framework a pour but d'exposer des routes, que l'on appelle communément des Endpoints. Par exemple, le site de CPE contient l'article suivant: `https://www.cpe.fr/actualite/actu-chimie-nouveau-diplome-en-chimie/`. Le endpoint qui pourrait être exposé pour accéder à cet article est le suivant: `GET /actualite/<nom_article>`. Elle se décompose de la façon suivante : 
 
@@ -303,6 +305,8 @@ Selon son site internet :
 
 > Rocket est un framework web écrit avec Rust, qui permet d'écrire des applications Web rapides et sécurisées sans sacrifier la flexibilité, l'utilisabilité ni la sûreté.
 
+Rocket dépend du projet Hyper, une implémentation standard, correcte et performante du protocole HTTP.
+
 La particularité de Rocket est qu'il utilise la chaine de compilation Rust **nightly** (comprendre: instable), qui lui permet d'accéder à certaines fonctionnalités des macros procédurales du langage, au prix de l'utilisation d'un chaîne Rust qui peut potentiellement casser d'une semaine à l'autre. Ce n'est pas nécéssairement un désavantage, il n'y a pas eu de problème de ce genre pour l'instant, et celui-ci serait de toute façon contournable simplement.  
 
 L'utilisation des macros procédurales permet à l'utilisateur d'être très expressif dans la définition des routes : 
@@ -311,6 +315,12 @@ L'utilisation des macros procédurales permet à l'utilisateur d'être très exp
 #[get("/hello/<name>/<age>")]
 fn hello(name: String, age: u8) -> String {
     format!("Hello, {} year old named {}!", age, name)
+}
+
+fn main() {
+    Rocket::ignite()
+    .mount("/", routes![hello])
+    .launch();
 }
 ```
 Note pour la compréhension:
@@ -325,19 +335,123 @@ Rocket définit un système de "Gardes de requête" pour accéder à des ressour
 
 Les gardes sont appellés sous la forme d'un type que l'on donne en paramètre d'une fonction, puis grâce à ses macros procédurales, Rocket se charge d'écrire tout seul le code permettant d'appliquer le comportement de ceux-ci. 
 
+Enfin, Rocket possède une grosse communauté qui a développé beaucoup d'outils très pratiques notamment sur la **sérialisation JSON** et la **connexion avec les bases de données**. Pour ses points négatifs, il est important de noter que **Rocket est pour l'instant entièrement synchrone**, nous y reviendrons plus bas. 
+
 ### Second cas d'étude : Actix-Web
 
+Actix-web est l'un des deux frameworks les plus populaires de l'ecosystème Rust. Pour rappel, c'est la technologie qui a été utilisée dans le cadre du projet 2. Selon son site :  
+
+> Actix est le puissant système d'Acteurs de Rust, et le Framework web le plus divertissant.
+
+Actix-web derive en effet d'Actix, le système d'acteur évoqué en projet 2. Depuis la version 2.0 du framework, il n'existe cependant plus de dépendance directe entre le framework web et Actix, cette approche ayant été jugée trop inefficace. 
+
+Cette technologie se veut être le point de référence du secteur: actix-web est constamment dans le haut des tests de comparaison de performance (appellés benchmarks) de TechEmpower. Ces performances indécentes sont son plus grand avantage. Celui-ci compile sur la chaine stable de Rust, garantie importante pour beaucoup de professionels, et vient avec son lot de fonctionnalités très intéressantes, notamment : 
+
+* Une implémentation du protocole WebSocket,
+* Support pour HTTP SSE (similaire à WebSocket), 
+* Support pour TLS (HTTPS, encryption),
+* Support pour HTTP/2,
+* Intégration simple avec Actix (utilisation du même éxécuteur asynchrone: Tokio)
+
+Ce dernier point est capital même si nous ne rentrerons pas dans le détail du fonctionnement de la programmation asynchrone en Rust. Des documents sont disponibles dans la bibliographie à ce sujet. Afin d'obtenir des performances toujours meilleures lui permettant de se classer régulièrement premier des tests, Actix-web rend ses réponses asynchrones. Cela veut dire que pendant que le serveur est en attente de quelque chose, comme un fichier qu'il essaie de servir à son client, ou une requête sur la base de données, il peut répondre en parallèle à un autre client, mettant les opérations à la queue dans son éxécuteur asynchrone. 
+
+Cette particularité complique la tâche de l'abstraction de PEWS. En effet, on ne peut pas implémenter de surcouche permettant de rendre un framework asynchrone. Il est possible en revanche de bloquer une opération asynchrone sur une opération synchrone, et donc d'en émuler le fonctionnement, mais il est évident qu'une telle méthode implique nécéssairement un sacrifice de performances et la perte de l'intérêt de l'utilisation d'un framework asynchrone. 
+
+La déclaration d'une route avec Actix-web s'effectue de la manière suivante (code simplifié pour le main): 
+
+```rust 
+async fn greet(req: HttpRequest) -> impl Responder {
+    let name = req.match_info().get("name").unwrap_or("World");
+    format!("Hello {}!", &name)
+}
+
+fn main() {
+    let app = App::new()
+        .route("/hello", web::get().to(greet))
+        .route("/hello/{name}", web::get().to(greet));
+    // .. Utilisation de la structure App pour lancer le serveur
+}
+``` 
+
+Notes pour la compréhension : 
+
+* La requête `GET /hello` retourne `Hello World!`
+* La requête `GET /hello/Olivier` retourne `Hello Olivier!`
+* `impl Responder` correspond à n'importe quel type implémentant le trait `Responder`. `String`, retourné par la macro `format!`, implémente ce trait.
+* La logique appliquée par le serveur est encore une fois contenue dans une unique fonction: la fonction `greet` 
+
+On voit ici un système similaire aux Gardes de Rocket: on passe une structure `HttpRequest` à la fonction qui contient la logique de la route, puis on s'en sert pour extraire des informations (*e.g.* le nom de la personne à saluer. A défaut, on saluera le monde entier). 
+
+Si on voulait extraire un JSON du corps de la requête HTTP, on ajouterait en paramètre de greet le garde `web::Json<StructureADeserializer>`. Si on voulait accéder à une ressource interne stockée dans le serveur, on ajouterait en paramètre le garde `web::State<RessourceInterneARecuperer>`
+
+La création de route est manuelle: on monte une route sur une structure `App` en spécifiant le chemin, le verbe HTTP, et la logique à appliquer.
+
+Notons qu'actix-web version 3.0 propose également une macro procédurale pour générer ses routes comme Rocket le fait. 
+ 
 ### Troisième cas d'étude : Warp
 
-### Comparaison 
+Warp est un framework montant de l'écosystème Rust qui a beaucoup gagné en popularité ces derniers temps. Son approche intéréssante sur la création de Web-Services en fait un bon candidat à l'étude de l'abstraction. Selon sa page github : 
+
+> Warp est un framework super-facile et composable pour des serveurs Web à la vitesse de la lumière
+
+Ce framework dérivant d'`Hyper`, comme `Rocket` (l'auteur d'Hyper est aussi celui de Warp) compile sur la chaîne stable de Rust. Son approche fortement inspirée du paradigme de programmation fonctionnelle est basée sur son système de Filtre. 
+
+`Filtre` est un trait scellé (il est directement implémenté uniquement par les structures proposées par Warp). Un filtre possède un type d'Extraction, et un type de Rejection, et le point important est qu'un filtre est **composable**, c'est à dire que l'on peut notamment : 
+
+* Chaîner plusieurs filtres les uns à la suite des autres avec `and` et `and_then`, 
+* Exécuter un autre si le traitement d'un filtre échoue avec `or`, 
+* Transformer le résultat d'un filtre avec `map`, 
+
+L'idée du framework est la suivante : pour chaque requête d'un client, on fait passer celle-ci dans un filtre (le premier de la chaîne). Puis : 
+
+* Soit celui-ci a réussi à extraire une information (il retourne son type d'Extraction). On passe alors ce résultat au Filtre suivant s'il est composé, par exemple avec `map`, `and` ou `and_then`, sinon, ce type est renvoyé au client comme réponse de la requête. 
+* Soit celui-ci a échoué dans son traitement (il a produit son type de Rejection). On va alors chercher à éxécuter un filtre composé par `or`. Si celui-ci n'est pas composé, on appellera la méthode dite de `recover`, qui permet de gérer les erreurs. Celle-ci enverra la réponse au client, le plus souvent avec un code d'erreur comme 400, 403, 404, 422, 500 ... 
+
+L'auteur a fourni des filtres pré-faits permettant de gérer informations sur la requête HTTP qui arrive au serveur. Par exemple : 
+
+* Le filtre `path` sert à vérifier que le chemin de la requête correspond bien à ce que l'on souhaite, 
+* Le filtre `get` permet de vérifier qu'une requête utilise le verbe HTTP GET,
+* Le filtre `json` permet de désérialiser le contenu d'une requête avec le format JSON en une structure utilisable en Rust 
+* Le filtre `map` permet de transformer le résultat, mais aussi d'embarquer une ressource externe comme une connexion à la base de données. 
+
+Example d'utilisation de Warp : 
+
+```rust
+fn main() {
+    // On crée le filtre "hello"
+    let hello = warp::path!("hello" / String)
+        .map(|name| format!("Hello, {}!", name));
+
+    // Le filtre de base utilisé par le serveur est hello.
+    // Si on voulait plusieurs routes, on pourrait composer hello avec hello.or(autre_filtre); 
+    warp::serve(hello)
+        .run(([127, 0, 0, 1], 3030));
+}
+```
+
+Notes pour la compréhension : 
+
+* La requête `GET /hello/Olivier` retourne "Hello, Olivier!",
+* Ici, le serveur sera hebergé à l'adresse 127.0.0.1:3030,
+* Le filtre path est généré par la macro `path!`. On signale que la route qu'on déclare ici est de la forme `/hello/<name>`, où name doit être de type String. Si name n'est pas un string, une Rejection est générée, et on retournera une erreur 404.
+* On transforme le résultat en "Hello, <name>!", et on retourne cette String au client. 
+
+On s'apperçoit que la création de route est manuelle puisqu'on compose la logique des routes en même temps que la déclaration de son chemin et du verbe HTTP. 
+
+Afin que l'on puisse lancer le serveur, il faut que le type d'Extraction du Filtre implémente le trait Reply défini par Warp, et son type de Rejection implémente le trait Reject. Ainsi, on peut être certain à la compilation que le framework sait répondre à n'importe quelle requête qu'il devra gérer. 
+
+Warp est entièrement asynchrone. La composition de filtre inspirée du paradigme fonctionnel marche très bien ici: chaque filtre attend le résultat du précédent avant d'être éxécuté, et peut filtrer d'autres requêtes par la suite. Il faut voir le filtre comme un tuyau qui va effectuer tout le temps les mêmes opérations avec des entrées différentes (les requêtes des clients). 
+
+
+### Bilan et analyse des cas d'étude 
 
 Suite à ces trois études de cas, on peut tirer le tableau suivant : 
 
-| Framework | Création de route                    | Type de réponse   | Partage de ressource | Synchrone            |
-|:---------:|:------------------------------------:|:-----------------:|:--------------------:|:--------------------:|
-| Rocket    | Macro procédurale                    | Trait "Responder" | Gardes de requête    | Oui (pour l'instant) |
-| Actix-web | Manuelle ou Macro procédurale        | Trait "Responder" | Gardes de requête    | Non                  |
-| Warp      | Manuelle ou Macro                    | Struct Reply      | Filtre associé       | Non                  |
+| Framework | Création de route                    | Type de réponse              | Partage de ressource | Asynchrone           | Chaine de compilation |
+|:---------:|:------------------------------------:|:----------------------------:|:--------------------:|:--------------------:|:---------------------:|
+| Rocket    | Macro procédurale                    | Trait "rocket::Responder"    | Gardes de requête    | Non (pour l'instant) | Nightly (instable)    |
+| Actix-web | Manuelle ou Macro procédurale        | Trait "actix_web::Responder" | Gardes de requête    | Oui                  | Stable                |
+| Warp      | Manuelle                             | Trait "Reply"                | Filtre associé       | Oui                  | Stable                |
 
 ## Abstraction de Framework Web 
 
@@ -346,6 +460,8 @@ Suite à ces trois études de cas, on peut tirer le tableau suivant :
 ### L'abstraction Repository
 
 ### Le montage des routes  
+
+### Difficulté rencontrée: Serveurs asynchrones
 
 ## L'interface utilisateur de la librairie
 
