@@ -414,6 +414,8 @@ L'auteur a fourni des filtres pré-faits permettant de gérer informations sur l
 * Le filtre `json` permet de désérialiser le contenu d'une requête avec le format JSON en une structure utilisable en Rust 
 * Le filtre `map` permet de transformer le résultat, mais aussi d'embarquer une ressource externe comme une connexion à la base de données. 
 
+On peut approximer les filtres comme des gardes de requête. Ils servent à extraire des informations du framework, la différence principale résidant dans la composition qui offre plus de fléxibilité, et une gestion des erreurs plus granulaire. 
+
 Example d'utilisation de Warp : 
 
 ```rust
@@ -451,7 +453,39 @@ Suite à ces trois études de cas, on peut tirer le tableau suivant :
 |:---------:|:------------------------------------:|:----------------------------:|:--------------------:|:--------------------:|:---------------------:|
 | Rocket    | Macro procédurale                    | Trait "rocket::Responder"    | Gardes de requête    | Non (pour l'instant) | Nightly (instable)    |
 | Actix-web | Manuelle ou Macro procédurale        | Trait "actix_web::Responder" | Gardes de requête    | Oui                  | Stable                |
-| Warp      | Manuelle                             | Trait "Reply"                | Filtre associé       | Oui                  | Stable                |
+| Warp      | Manuelle                             | Trait "Reply"                | Filtre ( ~Gardes )   | Oui                  | Stable                |
+
+Son étude conditionne les choix qui ont été faits durant le développement de PEWS. Une couche d'abstraction doit offrir les possibilités de plusieurs frameworks, il est donc primordial de choisir une méthode qui soit le dénominateur commun des technologies que nous venons d'étudier. 
+
+Dans un premier temps, un framework cible est libre de choisir une chaîne de compilation nightly ou stable. Si un framework fonctionne sur stable, l'utilisateur cherchera en général à éviter une librairie nightly. On ne peut donc pas fournir une seule librairie qui fonctionnerait avec tout framework. A la place, il faut séparer l'implémentation en plusieurs blocs : 
+
+* Une librairie principale, appellée `pews_core`, basée sur stable pour être utilisable sur tous les framework, 
+* Une librairie secondaire pour chaque framework cible, *e.g.* `pews_rocket`, qui peut utiliser nightly si le framework cible utilise cette chaîne. 
+
+Comme l'approche des gardes de requêtes semble être une norme, le rôle de PEWS sera de fournir des extracteurs qui pourront être transformés en gardes compatibles avec chaque Framework. 
+
+On voit que chaque librairie expose son propre trait lui permettant de gérer l'envoi d'une réponse au client de sa propre façon. PEWS devra, selon la cible, retourner une structure qui implémente le trait imposé par la plateforme. 
+
+Enfin, les approches pour la création de routes sont variées. Chaque implémentation devra fournir un moyen d'importer les routes générées par PEWS dans le framework cible de manière idiomatique. Cela nécessite dans le cadre des frameworks utilisant les macros procédurales, d'écrire manuellement le code généré par celles-ci.  
+
+Ces observations nous amènent à l'architecture actuelle de PEWS : 
+
+```{.svgbob name="Architecture de PEWS"} 
+                                             Abstractions communes à tout framework, "spécification"
+
+     +-------------+                                       +-----------+
+     | pews_derive | Génération de routes abstraites   +---| pews_core |------+   
+     +-------------+                                   |   +-----+-----+      |  
+                                                       |         |            |  
+                                           +-----------+-+ +-----+------+ +---+-------+
+               Implémentations concrètes   | pews_rocket | | pews_actix | | pews_warp |
+                                           +--------+----+ +-----+------+ +---+-------+
+                                                    |            |            |
+                                                +---+----+ +-----+-----+ +----+-+
+                      Framework concrets        | Rocket | | Actix-web | | Warp |
+                                                +--------+ +-----------+ +------+
+
+``` 
 
 ## Abstraction de Framework Web 
 
