@@ -305,8 +305,6 @@ Selon son site internet :
 
 > Rocket est un framework web écrit avec Rust, qui permet d'écrire des applications Web rapides et sécurisées sans sacrifier la flexibilité, l'utilisabilité ni la sûreté.
 
-Rocket dépend du projet Hyper, une implémentation standard, correcte et performante du protocole HTTP.
-
 La particularité de Rocket est qu'il utilise la chaine de compilation Rust **nightly** (comprendre: instable), qui lui permet d'accéder à certaines fonctionnalités des macros procédurales du langage, au prix de l'utilisation d'un chaîne Rust qui peut potentiellement casser d'une semaine à l'autre. Ce n'est pas nécéssairement un désavantage, il n'y a pas eu de problème de ce genre pour l'instant, et celui-ci serait de toute façon contournable simplement.  
 
 L'utilisation des macros procédurales permet à l'utilisateur d'être très expressif dans la définition des routes : 
@@ -394,7 +392,7 @@ Warp est un framework montant de l'écosystème Rust qui a beaucoup gagné en po
 
 > Warp est un framework super-facile et composable pour des serveurs Web à la vitesse de la lumière
 
-Ce framework dérivant d'`Hyper`, comme `Rocket` (l'auteur d'Hyper est aussi celui de Warp) compile sur la chaîne stable de Rust. Son approche fortement inspirée du paradigme de programmation fonctionnelle est basée sur son système de Filtre. 
+Ce framework qui dérive du projet Hyper, (une implémentation standard, correcte et performante du protocole HTTP) compile sur la chaîne stable de Rust. Son approche fortement inspirée du paradigme de programmation fonctionnelle est basée sur son système de Filtre. 
 
 `Filtre` est un trait scellé (il est directement implémenté uniquement par les structures proposées par Warp). Un filtre possède un type d'Extraction, et un type de Rejection, et le point important est qu'un filtre est **composable**, c'est à dire que l'on peut notamment : 
 
@@ -468,28 +466,58 @@ On voit que chaque librairie expose son propre trait lui permettant de gérer l'
 
 Enfin, les approches pour la création de routes sont variées. Chaque implémentation devra fournir un moyen d'importer les routes générées par PEWS dans le framework cible de manière idiomatique. Cela nécessite dans le cadre des frameworks utilisant les macros procédurales, d'écrire manuellement le code généré par celles-ci.  
 
-Ces observations nous amènent à l'architecture actuelle de PEWS : 
+On peut donc voir `pews_core` comme une spécification qui va fournir un ensemble de contraintes (traits). Chaque framework supporté par PEWS aura sa propre librairie *e.g.* `pews_rocket`, qui fournira les implémentations de cette spécification pour sa cible. Celle-ci aura la charge de fournir un mécanisme pour monter les routes de PEWS sur la framework cible. 
+
+Ces observations nous amènent à l'architecture suivante : 
 
 ```{.svgbob name="Architecture de PEWS"} 
-                                             Abstractions communes à tout framework, "spécification"
 
-     +-------------+                                       +-----------+
-     | pews_derive | Génération de routes abstraites   +---| pews_core |------+   
-     +-------------+                                   |   +-----+-----+      |  
-                                                       |         |            |  
-                                           +-----------+-+ +-----+------+ +---+-------+
-               Implémentations concrètes   | pews_rocket | | pews_actix | | pews_warp |
-                                           +--------+----+ +-----+------+ +---+-------+
-                                                    |            |            |
-                                                +---+----+ +-----+-----+ +----+-+
-                      Framework concrets        | Rocket | | Actix-web | | Warp |
-                                                +--------+ +-----------+ +------+
+                                        Abstraction commune
 
+                                           +-----------+
+                                       +---| pews_core |------+   
+                                       |   +-----+-----+      |  
+                                       |         |            |  
+                           +-----------+-+ +-----+------+ +---+-------+
+Implémentations concrètes  | pews_rocket | | pews_actix | | pews_warp |
+                           +--------+----+ +-----+------+ +---+-------+
+                                    |            |            |
+                                +---+----+ +-----+-----+ +----+-+
+      Framework cible           | Rocket | | Actix-web | | Warp |
+                                +--------+ +-----------+ +------+
 ``` 
 
 ## Abstraction de Framework Web 
 
 ### L'abstraction de Route - Endpoint
+
+Comme expliqué en introdcution, une route sur un framework web est composée au minimum des informations suivantes : 
+
+* Le chemin de la route 
+* Le verbe HTTP 
+* La logique associée 
+
+Le chemin de la route est représentable par une variable de type String. 
+
+Le verbe HTTP est représentable par une variable de type String ou par une énumération, mais il est préférable d'utiliser des types HTTP connus. En l'occurence, il existe une librairie `http` (sur laquelle la plupart des frameworks sont basés) qui fournit une définition des constantes du protocole.  
+
+Nous avons vu que la logique était composée de deux parties. Premièrement, l'extraction des donnée qui proviennent du serveur via les gardes de requête (*e.g.* récupérer une connexion à la base de données). Deuxièmement, la logique applicative du endpoint qui peut être composée de plusieurs actions (*e.g.* désérialiser une structure en format JSON ou aller récupérer la définition d'une ressource dans la base de données).
+
+PEWS définit une liste d'extracteurs qui peuvent être paramétrés. Ceux-ci prennent le rôle des gardes de requêtes. 
+
+* PewsDeserializer
+* PewsBody 
+* ....
+
+#### Première approche 
+
+La première approche a été de décomposer la logique en deux fonctions : 
+
+* Une fonction qui retourne les extracteurs après les avoir paramétré
+* Une fonction qui utilise les résultats des extracteurs afin d'appliquer différentes actions (effectuer la logique applicative du endpoint).  
+
+#### Seconde approche
+
 
 ### L'abstraction Repository
 
@@ -498,8 +526,6 @@ Ces observations nous amènent à l'architecture actuelle de PEWS :
 ### Difficulté rencontrée: Serveurs asynchrones
 
 ## L'interface utilisateur de la librairie
-
-ref: Guidelines Rust
 
 ### Les macros procédurales  
 
