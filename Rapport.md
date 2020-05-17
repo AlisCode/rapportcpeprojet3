@@ -504,7 +504,7 @@ En résumé :
 
 ### L'abstraction de Route - Endpoint
 
-Comme expliqué en introdcution, une route sur un framework web est composée au minimum des informations suivantes : 
+Comme expliqué en introduction, une route sur un framework web est composée au minimum des informations suivantes : 
 
 * Le chemin de la route 
 * Le verbe HTTP 
@@ -519,28 +519,160 @@ Nous avons vu que la logique était composée de deux parties. Premièrement, l'
 PEWS définit une liste d'extracteurs qui peuvent être paramétrés. Ceux-ci prennent le rôle des gardes de requêtes. 
 
 * PewsBody<T>: Lit le contenu de la requête et le transforme en structure de type T 
-* PewsDeserializer<T>: Similaire à PewsBody, mais spécialisé dans la désérialisation de contenu en structure de type T. 
+* PewsDeserializer<T>: Similaire à PewsBody, mais spécialisé dans la désérialisation de contenu en structure de type T. Note: Pews n'intègre pas de définition pour la désérialisation, elle se base sur une librairie externe nommée **serde**, standard dans l'écosystème Rust. 
 * PewsState<T>: Extrait de l'état du Framework (s'il existe) une structure de type T. Permet notamment de récupérer une connexion à la base de données, au système de logs, à un cache ... 
 * PewsRequest<T>: Extrait une information de la requête (Cookies, Headers HTTP, IP Source, ...) où l'opération est supportée par le Framework. 
 * PewsUrlParam<T>: Extrait une information depuis l'URL de la requête cliente.
 * Potentiellement d'autres extracteurs selon les cas d'utilisation qui seront identifiés.
 
-#### Première approche
-
-\newline
 
 La première approche a été de décomposer la logique en deux fonctions : 
 
 * Une fonction qui crée les extracteurs, les paramètrent selon la logique qu'on va chercher à appliquer, puis les retournent. Les informations sur le contenu extrait sont stockées au niveau de type.
 * Une fonction qui utilise les résultats des extracteurs afin d'appliquer différentes actions (effectuer la logique applicative du endpoint).  
 
-Cette approche impose que les extracteurs soient définis comme des structures, et que chaque backend
+Imaginons un endpoint dont le but est d'afficher l'âge d'un utilisateur dont la définition JSON seraitpassée dans le corps de la requête.  
 
-#### Seconde approche
+On pourrait donc définir la fonction qui crée les extracteurs comme ceci : 
+
+```rust
+
+#[derive(Deserialize)]
+struct User {
+	pub age: u32,
+	pub nom: String,
+	pub prenom: String,
+}
+
+fn create_extractors() -> PewsDeserializer<User> {
+	PewsDeserializer::<User>::new().json_format()
+} 
+``` 
+
+Et la logique est définie comme suit : 
+
+```rust
+fn display_age(user: User) -> String {
+	format!("L'utilisateur a {} ans", user.age)
+}
+```
+
+Ici, l'extracteur est paramétré pour déserialiser un contenu JSON du corps de la requête, qui représente une structure User. Puis la logique prend cet utilisateur, et en retourne l'âge en formattant la réponse en String. Nous verrons ensuite comment Pews s'assure que le framework cible puisse retourner un type String à son client. 
+
+Cette approche impose que les extracteurs soient définis comme des structures, et que chaque backend puisse traîter ces structures comme des extracteurs. La première définition a donc été le trait "Retriever". 
+
+Ce trait est exprimé `Retriever<T>`, où T est un des types d'extracteur définit par Pews. Chaque implémentation concrète peut alors définir une logique pour traîter l'extracteur et en sortir un type associé nommé Output. Un exemple est noté ici : 
+
+```rust
+
+/// Définit la logique d'extraction de PewsDeserializer pour la cible Rocket
+/// On impose que T soit un type qu'on peut Désérializer.
+impl<T: Deserialize> Retriever<PewsDeserializer<T>> for RocketBackend {
+	/// Le type d'output représente le type sorti par l'extracteur 
+	type Output = T;
+
+	/// Applique la logique pour récupérer l'information.
+	/// En interne, cette fonction utilise les gardes de Rocket 
+	fn retrieve(&self, info: PewsDeserializer<T>) -> T { 
+		// Implémentation concrète: pas important pour comprendre l'abstraction... 
+	}
+}
+``` 
+
+Ce bout de code permet de définir la logique pour que le framework Rocket puisse, via la fonction `retrieve()`, extraire du corps de la requête à l'aide de ses gardes une information de type T, qui peut être la définition d'un utilisateur dans notre exemple. 
+
+En interne, PEWS crée donc une route dont la logique interne appelle le générateur d'extracteur, puis prend ce résultat et récupère les informations demandées à l'aide de la fonction `retrieve()`. Enfin, on prend ce résultat et on le passe à la logique, qui retourne un type String par la suite envoyé au client. 
+
+Evidemment, avant toute chose, PEWS s'est assuré **à la compilation** que la fonction `retrieve()` existait en s'assurant que le backend cible (RocketBackend pour exemple) implémente  le trait `Retriever<PewsDeserializer<User>>`, puis que la fonction de logique avait bien comme entrée le type d'Output qui est défini dans l'implémentation de Retriever, à savoir User. L'abstraction de retriever permet également d'être sûr que si un framework cible n'implémente pas de fonctionnalité pour désérialiser le corps de la requête par exemple, alors le trait Retriever n'est simplement pas implémenté et PEWS ne pourra pas faire fonctionner la route sur ce backend: les garanties de sécurité sont ainsi préservées. 
+
+L'abstraction d'endpoint basique est désormais complète ; PEWS l'a abstrait en imposant une procédure à tout framework cible. Cette approche est bonne dans son intention, mais elle soulève quelques difficultés qu'il a fallu identifier et contourner. 
+ 
+#### 1 - Comment définir des extracteurs et des logiques plus complexes ? 
+
+Selon la définition actuelle, on ne peut utiliser qu'un seul Extracteur (dans notre exemple PewsDeserializer<User>, et obtenir un seul type en entrée pour la logique (dans notre exemple, User). Si l'utilisateur de PEWS veut créer des logiques plus complètes, notamment modifier la base de données, il lui faudra récupérer une connexion à la base de données, à l'aide d'un autre extracteur ce qui n'est actuellement pas possible.
+
+Heureusement, Rust permet de contourner ce problème à l'aide des Tuples[^tuple]. Il est en effet possible de définir génériquement un implémentation de Retriever<(A,B)> pour un backend, à condition que A implémente Retriever<TA> et B implémente Retriever<TB>. Le type d'Output sera alors (TA, TB). On a alors l'observation suivante :
+
+```
+RocketBackend: Retriever<PewsDeserializer<User>, Output = User>, 
+RocketBackend: Retriever<PewsUrlParam<String>, Output = String> 
+
+==> RocketBackend: Retriever<(PewsDeserializer<User>, PewsUrlParam<String>), 
+	Output = (User, String)>
+```
+
+Note: cela implique également que **RocketBackend** implémente **Retriever<(PewsUrlParam<String>, PewsDeserializer<User>)>** avec type d'Output = **(String, User)**.
+
+Bien entendu, cette logique etant générique, elle s'applique pour tout tuple (A,B) mais également pour tout n-uple (A,B,C,...).
+
+[^tuple]: Structure anonyme composée de plusieurs champs. Par exemple `let a: (u32,String) = (0, "test".to_string());` est un tuple comprenant un entier non-signé codé sur 32 bits en premier champ, accessible avec `a.0`, et un String en deuxième champ, accessible avec `a.1`. 
+
+#### 2 - Comment faire proprement la gestion d'erreur ? 
+
+En effet, les extracteurs peuvent échouer. Par exemple, la communication avec la base de données peut échouer, la structure à désérialiser peut ne pas être écrite correctement... 
+
+Le cas d'étude sur Warp a rendu cela explicite: ce framework obligé un filtre à définit le type d'Extraction, mais également le type de Rejection au cas où la requête échoue. Rocket et actix-web, quant à eux, gèrent cela au niveau de leurs gardes de requêtes: si l'extraction échoué, le framework sait quelle erreur est à retourner. Comment abstraire cela ?  
+
+Le trait Retriever ne gèrait pas les erreurs remontées par le framework. En changeant le type de retour de la fonction `retrieve` du trait Retriever, nous pouvons faire remonter un au niveau du type l'information sur le traitement d'un Retriever, puis la traiter en interne dans PEWS. Chaque Retriever devra donc définir un type d'Erreur associé, comme il définit son type d'Output, et la fonction retrieve ressemble maintenant à `fn retrieve(...) -> Result<Output, Error>`. Si une erreur a eu lieu, il faut appeler la fonction du framework cible pour la gérer. PEWS sait alors gérer efficacement les erreurs qui peuvent survenir lors de l'extraction d'une donnée. 
+
+#### 3 - La règle de l'orphelin
+
+La détection de ce problème a entraîné la première ré-écriture de PEWS. L'architecture que nous avions défini impliquait l'écriture d'une librairie `core`, et d'une spécialisation pour chaque framework. Or, dans l'état actuel des choses, cette approche rentre en collision avec la règle de l'orphelin, dite "orphan rule". 
+
+Cette règle est issue des nombreuses garanties statiques de Rust. Elle empêche à une librairie d'implémenter des traits définis dans une librairie externe pour des structures définies dans une librairie externe. Or dans notre cas, pews_core définit le trait Retriever et les structures d'extraction (PewsDeserializer, etc.). Il est donc impossible pour pews_rocket (par exemple) d'implémenter le trait Retriever qui prendrait PewsDeserializer comme générique puisque ce dernier type vient également de pews_core.  
+
+La raison derrière cette restriction est simple et se comprend par le problème suivant : imaginons une librairie A qui définit un trait TA et une structure SA. Puis imaginons les librairies B et C qui dépendent de A.  
+
+Sans la règle de l'orphelin, B et C pourraient définir une implementation de TA pour SA. Si un projet dépend de B et de C, il ne peut alors pas déterminer de laquelle il doit se servir.
+
+```{.svgbob width="40%" name="Explication de la règle de l'orphelin"}
+
+     Définition TA et SA
+               v
+             +---+
+       +---->| A |<----+
+       |     +---+     |
+       |               |
+     +---+     |     +---+
+     | B |     |     | C |
+     +---+     |     +---+
+       ^       |       ^
+impl TA for SA | impl TA for SA
+
+       ^               ^
+       |    Conflit!   |
+       |               |
+       |   +--------+  |
+       +---| Projet |--+
+           +--------+
+
+```
+
+Ce problème est aussi appelé le problème d'héritage en diamant et concerne tous les langages proposant une fonctionnalité d'héritage multiple. Rust l'a résolu d'une façon élégante, mais qui empêche PEWS de fonctionner comme voulu.  
+
+Pour contourner cette difficulté, dans l'approche originale (pré-réécriture), pews_core définissait les implémentations à l'aide de feature-gate. Il s'agit d'indiquer à la librairie qu'on veut utiliser la fonctionnalité X, et on peut désactiver ou non des parties du code en fonction de ce choix. 
+
+A ce moment-là, PEWS devait être la seule librairie, et l'implémentation concrète pour un framework aurait été cachée derrière cette fonctionnalité de feature-gate. Cette solution fonctionne dans un premier temps, mais elle n'est pas assez modulaire. Préférant le design basé sur l'écriture d'une librairie par framework, PEWS a été ré-écrit d'une autre façon. 
+
+Dans PewsV2, pews_core est toujours en charge de définir le trait Retriever et les structures extracteurs. Mais au lieu de demander à l'implémenteur d'un backend d'écrire directement le code `impl Retriever<PewsDeserializer> for Backend`, PEWS définit un trait pour CHAQUE extracteur. Par exemple, le trait `PewsDeserializer<T>` définit la logique nécéssaire à la désérialisation d'un type T. Ensuite, grâce à ce que l'on appelle une "implémentation couverture", tout type `T: PewsDeserializer<T>` implémente automatiquement le trait Retriever<PewsDeserialize<T>>. 
+ 
+Ce paterne nettement plus composable permet à chaque implémentation concrète d'être écrite dans sa propre librairie.  
+ 
+### Le montage des routes  
+
+Comme expliqué précédemment, PEWS doit être utilisable sans perturber le fonctionnement original du framework sous-jacent. Chaque implémentation doit donc fournir un moyen de monter une route de manière idiomatique. 
+
+Dans le cadre d'un framework comme Rocket ou actix qui définit les routes à l'aide de macros procédurales, il s'agit de regarder quel code est produit pour l'utilisateur afin de savoir ce que l'intégration doit produire comme structure, et quel trait il faut implémenter ; ce n'est donc pas chose aisée. 
+
+Heureusement, les contraintes à appliquer sont majoritairement les mêmes en ce qui concernent les routes. Sur les trois frameworks étudiés, tous exposent leur propre trait qui doit être implémenté par toue structure pour être considéré comme une route : 
+
+* Rocket expose le trait Handler, et une structure Route qui contient un implémenteur d'Handler.
+* Actix expose le trait HttpServiceFactory 
+* Warp expose le trait IntoWarpService
+
+'static Send Sync (+ Clone)
 
 ### L'abstraction Services
-
-### Le montage des routes  
 
 ### Difficulté rencontrée: Serveurs asynchrones
 
