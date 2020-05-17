@@ -226,9 +226,11 @@ Le travail s'articule autour de l'outil Diesel que nous qualifierons d'ORM[^orm]
 
 Comme indiqué précédemment, cet outil a un prix: les structures et les requêtes à écrire sont plutôt verbeuses, et écrire plus de code amènera immédiatement des problèmes de maintenabilité. De plus, il faut également écrire le code de glue entre le serveur HTTP et l'outil Diesel, afin de mettre des actions en face d'une requête HTTP.  
 
-Le projet de recherche s'appelle **PEWS**. C'est un anagramme récursif pour **PEWS: Easy Web Services**. Son but est de faciliter, voire retirer la nécéssité d'écrire cette glue, ce qui permet d'exposer l'interface en écrivant moins de code, et donc d'obtenir une meilleure maintenabilité, et de la rapidité de développement sans pour autant sacrifier les performances de Rust ni la sûreté de Diesel. Il faut voir PEWS comme **une surcouche à un framework Web**, qui aura pour tâche d'écrire l'intégration nécéssaire à la place du développeur. 
+Cette glue s'appelle un Service. Il s'agit d'un groupe d'Endpoints (que nous définissons par la suite), qui permet de définir quelles intéractions un client peut avoir avec le serveur. Un Service applique une logique qui est en général toujours la même (ou très similaire), mais qui agit sur des sources de données différentes. Par exemple, remplacer la définition en base de données d'un Utilisateur ou d'un Contrôle appliquera une logique très similaire, où la variante est la table que l'on modifie. En d'autres termes, très peu de code change, et celui-ci est en général fastidieux à écrire et peut ammener des erreurs. 
 
-Dans un soucis de pérennité, il est prévu de publier la librairie sous une licence Open-Source (type **MIT**), puisqu'il nous a semblé que PEWS correspondait à un besoin de la communauté Rust de manière générale. Afin de favoriser l'utilisation au sein de ladite communauté, et de rendre l'outil le plus flexible et correct possible, il s'agit de faire en sorte que PEWS puisse faire abstraction du framework Web qu'il décore. 
+Le projet de recherche s'appelle **PEWS**. C'est un anagramme récursif pour **PEWS: Easy Web Services**. Son but est de faciliter, voire retirer la nécéssité d'écrire cette glue, ce qui permet d'exposer l'interface en écrivant moins de code, et donc d'obtenir une meilleure maintenabilité, et de la rapidité de développement sans pour autant sacrifier les performances de Rust ni la sûreté de Diesel. Il faut voir PEWS comme **une surcouche à un framework Web**, qui aura pour tâche d'écrire l'intégration des Services à la place du développeur, qui n'aura plus qu'à écrire la logique métier si celle-ci varie du fonctionnement classique du service (par exemple si l'on cherche à valider des données ou à vérifier des accès). PEWS vise en quelque sorte le paradigme de "Convention over configuration" que l'on retrouve dans des frameworks comme Spring (Java) et Rails (Ruby), pièce manquante de l'écosystème Rust. 
+
+Dans un soucis de pérennité, il est prévu de publier la librairie sous une licence Open-Source (type **MIT**), puisqu'il nous a semblé que PEWS correspondait à un besoin de la communauté Rust de manière générale. Afin de favoriser l'utilisation au sein de ladite communauté, et de rendre l'outil le plus flexible et correct possible, il s'agit de faire en sorte que PEWS puisse faire abstraction du framework Web de l'utilisateur, auquel on ajoute des fonctionnalités. 
 
 Afin de comprendre comment nous pouvons aborder ce problème et les raisons qui ont poussé vers l'architecture de PEWS, il faut d'abord appréhender le fonctionnement d'un framework web.
 
@@ -455,7 +457,7 @@ Suite à ces trois études de cas, on peut tirer le tableau suivant :
 
 Son étude conditionne les choix qui ont été faits durant le développement de PEWS. Une couche d'abstraction doit offrir les possibilités de plusieurs frameworks, il est donc primordial de choisir une méthode qui soit le dénominateur commun des technologies que nous venons d'étudier. 
 
-Dans un premier temps, un framework cible est libre de choisir une chaîne de compilation nightly ou stable. Si un framework fonctionne sur stable, l'utilisateur cherchera en général à éviter une librairie nightly. On ne peut donc pas fournir une seule librairie qui fonctionnerait avec tout framework. A la place, il faut séparer l'implémentation en plusieurs blocs : 
+Dans un premier temps, un framework cible est libre de choisir une chaîne de compilation (nightly ou stable). Si un framework fonctionne sur stable, l'utilisateur cherchera en général à éviter une librairie nightly. On ne peut donc pas fournir une seule librairie qui fonctionnerait avec tout framework. A la place, il faut séparer l'implémentation en plusieurs blocs : 
 
 * Une librairie principale, appellée `pews_core`, basée sur stable pour être utilisable sur tous les framework, 
 * Une librairie secondaire pour chaque framework cible, *e.g.* `pews_rocket`, qui peut utiliser nightly si le framework cible utilise cette chaîne. 
@@ -466,26 +468,37 @@ On voit que chaque librairie expose son propre trait lui permettant de gérer l'
 
 Enfin, les approches pour la création de routes sont variées. Chaque implémentation devra fournir un moyen d'importer les routes générées par PEWS dans le framework cible de manière idiomatique. Cela nécessite dans le cadre des frameworks utilisant les macros procédurales, d'écrire manuellement le code généré par celles-ci.  
 
-On peut donc voir `pews_core` comme une spécification qui va fournir un ensemble de contraintes (traits). Chaque framework supporté par PEWS aura sa propre librairie *e.g.* `pews_rocket`, qui fournira les implémentations de cette spécification pour sa cible. Celle-ci aura la charge de fournir un mécanisme pour monter les routes de PEWS sur la framework cible. 
+On peut donc voir `pews_core` comme une spécification qui va fournir un ensemble de contraintes (traits). Chaque framework supporté par PEWS aura sa propre librairie *e.g.* `pews_rocket`, qui fournira les implémentations de cette spécification pour sa cible. Celle-ci aura également la charge de fournir un mécanisme pour monter les routes de PEWS sur la framework cible. 
+
+Pour définir facilement les Services (que nous avons défini précédemment comme une abstraction pour effectuer des actions sur la base de données), la librairie `pews_derive` implémentera des macros procédurales qui écriront pour l'utilisateur l'implémentation des traits de pews_core sans que l'utilisateur n'ait à s'en soucier. 
 
 Ces observations nous amènent à l'architecture suivante : 
 
 ```{.svgbob name="Architecture de PEWS"} 
 
-                                        Abstraction commune
-
-                                           +-----------+
-                                       +---| pews_core |------+   
-                                       |   +-----+-----+      |  
-                                       |         |            |  
-                           +-----------+-+ +-----+------+ +---+-------+
-Implémentations concrètes  | pews_rocket | | pews_actix | | pews_warp |
-                           +--------+----+ +-----+------+ +---+-------+
-                                    |            |            |
-                                +---+----+ +-----+-----+ +----+-+
-      Framework cible           | Rocket | | Actix-web | | Warp |
-                                +--------+ +-----------+ +------+
+                          |                       +--------------------+
+                          |                       |                    |
+                          |                 +-----------+              |        +-------------+
+          Coeur de PEWS   |             +---| pews_core |------+       +--------| pews_derive |
+                          |             |   +-----+-----+      |                +-------------+
+                          |             |         |            |                       
+                          | +-----------+-+ +-----+------+ +---+-------+               
+Implémentations concrètes | | pews_rocket | | pews_actix | | pews_warp |
+                          | +--------+----+ +-----+------+ +---+-------+
+                          |          |            |            |
+                          |      +---+----+ +-----+-----+ +----+-+
+      Framework cible     |      | Rocket | | Actix-web | | Warp |
+                          |      +--------+ +-----------+ +------+
 ``` 
+
+L'application de l'utilisateur dépendra au final de pews_core, pews_derive, un framework cible, et un e implémentation concrète de pews qui cible ce framework.
+
+En résumé : 
+
+* L'abstraction commune, pews_core, définit le fonctionnement interne: à quoi ressemble une route, quels extracteurs sont à définir, comment la logique d'un endpoint est executée, comment représenter un Service... C'est une sorte de spécification que chaque implémentation concrète, ou `backend`, cherchera à exprimer pour sa cible.  
+* pews_derive est un outil qui permettra de créer 
+* L'implémentation concrète contient la définition d'un "Backend Pews". Celui-ci doit fournir la capacité de prendre les routes abstraites crées par PEWS et les monter sur la cible, ainsi que d'exposer le mécanisme de partage de ressources pour répondre correctement aux extracteurs de PEWS.
+* Le framework cible peut être utilisé normalement, et avec le mécanisme de montage de l'implémentation concrète. Ainsi, PEWS peut être utilisé pour créer rapidement des routes dont la logique est générique, sans impacter du code pré-existant et donc sacrifier la fléxibilité de la cible. 
 
 ## Abstraction de Framework Web 
 
@@ -505,21 +518,27 @@ Nous avons vu que la logique était composée de deux parties. Premièrement, l'
 
 PEWS définit une liste d'extracteurs qui peuvent être paramétrés. Ceux-ci prennent le rôle des gardes de requêtes. 
 
-* PewsDeserializer
-* PewsBody 
-* ....
+* PewsBody<T>: Lit le contenu de la requête et le transforme en structure de type T 
+* PewsDeserializer<T>: Similaire à PewsBody, mais spécialisé dans la désérialisation de contenu en structure de type T. 
+* PewsState<T>: Extrait de l'état du Framework (s'il existe) une structure de type T. Permet notamment de récupérer une connexion à la base de données, au système de logs, à un cache ... 
+* PewsRequest<T>: Extrait une information de la requête (Cookies, Headers HTTP, IP Source, ...) où l'opération est supportée par le Framework. 
+* PewsUrlParam<T>: Extrait une information depuis l'URL de la requête cliente.
+* Potentiellement d'autres extracteurs selon les cas d'utilisation qui seront identifiés.
 
-#### Première approche 
+#### Première approche
+
+\newline
 
 La première approche a été de décomposer la logique en deux fonctions : 
 
-* Une fonction qui retourne les extracteurs après les avoir paramétré
+* Une fonction qui crée les extracteurs, les paramètrent selon la logique qu'on va chercher à appliquer, puis les retournent. Les informations sur le contenu extrait sont stockées au niveau de type.
 * Une fonction qui utilise les résultats des extracteurs afin d'appliquer différentes actions (effectuer la logique applicative du endpoint).  
+
+Cette approche impose que les extracteurs soient définis comme des structures, et que chaque backend
 
 #### Seconde approche
 
-
-### L'abstraction Repository
+### L'abstraction Services
 
 ### Le montage des routes  
 
