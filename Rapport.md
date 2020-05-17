@@ -658,6 +658,8 @@ Dans PewsV2, pews_core est toujours en charge de définir le trait Retriever et 
  
 Ce paterne nettement plus composable permet à chaque implémentation concrète d'être écrite dans sa propre librairie.  
  
+### L'abstraction Services
+
 ### Le montage des routes  
 
 Comme expliqué précédemment, PEWS doit être utilisable sans perturber le fonctionnement original du framework sous-jacent. Chaque implémentation doit donc fournir un moyen de monter une route de manière idiomatique. 
@@ -670,9 +672,23 @@ Heureusement, les contraintes à appliquer sont majoritairement les mêmes en ce
 * Actix expose le trait HttpServiceFactory 
 * Warp expose le trait IntoWarpService
 
-'static Send Sync (+ Clone)
+> Note: En Rust, une fonction est aussi une structure de type `fn`, qui est juste un pointeur sur la mémoire code comprenant la définition de la fonction. Ce point est important pour la suite. 
 
-### L'abstraction Services
+L'implémentation de ces traits est soumise à quelques conditions. Pour tous les frameworks, la structure doit être `'static`, c'est à dire valide pour le lifetime `'static`. Cette particularité de Rust est complexe, il convient de comprendre que cela oblige la structure à être valide (non nulle, en d'autre termes la mémoire allouée à la structure ne doit pas être libérée) pendant toute la durée du scope où elle est crée au moins. Dans le cas de nos routes, cela veut dire "toute la durée du programme". Cela s'explique par le fait que le framework web va en permanence appeller ces implémentations de route, il faut que la logique soit toujours accessible à ce moment-là. Heureusement pour nous, les fonctions en Rust sont écrites dans la mémoire code du binaire généré, donc leur accès est protégé et ne peut être modifié, impliquant qu'elles sont valides pour le lifetime 'static. Notons que ce n'est cependant pas forcément le cas des structures que les implémentations concrètes vont fournir.  
+
+Dans un second temps, la structure doit être `Send + Sync`, c'est à dire qu'elle implémente les traits Send et Sync. Ceux sont des traits définis par la librairie standard de Rust qui permettent d'assurer qu'une structure peut être envoyée d'un thread à un autre sans problème (Send) et qu'on peut partager une référence à cette structure depuis un autre thread (Sync). Cela permet aux frameworks de dupliquer les routes sur plusieurs threads pour pouvoir gérer les requêtes client en parallèle. Là encore, ces deux traits sont automatiquement implémentés pour les fonctions, mais pas forcément pour les structures issues des implémentations concrètes. 
+
+Enfin, la plupart du temps, ces structures doivent implémenter `Clone`, encore un trait de la librariie standard de Rust permettant de cloner la structure. Les frameworks préfèrent en général cloner les endpoints sur différents thread plutôt que de les avoir par référence afin d'éviter d'avoir à écrire explicitement la gestion des durées de vie (lifetimes), souvent fastidieuse et compliquée. Encore une fois, les fonctions de rust implémentent Clone, il s'agit uniquement de copier un pointeur.  
+
+Chaque implémentation concrète fournit une structure qui suit les contraintes du framework cible, ces contraintes n'ont pas amenés de difficultés majeures. 
+
+Pour le montage de ces structures routes, plusieurs solutions ont été envisagées, toutes tournent autour de la définition d'un trait Mounter.  
+
+Dans la première itération, on prenait une structure Service<S, M> avec deux génériques. S était le type de route, M était une structure implémentant le trait Mounter. Le trait était implémenté pour toute structure Service<S, M> où `M: Mounter`. De cette façon, on pouvait appeler une chaîne d'instruction et obtenir une structure Service dont on pouvait ensuite extraire les routes qui peuvent être montées comme des routes classiques sur le framework cible. 
+
+* Sur Rocket on utilise rigoureusement le même mécanisme (fonction mount, macro `routes![]`), 
+* Sur actix-web on utilise le même mécanisme également (fonction App::service ou App::route),
+* Sur Warp on peut générer une structure qui implémente Filter, et la composer avec d'autres filtres.
 
 ### Difficulté rencontrée: Serveurs asynchrones
 
