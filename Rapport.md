@@ -209,7 +209,9 @@ Toujours dans sa politique d'expansion, Impero a cherché à rentrer en partenar
 * Documenter celui-ci 
 * Faire en sorte qu'il respecte au maximum les standards de l'industrie du logiciel, dans le cas présent, une API REST
 
-L'objectif du projet de recherche que j'ai mené était de faciliter l'écriture et le maintien de nouveaux services avancés exposés directement au client. 
+L'objectif du projet de recherche qui a été mené était de faciliter l'écriture et le maintien de nouveaux services avancés exposés directement au client. 
+
+> Note: Le développement du projet de recherche est actuellement (Mai 2020) à l'arrêt puisque toutes les ressources de développement de l'entreprise sont mises à contribution pour l'écriture des fonctionnalités promises aux clients, mais ce projet correspond à une période de travail allant de Septembre 2019 à Mars 2020 qu'il convient de développer dans ce rapport.  
 
 [^api]: Application Programming Interface, ou interface logicielle permettant d'intéragir avec notre système.
 
@@ -514,7 +516,7 @@ Le chemin de la route est représentable par une variable de type String.
 
 Le verbe HTTP est représentable par une variable de type String ou par une énumération, mais il est préférable d'utiliser des types HTTP connus. En l'occurence, il existe une librairie `http` (sur laquelle la plupart des frameworks sont basés) qui fournit une définition des constantes du protocole.  
 
-Nous avons vu que la logique était composée de deux parties. Premièrement, l'extraction des donnée qui proviennent du serveur via les gardes de requête (*e.g.* récupérer une connexion à la base de données). Deuxièmement, la logique applicative du endpoint qui peut être composée de plusieurs actions (*e.g.* désérialiser une structure en format JSON ou aller récupérer la définition d'une ressource dans la base de données).
+Nous avons vu que la logique était composée de deux parties. Premièrement, l'extraction des donnée qui proviennent du serveur via les gardes de requête (*e.g.* récupérer une connexion à la base de données). Deuxièmement, la logique applicative du endpoint (que l'on appellera par la suite `handler`), qui peut être composée de plusieurs actions (*e.g.* désérialiser une structure en format JSON ou aller récupérer la définition d'une ressource dans la base de données).
 
 PEWS définit une liste d'extracteurs qui peuvent être paramétrés. Ceux-ci prennent le rôle des gardes de requêtes. 
 
@@ -584,6 +586,19 @@ Ce bout de code permet de définir la logique pour que le framework Rocket puiss
 En interne, PEWS crée donc une route dont la logique interne appelle le générateur d'extracteur, puis prend ce résultat et récupère les informations demandées à l'aide de la fonction `retrieve()`. Enfin, on prend ce résultat et on le passe à la logique, qui retourne un type String par la suite envoyé au client. 
 
 Evidemment, avant toute chose, PEWS s'est assuré **à la compilation** que la fonction `retrieve()` existait en s'assurant que le backend cible (RocketBackend pour exemple) implémente  le trait `Retriever<PewsDeserializer<User>>`, puis que la fonction de logique avait bien comme entrée le type d'Output qui est défini dans l'implémentation de Retriever, à savoir User. L'abstraction de retriever permet également d'être sûr que si un framework cible n'implémente pas de fonctionnalité pour désérialiser le corps de la requête par exemple, alors le trait Retriever n'est simplement pas implémenté et PEWS ne pourra pas faire fonctionner la route sur ce backend: les garanties de sécurité sont ainsi préservées. 
+
+La première itération des Endpoints de PEWS fournissait la définition suivante : 
+
+```rust
+pub struct Endpoint<Extractors, Input, Response> {
+	route: String,
+	method: http::Method,
+	gen_retrievers: fn() -> Extractors,
+	handler: fn(Input) -> Response,
+}
+```
+
+Pews s'assure enfin que le backend ciblé implémente `Retriever<Extractors, Output = Input>`. De cette façon, on a garantit à la compilation que les extracteurs étaient gérés correctement par l'implémentation concrète, et qu'on pouvait donc effectuer la logique de traitement d'une route au complet : extraire des données du framework cible, puis les traîter avec le handler.
 
 L'abstraction d'endpoint basique est désormais complète ; PEWS l'a abstrait en imposant une procédure à tout framework cible. Cette approche est bonne dans son intention, mais elle soulève quelques difficultés qu'il a fallu identifier et contourner. 
  
@@ -658,7 +673,35 @@ Dans PewsV2, pews_core est toujours en charge de définir le trait Retriever et 
  
 Ce paterne nettement plus composable permet à chaque implémentation concrète d'être écrite dans sa propre librairie.  
  
-### L'abstraction Services
+### Les abstractions Services et Repository
+
+Le principe de PEWS est d'exposer sur un framework cible des services qui peuvent être implémentés dans une librairie à part. 
+
+PEWS caractérise un Service par tout endpoint montable sur un backend. Par exemple, l'ensemble de Services PEWS suivant expose une API REST[^rest] permettant d'effectuer les opérations de traitement basiques sur une ressource, qu'on appelle CRUD (pour Create, Read, Update, Delete) : 
+
+[^rest]: REpresentational State Transfer, architecture d'API standardisant le dialogue entre serveur et client. 
+
+* `GET /api/controls/1` accède à la ressource "controls" à l'ID numéro 1 
+* `POST /api/controls` crée la ressource "controls" dont la définition est passée en corps de la requête.
+* `PUT /api/controls/1` remplace la ressource "controls" à l'ID numéro 1 par la définition passée en corps de la requête.
+* `DELETE /api/controls/1` supprime la ressource "controls" à l'ID numéro 1 de la base de données. 
+
+L'ensemble de service ainsi formé est appelé un Repository.
+
+Repository est un patterne présent dans beaucoup de librairies visant à faciliter la création de services web, comme Spring ou Rails. Dans sa définition la plus simple, un Repository est une couche d'abstraction permettant d'éditer et d'accéder au contenu d'une partie de la base de données. Dans le language de PEWS, Repository correspond à un ensemble de Services. 
+
+
+Nous avons vu comment PEWS gérait la création de services, il convient maintenant d'étudier comment PEWS expose un moyen pour des librairies externes d'implémenter les Repository.   
+
+#### Le problème des Repository 
+
+Dans sa première version, PEWS cherchait à encoder le maximum d'information sur un Endpoint au niveau de son type. La structure Endpoint contenait dans ses génériques les informations sur les types qui rentraient en jeu durant l'éxécution de la logique. Cette approche comporte un problème majeur: le trait Service ne peut refléter ces informations. En effet, en Rust, le polymorphisme est limité à cause des contraintes de design du langage qui permettent de garantir "l'object-safety". (((( cf. object safety rust book )))). On ne peut actuellement, en Rust, pas stocker une liste d'endpoints contenant des informations de type différentes, comme on pourrait le faire en Java en utilisant l'abstraction Service définie précédemment. En d'autres termes, il était impossible d'implémenter Repository, ceux-ci devant effectivement stocker une liste de Services. Il a donc fallu effacer de l'abstraction Service toute information de type sur le fonctionnement interne d'un Endpoint. 
+
+De plus, le design ne permettait pas de composer les services en ajoutant des bouts de logiques. Cela veut dire que PEWS était peu flexible: on ne pouvait pas brancher de bouts de logique permettant la validation d'une donnée ou le contrôle d'accès, par exemple.  
+
+Ce problème majeur d'architecture a été résolu par une ré-écriture suivant une architecture un peu plus proche conceptuellement des Filtres de Warp. Cependant, elle perd la sécurité au niveau des types que nous avons vu précédemment.
+
+La dernière itération en data de PEWS introduit le concept de Passes. Une passe est une opération similaire à un filtre : elle peut échouer, et accède à une pièce interne mutable nommée `Storage`, dont on se sert pour échanger des données entre Passes, en évitant donc d'expliciter cet échange au niveau du type. Cette approche permet de composer un Endpoint d'une suite d'instructions (comme les filtres de Warp). Le désavantage de cette méthode est qu'un Endpoint est composé d'une suite de Passes qui ne connaissent pas d'information sur les autres Passes (ce qui constitue la principale différence avec les Filtres) et qui peuvent par conséquent être éxécutées dans n'importe quel sens définit par l'utilisateur, potentiellement dans un sens qui pourrait paniquer en production. On casse donc pour le moment les garanties de sécurité de Rust : cette approche n'est pas idéale, et des améliorations sont à l'étude pour contourner cette difficulté, qui seront appliquées quand le projet ne sera plus en pause. 
 
 ### Le montage des routes  
 
@@ -684,19 +727,15 @@ Chaque implémentation concrète fournit une structure qui suit les contraintes 
 
 Pour le montage de ces structures routes, plusieurs solutions ont été envisagées, toutes tournent autour de la définition d'un trait Mounter.  
 
-Dans la première itération, on prenait une structure Service<S, M> avec deux génériques. S était le type de route, M était une structure implémentant le trait Mounter. Le trait était implémenté pour toute structure Service<S, M> où `M: Mounter`. De cette façon, on pouvait appeler une chaîne d'instruction et obtenir une structure Service dont on pouvait ensuite extraire les routes qui peuvent être montées comme des routes classiques sur le framework cible. 
+Dans la première itération, on prenait une structure `Service<S, M>` avec deux génériques. S était le type de route, M était une structure implémentant le trait Mounter. Le trait était implémenté pour toute structure `Service<S, M>` où `M: Mounter`. De cette façon, on pouvait appeler une chaîne d'instruction et obtenir une structure Service dont on pouvait ensuite extraire les routes qui peuvent être montées comme des routes classiques sur le framework cible. 
 
-* Sur Rocket on utilise rigoureusement le même mécanisme (fonction mount, macro `routes![]`), 
-* Sur actix-web on utilise le même mécanisme également (fonction App::service ou App::route),
-* Sur Warp on peut générer une structure qui implémente Filter, et la composer avec d'autres filtres.
+* Sur Rocket, on utilise rigoureusement le même mécanisme (fonction mount, macro `routes![]`), 
+* Sur actix-web, on utilise le même mécanisme également (fonction App::service ou App::route),
+* Sur Warp, on peut générer une structure qui implémente Filter, et la composer avec d'autres filtres.
 
-### Difficulté rencontrée: Serveurs asynchrones
+# Gestion de projet, planification et spécification de nouvelles fonctionnalités 
 
-## L'interface utilisateur de la librairie
-
-### Les macros procédurales  
-
-## La gestion d'un projet de recherche
+Le travail de cette année 3 a également été la participation à la gestion de projet au sein de l'entreprise. Dans la suite du document, nous évoquerons le travail de spécification et de planification qui a été effectué au sein d'Impero. D'abord dans le cadre de PEWS, puis en partie 3 dans le cadre du développement de nouvelles fonctionnalités. 
 
 ### Suivi du projet 
 
