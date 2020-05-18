@@ -737,8 +737,9 @@ Dans la première itération, on prenait une structure `Service<S, M>` avec deux
 
 Le travail de cette année 3 a également été la participation à la gestion de projet au sein de l'entreprise. Dans la suite du document, nous évoquerons le travail de spécification et de planification qui a été effectué au sein d'Impero. D'abord dans le cadre de PEWS, puis en partie 3 dans le cadre du développement de nouvelles fonctionnalités. 
 
-### Suivi du projet 
+## Gestion d'un projet de recherche 
 
+### Méthode de travail
 * Premières tentatives d'écriture de spécifications
 * Réunions
 * Démonstration
@@ -748,22 +749,44 @@ Le travail de cette année 3 a également été la participation à la gestion d
 * Estimer une tâche quand on ne connait pas les solutions à appliquer
 * Indicateurs de développement
 
-# Développement et spécification de nouvelles fonctionnalités
+## Nouvelles fonctionnalités - Module d'administration utilisateur 
 
-## Contexte et objectif
+### Contexte et objectif
 
-* Module d'administration des utilisateurs
-* Meetings
-* Organisation via notes 
-* Tickets CH
+Dans le cadre du développement de sa solution logicelle, Impero cherche à décentraliser le processus de spécification de ses nouvelles fonctionnalités. C'est à dire éviter qu'une seule personne fasse l'intermédiaire entre l'aspect fonctionnel et technique du logiciel, au risque que cette personne devienne un point de blocage ralentissant l'entreprise. Le travail de spécification correspond à ce qu'on appellerait - dans de plus grandes entreprises - la combinaison du métier d'analyste programmeur et d'architecte logiciel. 
 
-## Ecriture d'une spécification 
+L'entreprise va re-développer pendant la prochaine période (~Q3 2020) le module d'administration des utilisateurs de sa plateforme. Le but de celui-ci est de fournir un ensemble de composants au sein de l'application où l'on peut trouver clairement à quel ressource un utilisateur est assigné, qu'il s'agisse d'un Contrôle, d'un groupe, d'une entité, ou de tout élément de la logique métier d'Impero qui pourrait être implémenté par la suite, et de gérer facilement ses accès sur ces ressources. 
 
-### Définition de la fonctionnalité 
+L'objectif pendant la période d'apprentissage était de participer aux réunions de développement, les "refinement meetings" évoqués en introduction. 
 
-### Objectif technique 
+Le déroulement d'un meeting suit en général le même plan. Dans un premier temps, on rappelle ce qui a été couvert lors du dernier point, afin de redonner aux participants le contexte de la discussion. Cela permet également de réfléchir "à froid" aux choix qui ont été faits pendant la réunion précédente et ainsi de revenir sur une décision qui pourrait être améliorée. 
 
-### Rédaction de ticket 
+Ensuite, on fixe de nouveaux objectifs pour donner un cadre à cette réunion - sans quoi la discussion à tendance à divaguer sur divers sujets et à devenir contre-productive. En général, l'objectif de réunion correspond à définir le fonctionnement exact d'un écran ou d'un ensemble de fonctionnalités. Cela nécéssite une préparation en ammont : le directeur artistique de l'entreprise (Thomas), a en général préparé des maquettes d'application via l'outil Sketch, sur lesquelles l'équipe s'appuie pour discuter des fonctionnalités. Il est toujours plus facile de discuter du comportement attendu de quelque chose quand on en a un exemple sous les yeux.  
+
+Pour assurer le bon suivi de ces réunions, un backlog de sujets mentionnés a été mis en place. Sobrement intitulé "journal", il permet de retracer les discussions qui ont été faites pendant le meeting et note une suggestion pour le prochain, tout en gardant en tête les sujets qui n'ont pas encore été traîtés. Pour chaque sujet abordé, des notes (plutôt techniques) sont prises par les deux personnes de la réunion ayant à charge le point de vue technique (le CTO Emmanuel et moi-même). Ces notes servent de point de repère lorsque nous rediscutons par la suite des tickets qu'il s'agit de créer pour l'implémentation d'une fonctionnalité qui a été identifiée.  
+
+Cette dernière étape avant la rédaction technique correspond à l'analyse. Après avoir découpé en plusieurs étapes le besoin fonctionnel qui a été mis en évidence de la manière la plus unitaire possible[^unit] , on crée les tickets sur l'outil de gestion de projet (Clubhouse) et les notons "FIXME", de sorte à savoir quels tickets ont été complètement spécifiés, et lesquels restent encore à faire. On note également à ce moment-là les relations entre tickets : si une étape dépend d'une autre, il est important de le noter afin de pouvoir paralléliser les tâches au maximum lors de l'implémentation. Pour mieux catégoriser les tickets, on applique également des étiquettes dessus. On sait alors si un ticket est testable par l'équipe de relation client ou pas, et s'il impacte le frontend ou le backend du logiciel.On marque également s'il s'agit d'une correction de bug, d'une nouvelle fonctionnalité, ou d'un travail de dette technique à corriger afin de pouvoir prioriser efficacement. 
+
+> En annexes se trouve une capture d'écran d'un ticket Clubhouse à sa création, et d'un ticket une fois qu'il est complètement rédigé.  
+
+[^unit]: Plus un besoin est découpé unitairement, plus les tâches qui en découlent sont nombreuses et  simples, plus on peut potentiellement les paralléliser lors du développement. 
+
+### L'écriture d'une spécification 
+
+Le travail de rédaction d'un ticket technique correspond à la réfléxion sur l'architecture logicielle qu'il convient de mettre en place pour résoudre un besoin technique unitaire identifié précédemment. Celui-ci contient en général le même contenu. 
+
+#### Définition de la fonctionnalité 
+
+* Contexte
+* Note
+
+#### Objectif technique 
+
+* Spécification
+* Tests
+* Critère d'acceptance
+
+### Planification  
 
 # Conclusion 
 
