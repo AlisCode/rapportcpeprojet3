@@ -4,8 +4,8 @@ author:
     - \newline Grégory Obanos - Maître d'apprentissage 
     - \newline Marion Foare - Tutrice école
 date: Année universitaire 2019/2020
-title: Conception et implémentation d'une suite d'outils géospatiaux 3D
-subtitle: Designing and implementing a 3D geospatial toolchain
+title: Abstraction de Framework Web et gestion de projet agile
+subtitle: Abstracting Web Frameworks and agile development 
 caption: Projet 3 - Informatique et Réseaux de Communication 
 lang: "fr-FR"
 keywords: [Rust, Web-Services, REST, Framework Web, Open-Source]
@@ -740,14 +740,38 @@ Le travail de cette année 3 a également été la participation à la gestion d
 ## Gestion d'un projet de recherche 
 
 ### Méthode de travail
-* Premières tentatives d'écriture de spécifications
-* Réunions
-* Démonstration
+
+Au début de ce projet de recherche, nous avons essayé de suivre le processus de développement de l'entreprise. Dans un premier temps, l'objectif a été d'écrire des spécifications techniques pour PEWS qui permettraient d'aboutir à un travail plus structuré. 
+ 
+Avec le recul, cet exercice n'a pas vraiment été effectué comme il l'aurait fallu. Le problème rencontré réside dans mon inexpérience relative dans le travail de spécifications technique en septembre dernier. Plutôt que d'adopter le processus standard pour le développement de nouvelles fonctionnalités que nous déveloperons plus bas, des documents présentant l'état de l'art et des traces de réfléxion abordant chaque problématique ont été rédigés, mais ces derniers ne constituaient pas de base de travail sufisament solides pour travailler en collaboration sur le projet. Cette première étape d'écriture a donc été plutôt remplacée par un travail de recherche, d'hypothèses et d'expérimentation autour des services web.  
+
+De plus, cette première phase de réfléxion a servi à fixer les objectifs du projet, de sorte à pouvoir garder en mémoire ce que l'on cherchait à accomplir avec PEWS.
+
+Il ne fait aucun doute qu'un travail d'architecture plus poussé et mené par plusieurs personnes (comme la suite sur les nouvelles fonctionnalités le présentera), accompagné par l'écriture de spécifications complètes aurait certainement amené à de meilleurs résultats.  
+
+Afin de montrer l'avancement du projet, des réunions de suivi ont eu lieu avec le maître d'apprentissage, le lead développeur et le CTO. Celles-ci servaient à montrer les nouvelles fonctionnalités, expliquer l'architecture mise en place, recueillir des conseils et fixer les objectifs fonctionnels de la prochaine réunion. 
+
+Enfin, une démonstration du projet a eu lieu lors d'une visite au Danemark par l'ensemble de l'équipe de développement. Celle-ci avait pour objectif de montrer ce que la librairie permettait d'accomplir, et quels enjeux pour l'entreprise elle représente. Elle a donné lieu à quelques retours constructifs, mais surtout permis de mettre en évidence les diverses difficultés que cette méthode de travail avait engendré.  
 
 ### Difficultés rencontrées
 
-* Estimer une tâche quand on ne connait pas les solutions à appliquer
-* Indicateurs de développement
+#### L'estimation d'une tâche dans un projet de recherche 
+
+L'experience apportée par ce projet montre qu'il est très compliqué de définir une tâche de A à Z dans la recherche. En effet, la tâche elle-même consiste à trouver une manière de résoudre une problématique mise en évidence. Cette particularité rend la tâche particulièrement complexe à estimer puisqu'on ne sait pas à l'avance quels problèmes on va rencontrer, ni si l'approche que l'on prend est la bonne. 
+
+Pour contourner cette difficulté, une solution peut être de voir la tâche comme l'exploration d'une hypothèse, et fixer à l'avance une limite de temps pour l'investiguer. Si on a plusieurs solutions, on sait alors trouver celle qui semble la plus fiable, ou qui donne les meilleurs résultats.  
+
+#### Les réunions à caractère trop techniques étaient confusantes
+
+Il s'est avéré que les réunions étaient souvent une explication trop technique et proche du code, plutôt qu'une explication des enjeux puis des problématiques techniques rencontrées. Ces meetings ont de manière générale été assez peu productifs puisque le public ne pouvait pas gérer le flux d'information trop complexe auquel ils étaient exposés. 
+
+Afin de mitiger cette difficulté, on peut recentrer le débat sur les abstractions mises en places et sur les structures de données, qui ont en général plus de sens. L'écriture de spécifications précises aide également à la compréhension et pourrait aider à rendre les réunions plus légères.  
+
+#### Les indicateurs de développement dans la recherche 
+
+Enfin, la recherche impliquant qu'on ne sait pas exactement définir une liste de tâches de A à Z, il est difficile de fournir des indicateurs de développement qui soient pertinents. Parfois, cela mène à l'impression désagréable de faire du sur-place, et à ne pas se sentir productif. 
+
+En mettant en place des jalons comme une démonstration avec l'équipe ou une réunion, on s'oblige à réfléchir à des objectifs à atteindre et des problématiques à résoudre. Ceux-ci peuvent servir de point de repères. 
 
 ## Nouvelles fonctionnalités - Module d'administration utilisateur 
 
@@ -773,21 +797,59 @@ Cette dernière étape avant la rédaction technique correspond à l'analyse. Ap
 
 ### L'écriture d'une spécification 
 
-Le travail de rédaction d'un ticket technique correspond à la réfléxion sur l'architecture logicielle qu'il convient de mettre en place pour résoudre un besoin technique unitaire identifié précédemment. Celui-ci contient en général le même contenu. 
+Le travail de rédaction d'un ticket technique correspond à la réfléxion sur l'architecture logicielle qu'il convient de mettre en place pour résoudre un besoin technique unitaire identifié précédemment. Celui-ci suit en général un plan-type dont il peut dériver librement : 
 
 #### Définition de la fonctionnalité 
 
-* Contexte
-* Note
+La première étape est de contextualiser la demande technique. Cela permet à l'implémenteur d'obtenir des références sur l'existant, sur l'objectif et sur quoi son travail doit s'appuyer. 
+
+La partie "Contexte" rapelle :
+
+* Le besoin fonctionnel (cas d'utilisation), exprimé sous la forme suivante : 
+	* En tant que (persona)
+	* Je souhaite (action à effectuer)...
+	* Afin de (objectif)...
+* Les tickets précédents dont on va potentiellement réutiliser le travail
+* Eventuellement, le ticket qui découlera de l'implémentation de celui-ci
+
+Optionellement, on ajoutera une note à l'intention de l'implémenteur. Par exemple, elle servira à dire qu'on limite la portée de ce ticket à telle partie de la fonctionnalité. 
 
 #### Objectif technique 
 
-* Spécification
-* Tests
-* Critère d'acceptance
+La spécification correspond à une explication technique pouvant aller jusqu'à une reférence pour l'implémentation. On ne cherche pas à écrire l'algorithme exact, mais à en définir les attentes et les résultats. 
+
+On définit la structure de données pour l'échange entre le serveur et le client, en général en langageTypeScript, ou en Rust si le ticket concerne le backend. On définit également les traits qui seraient à ajouter. On cherche donc avec l'écriture de ces tickets à définir l'abstraction et les attentes, laissant libre choix à l'implémenteur. 
+ 
+Enfin, si le ticket concerne le backend, on définit une liste de tests unitaires à mettre en place afin d'éviter de potentielles régressions par la suite et de vérifier l'implémentation correcte du ticket. Impero ne garde pas pour l'instant d'information sur le coverage[^coverage] de sa base de code.
+
+[^coverage]: Métrique consistant à garder trace du pourcentage de code qui sont concernées par un test unitaire.
+
+En revanche, si le ticket concerne le frontend, le ticket contiendra impérativement une partie "Critère d'acceptance". Celle-ci contient une liste de scénario lisibles par l'équipe de relation clients. Chaque scénario est décomposé comme suit : 
+
+* Prérequis, la liste d'opération à faire qui conditionnent la bonne mise en situation
+* Une liste d'opérations, *e.g.* "je clique sur cette icône, puis sur ce bouton, l'écran affiche cela"
+
+Dans les commentaires du ticket, l'équipe des relations clients pourra marquer des commentaires s'il y a eu un problème lors de l'éxécution du test sur le serveur de pré-production.
 
 ### Planification  
 
+A la suite de l'écriture des spécifications techniques, nous planifions le travail et fournissons des estimations afin de pouvoir rendre compte à la hiérarchie des avancements du logiciel. 
+
+Ces estimations sont données en tant qu'équipe. L'entreprise appliquant une méthodologie agile, nous effectuons l'estimation des tâches avec du Poker Planning. Pour ce faire, on organise une réunion sur Slack. Nous choisissons une unité de mesurement, dans notres cas les nombres de la suite de Fibonacci (c'est un standard de la méthode Poker Planning, pratique puisque les nombres rendent bien compte de l'évolution de la difficulté d'une taĉhe). Puis nous montrons la liste des tickets, et expliquons à l'équipe l'objectif. Chaque membre de l'équipe donne une approximation en points, et défend son point de vue avec le reste de l'équipe jusqu'à ce que l'on arrive à un consensus. La tâche est alors estimée qualitativement, les points ne pouvant être transformés directement en mesure de temps. 
+
+On utilise ensuite cette analyse qualitative pour produire une estimation du nombres d'heures nécéssaires à la réalsation d'une tâche technique. Le problème majoritaire de la gestion de projet chez Impero repose dans l'estimation des tâches, qui est toujours compliquée dans l'informatique. Cependant, le processus de développement mis en place permet de réduire en grande partie les problèmes de délais. 
+
+Finalement, on pourra utiliser des outils de gestion de projet classique comme les diagrammes de Gantt ou l'analyse du chemin critique pour déterminer une date de fin de projet. L'assignation des tâches est faite par le lead développeur et le CTO de l'entreprise lors de réunions ayant lieu avant les deux **dev meetings** hebdomadaires.  
+
+Cette partie de planification est encore en cours de réalisation au moment de l'écriture de ce rapport, et constitue la suite logique en matière de gestion de projet. 
+
 # Conclusion 
 
+A l'issue de cette formation en alternance, il convient de faire le point sur les compétences acquises au cours des 3 années, en les appuyant sur des exemples d'application précis au sein de l'entreprise qui m'a embauché. 
+
+Par la réalisation en **autonomie** d'un projet de recherche complexe incluant l'écriture de **spécification techniques** et la réfléxion sur **l'architecture logicielle** induite, j'ai pu développer mon sens de la **réfléxion** et de la résolution de problèmes complexes de manière itérative.  
+
+Le travail a été globalement agréable grâce à l'organisation au sein de l'entreprise. J'ai en effet pu participer à **toutes les tâches de développement** d'un logiciel, y compris celles de **gestion de projet** allant jusqu'à la **rédaction de tickets**. Par la suite, je serai amené à travailler sur la planification et espère continuer l'expérimentation que l'entreprise mène sur la **décentralisation du processus d'amélioration du logiciel**, que j'ai découvert au long de cette 3ème année et apprécie particulièrement. 
+
+La découverte et l'adaptation 
 
