@@ -4,28 +4,37 @@ author:
     - \newline Grégory Obanos - Maître d'apprentissage 
     - \newline Marion Foare - Tutrice école
 date: Année universitaire 2019/2020
-title: Abstraction de Framework Web et gestion de projet agile
-subtitle: Abstracting Web Frameworks and agile development 
-caption: Projet 3 - Informatique et Réseaux de Communication 
+title: Abstraction de Framework Web et développement agile en remote 
+subtitle: Abstracting Web Frameworks and remote agile development 
+caption: Projet 3 - Informatique et Réseaux de Communication (IRC) 
 lang: "fr-FR"
 keywords: [Rust, Web-Services, REST, Framework Web, Open-Source]
 titlepage: true
 logo: img/LogoAll.png
-logo-width: 350
-#bibliography: biblio.bib
+logo-width: 550
+bibliography: biblio.bib
 header-left: ITII Lyon
 fontsize: 10pt
 header-center: Impero
 header-right: CPE Lyon
 footer-left: Olivier PINON - 5IRC
 toc: true
+abstract: Au cours de cette troisième année d'alternance, j'ai travaillé pour la société Impero A/S. Basée au Danemark, elle publie un logiciel de type Software As A Service (SAAS) permettant aux entreprises de gérer facilement leurs obligations légales et suivre leurs processus internes. Le projet qui m'a été assigné consistait à développer une couche d'abstraction sur les frameworks web de l'écosystème Rust afin de pouvoir écrire des web-services maintenables, fiables et performants plus facilement, puis potentiellement d'en assurer la maintenance en open-source. J'ai également participé à la spécification et au développement de nouvelles fonctionnalités pour le produit, en suivant une méthode agile. Le présent rapport d'activité décrit le déroulement du projet de recherche et le processus de développement en agile dans une société fonctionnant intégralement à distance. 
 ---
 
 \newpage 
 
 **Remerciements**: 
 
-Blablabla
+J'adresse mes premiers remerciements à Monsieur Grégory OBANOS, maître d'apprentissage durant la majorité de ma formation, pour le soutien dont il a fait preuve à mon égard. Son expérience et sa sympathie ont fait de ces 3 années l'expérience enrichissante qu'elle a été. 
+
+\
+
+Je souhaite remercier Messieurs Emmanuel SURLEAU et Arnaud DE BOSSOREILLE pour leur suivi sur l'année, les conseils qu'ils m'ont prodigué, la confiance qu'ils m'ont accordé sur le projet de recherche et la relecture du présent rapport.  
+
+\
+
+Finalement, je remercie l'ensemble de mes collègues chez Impero avec qui j'ai beaucoup de plaisir à travailler chaque semaine et à retrouver à l'étranger par périodes plus ou moins régulières. Cette équipe sympathique, dynamique et experimentée m'apporte beaucoup sur le plan professionel et m'a permis durant cette troisième année de m'épanouir et de progresser dans une variété de secteurs.
 
 \newpage
 
@@ -33,20 +42,22 @@ Blablabla
 
 ## Société Impero 
 
-**Impero A/S** est une société **Danoise** basée à **Aarhus**, dont l'activité réside dans le développement d'une solution logicielle permettant à ses clients de s'assurer du bon suivi en ce qui concerne la **compliance**, c'est à dire les **obligations légales** de celles-ci. Par sa fléxibilité, l'outil permet notamment de suivre : 
+**Impero A/S** est une société **Danoise** basée à **Aarhus**, dont l'activité réside dans le développement d'une solution logicielle de type **Software As A Service** (SAAS) permettant à ses clients de s'assurer du bon suivi interne en ce qui concerne la **compliance**, c'est à dire les **obligations légales** de celles-ci. Par sa fléxibilité, l'outil permet notamment de suivre : 
 
 * La déclarations des taxes,
-* La gestion des risques liés à l'activité de l'entreprise, 
-* L'application de processus internes à l'entreprise, notamment : 
+* La **gestion des risques** liés à l'activité de l'entreprise, 
+* L'application de **processus internes** à l'entreprise, notamment : 
 	* Le processus de production 
 	* Le contrôle de qualité
 	* La logistique
-* La gestion des ressources humaines, notamment :
+* La gestion des **ressources humaines**, notamment :
 	* Congés
 	* Processus de recrutement
-* L'application correcte de la RGPD[^rgpd] 
+* L'application correcte de la **RGPD[^rgpd]** 
 
-L'entreprise a été crée en 2014. Elle développe son unique produit, qui lui rapporte sur l'année 2019 un chiffre d'affaires de plus de 7.500.000 DKK (soit 1.000.000 EUR). Elle est en forte croissance, puisque malgré les circonstances économiques actuelles[^covid], Impero affiche un CA prévisoire de 8.600.000 DKK (1.460.0000 EUR) mi-Q2 2020, soit une augmentation de plus de 100% sur moins de la moitié du temps de l'exercice précédent. 
+L'entreprise a été crée en 2014. Elle développe un unique produit, qui lui rapporte sur l'année 2019 un chiffre d'affaires de plus de 7.500.000 DKK (soit 1.000.000 EUR). Elle est en forte croissance, puisque malgré les circonstances économiques actuelles[^covid], Impero affiche un CA prévisoire de 8.600.000 DKK (1.460.0000 EUR) mi-Q2 2020, soit une augmentation de plus de 100% sur moins de la moitié du temps de l'exercice précédent. 
+
+![Logo de l'entreprise Impero](img/LogoImpero.png){width="175px"}
 
 [^covid]: Ce document est écrit en Mai 2020 dans le contexte de la crise sanitaire liée à COVID-19
 
@@ -62,18 +73,18 @@ Le logiciel se présente sous la forme d'une application web. Le principe de la 
 
 > Note: Afin de ne pas polluer le document avec trop de captures d'écran, seules 2 sont présentées ici. Il s'agit de parties de l'application qui ont été développées durant l'alternance. D'autres écrans du logiciel sont disponibles en Annexes de ce rapport. 
 
-Afin de comprendre l'intérêt du logiciel, il faut d'abord voir comment il résoud le problème de gestion des risques dans une entreprise. 
+Afin de comprendre l'intérêt du logiciel, il faut d'abord voir comment il résout le problème de gestion des risques dans une entreprise. 
 
-![Capture d'écran Impero - RiskMap](img/ScreenImpero1.png){width="75%"}
+![Capture d'écran Impero - Carte des risques](img/ScreenImpero1.png){width="95%"}
 
-Ceci est la **Risk Map**, ou "Carte des risques". Elle permet de lister certains risques auxquels l'entreprise cliente doit faire face. Par exemple, un des risques de l'entreprise X qui produit des bateaux pourrait être d'avoir un fournisseur qui n'a pas pu honorer sa commande. Comme on peut le voir, un risque est placé sur la carte par deux caractéristiques : 
+Ceci est la **Risk Map**, ou "Carte des risques". Elle permet de lister certains risques auxquels l'entreprise cliente doit faire face. Par exemple, si l'entreprise X produit des bateaux, elle pourrait avoir un fournisseur qui n'a pas pu honorer sa commande, ce qui implique des risques de retard de production et/ou de livraison pour l'entreprise X. Il faut donc mener des actions pour en minimiser l'impact  économique. Comme on peut le voir, un risque est placé sur la carte par deux caractéristiques : 
 
 * Son **impact** (s'il s'avère que l'évènement a réellement eu lieu, *e.g.* le fournisseur n'a pas livré sa commande, au combien est-ce grave pour l'entreprise sur une échelle de 1 à 5), et 
 * Sa **probabilité** (combien de chances cet évènement a-t-il d'arriver, sur une échelle de 1 à 5). 
 
-Il va de soi que plus un risque inhérent à l'entreprise a un fort impact et une grande probabilité d'arriver, plus c'est un risque critique pour celle-ci. Il convient alors de mettre en place un processus face à celui-ci pour en limiter les effets. On parle alors d'**atténuation de risque**, et le risque une fois atténué est dénommé "risque résiduel", qu'on peut observer en cliquant sur le bouton de séléction en haut à droite. Lorsque l'on cherche à appliquer un processus en face d'un risque, c'est là qu'interviennent les **contrôles** et les **programmes de contrôle**.
+Il va de soi que plus un **risque inhérent** à l'entreprise a un fort impact et une grande probabilité d'arriver, plus c'est un risque critique pour celle-ci. Il convient alors de mettre en place un processus face à celui-ci pour en limiter les effets négatifs. On parle alors d'**atténuation de risque**, et le risque une fois atténué est dénommé "risque résiduel", qu'on peut observer en cliquant sur le bouton de séléction en haut à droite. Lorsque l'on cherche à appliquer un processus en face d'un risque, c'est là qu'interviennent les **contrôles** et les **programmes de contrôle**.
 
-Un contrôle est une partie d'un processus que l'on met en oeuvre. L'outil Impero permet à l'utilisateur de personnaliser ceux-ci, dans le but qu'il puisse coller au mieux à son processus interne. Concrètement, un contrôle est un formulaire qui peut contenir : 
+Un **contrôle** est une partie d'un processus que l'on met en oeuvre. L'outil Impero permet à l'utilisateur de personnaliser ceux-ci, dans le but qu'il puisse coller au mieux à son processus interne. Concrètement, un contrôle est un **formulaire personnalisé** envoyé à un utilisateur. Il peut contenir : 
 
 * Des champs de textes, qu'ils soient numériques ou non.
 * Des réponses par bouton radio (une seule réponse possible parmis n choix)
@@ -81,15 +92,15 @@ Un contrôle est une partie d'un processus que l'on met en oeuvre. L'outil Imper
 * Un choix via un dropdown (une seule réponse possible parmis n choix)
 * Des fichiers associés (PDF comme un bon de livraison, Image comme une photo témoignant du bon déroulé de l'opération)
 
-Chaque utilisateur de l'application peut être assigné au remplissage d'un contrôle, générant alors un **résultat de contrôle**. Celui-ci sera stocké sur les serveurs d'Impero, et pourra être relu *a posteriori* par un utilisateur ayant les droits afin qu'il puisse attester à tout moment de la réalisation correcte de toutes les étapes du processus. Optionellement, on peut paramétrer des **contrôles récurrents**. Par exemple, les paies sont à gérer tous les mois. On peut assigner tous les employés au remplissage du contrôle "Saisie des congés et heures supplémentaires" tous les 20 du mois, ce qui permet d'éviter un suivi individuel autrement plus fastidieux. On pourra également appliquer des rappels sur ces contrôles (X heures ou Y jours avant une date, par exemple). 
+Chaque utilisateur de l'application (et donc membre de l'entreprise cliente d'Impero) peut être assigné au remplissage d'un contrôle, générant alors un **résultat de contrôle**, ou "control result". Celui-ci sera stocké sur les serveurs d'Impero, et pourra être relu *a posteriori* par un utilisateur ayant les droits adéquats, afin qu'il puisse attester à tout moment de la réalisation correcte de toutes les étapes du processus. Optionellement, on peut paramétrer des **contrôles récurrents**. Par exemple, les paies sont à gérer tous les mois. On peut assigner tous les employés au remplissage du contrôle "Saisie des congés et heures supplémentaires" tous les 20 du mois, ce qui permet d'éviter un suivi individuel autrement plus fastidieux. On pourra également appliquer des rappels sur ces contrôles (X heures ou Y jours avant une date, par exemple). 
 
-Voici par exemple le contrôle que l'entreprise utilise pour le suivi des congés de ses employés. (Il faut noter que la confiance est de mise : aucun contrôle des horaires individuel n'est mis en place car chacun sait quel objectif il a à remplir dans la semaine, et il appartient à la personne d'arranger ses horaires de manière adéquate - en évitant toutefois de subir trop de pression). 
+La figure suivante montre le contrôle que l'entreprise Impero utilise pour le suivi des congés de ses employés. Chaque personne notera ses jours pris pendant la période précédente, et ses déplacements si applicable. La confiance est de mise : aucun contrôle individuel des horaires n'est mis en place chez Impero. Chacun sait quel objectif est à remplir dans la semaine, et il appartient à la personne d'arranger ses horaires de manière adéquate - sans toutefois s'exposer à trop de pression.  
 
-![Capture d'écran Impero - Remplissage d'un contrôle](img/ScreenImpero2.png){width="70%"}
+![Capture d'écran Impero - Remplissage d'un contrôle](img/ScreenImpero2.png){width="90%"}
 
-L'outil étant en développement constant depuis 5 ans, il est actuellement en cours de restructuration au niveau de son interface et de son ergonomie, mais également en cours de ré-écriture côté serveur afin d'effacer la dette technique sur la couche logicielle existante (dite "legacy") que nous évoquerons plus loin. 
+L'outil est en **développement continu** depuis 5 ans, et il est actuellement en cours de restructuration au niveau de son interface et de son ergonomie. Il faut également noter qu'une **ré-écriture côté serveur** afin d'effacer la dette technique induite par la couche logicielle existante (dite **"Legacy"**) que nous évoquerons plus loin. 
 
-Le but actuel de l'entreprise est de prendre en compte les remarques des clients et d'engager la ré-écriture des modules existants sur une nouvelle technologie, afin de repartir sur des bases saines pour l'évolution du logiciel.  
+Le but actuel de l'entreprise est de prendre en compte les remarques des clients et d'engager la ré-écriture des modules existants sur une nouvelle technologie, afin de repartir sur des bases saines pour l'évolution du logiciel tout en satisfaisant les clients. 
 
 ## Organisation interne 
 
@@ -135,64 +146,32 @@ L'entreprise est composée de 14 collaborateurs dont 6 ont des compétences tech
 
 Le travail à distance (pas seulement en contexte de pandémie mondiale!) a été intégré dans la culture de l'entreprise depuis quelques années. Chaque employé est autorisé au télétravail, ce qui permet à celle-ci de ne pas s'encombrer de recrutements conditionnés par la situation géographique des candidats. Le recrutement est donc parfaitement équitable puisqu'il s'effectue donc sur les **compétences** du candidat, et non sur d'autres critères arbitraires. 
 
-L'équipe de développement est intégralement décentralisée (sur le même fuseau horaire tout de même), avec trois ingénieurs en France, un en Allemagne, un en Hongrie, et le CTO[^cto] au siège de l'entreprise, à Aarhus. 
+L'équipe de développement est intégralement décentralisée (mais travaille sur le même fuseau horaire tout de même), avec trois ingénieurs en France, un en Allemagne, un en Hongrie, et le CTO[^cto] au siège de l'entreprise, à Aarhus. 
 
-A titre personnel, cette méthode de travail dite "**remote**" (comprendre: à distance) était très nouvelle, mais j'y ai pris goût pour la liberté d'action qu'elle me laisse. Elle implique cependant d'avoir une organisation correcte de son temps afin de ne pas mixer vie professionelle et personnelle.  
+A titre personnel, cette méthode de travail dite "**remote**" (comprendre: à distance) était très nouvelle, mais j'y ai pris goût pour la liberté d'action qu'elle offre, bien qu'elle implique d'avoir une organisation correcte de son temps afin de ne pas mixer vie professionelle et personnelle.  
 
 [^cto]: Chief Technical Officer, Directeur Technique.
 
-## Méthode de travail 
-
-Impero met en valeur son organisation jeune et dynamique, d'entreprise de type Startup ; elle applique une méthode de gestion de projet agile. Si l'entreprise emprunte certains principes et met en place la plupart des artéfacts agiles, elle ne définit pas son fonctionnement par un méthode précise type Scrum ou Kanban. On notera notamment : 
-
-* Des réunions nommées "**Dev Meeting**" se tiennent tous les lundis et mercredis à 10h, elles servent à la fois de rétrospection sur la semaine passée, et de planning pour la semaine à suivre, permettant au passage de vérifier que personne n'est bloqué sur le travail d'un autre.
-* Un outil de suivi de tâches est utilisé quasi-quotidiennement par toute l'équipe. Il s'agit de Clubhouse, qui offre certains avantages comme la possibilité d'être intégré à Slack et à Bitbucket pour faciliter le flux de travail de tout un chacun. A l'heure actuelle, le CTO de l'entreprise gère la rédaction de la majorité des tickets, nous verrons par la suite que ceci est en train de changer. 
-* L'évolution des tâches est suivie par l'un des co-fondateurs, Morten Balle, Product Owner du logiciel Impero, qui veille à ce que le produit reste dans sa vision et atteigne l'objectif définit par la stratégie d'entreprise.
-
-Le processus de développement suit le schéma suivant  
-
-```{.svgbob name="Cycle de développement d'une fonctionnalité chez Impero"}
-                                          |
-           Phase de rafinement            |               Phase de développement
-                                          |
- +----------------+     +---------------+ | +----------------+   +--------+     Validation
- | Identification |---->| Spécification |-+-| Développement  |-->| Revue  |-----------------+
- +-+--------------+     +-+-------------+ | +----------------+   ++-------+                 |
-   |                      |               |                       |                         |
-  "Refinement meeting"   Rédaction du     |             Chaque développeur peut             |
-  (Slack - MS Teams)     (Clubhouse)      |             relire le code d'une personne       |
-                                          |             et demander des changements pour    |
-                                          |             améliorer la qualité de celui-ci    |
-                                          |                                                 |
-   +--------------------------------------+-------------------------------------------------+
-   |                                      |
-   |      Phase de pré-production         |                                
-   v                                                +---------------------+
- +-+--------------+      +------+    Validation     |  Fonctionnalité en  |
- | Pré-production |----->| Test |---------+-------->|      production     |
- +----------------+      +------+         |         +---------------------+
-  |                                       |
- La fonctionnalité est mise à             |    La fonctionnalité est  
- disposition sur le serveur "staging".    |    utilisable par les clients d'Impero
- Elle est prête à être testée             |
-                                          |
-```
-
-La phase de rafinement correspond à l'identification du problème, suite à un besoin remonté par un client ou une volonté d'évolution du logiciel. Au cours de nombreuses réunions, appellées **refinement meeting**, le besoin client est analysé. Elle a lieu avec le Product Owner de l'entreprise qui a la vision du produit, le directeur artistique qui garde en tête l'experience utilisateur de l'application, et le directeur technique de qui connaît l'architecture de la solution et estime la faisabilité des demandes. On cherche à définir une fonctionnalité qui comblera le besoin identifié de la façon la plus générique possible (en évitant par exemple d'avoir une fonctionnalité qui ne servira qu'à un seul client).
 
 ## Environnement technique
 
 L'entreprise Impero déploie sa solution Web sur un serveur à l'aide d'`Ansible`, un outil open-source permettant la mise en production, qui est gérée manuellement par le CTO et le lead développeur. 
 
-L'architecture du logiciel est composée d'un serveur, que nous appelerons "backend" et qui héberge une application Web, que nous appelerons "frontend". 
+L'architecture du logiciel est composée d'un serveur, que nous appelerons **"backend"** et qui héberge une application Web, que nous appelerons **"frontend"**. 
 
-Le backend est implémenté avec le langage de programmation **Rust**, qui vise à permettre à tout développeur de fournir des programmes sécurisés et performants, tirant avantage des technologies modernes (comme le multithreading) tout en leur offrant beaucoup d'outils pour se faciliter la tâche. Rust est un langage dit "système" capable de cibler toutes les plateformes allant d'Android au Web (via WebAssembly) en passant par les OS plus conventionnels, et même l'embarqué. Celui-ci est multi-paradigme (on peut s'en servir comme d'un language fonctionnel, impératif, voire même orienté objet sur certains aspects). A titre personnel, c'est une technologie avec laquelle j'ai beaucoup de plaisir à travailler car son compilateur strict empêche beaucoup d'erreurs avant qu'elles n'arrivent en production, ou qu'elles ne proviennent d'une mauvaise architecture du programme que j'écris.
+Le backend est implémenté avec le langage de programmation **Rust**, qui vise à permettre à tout développeur de fournir des programmes sécurisés et performants, tirant avantage des technologies modernes (comme le **multithreading**) tout en leur offrant beaucoup d'outils pour se faciliter la tâche. Rust est un langage dit "système" capable de cibler toutes les plateformes allant d'**Android** au **Web** (via **WebAssembly**) en passant par les OS plus conventionnels, jusqu'à l'**informatique embarquée**. Celui-ci est **multi-paradigme** (on peut s'en servir comme d'un language fonctionnel, impératif, voire même orienté objet sur certains aspects). Son **compilateur strict** élimine une bonne partie des erreurs avant qu'elles n'arrivent en production grâce au **typage fort**, et force une architecture propre des structures de données grâce à son système d'**ownership** qui empêche d'avoir des références mutables sur un même élément à plusieurs endroits dans le code. Pour en savoir plus, consulter "The Rust Programming Language" [@rustbook]. 
+
+![Logo du langage Rust](img/LogoRust.png){width="150px"}
 
 Dans le cadre du logiciel Impero, le serveur Web est implémenté à l'aide de Rocket, un framework web très complet dont nous détaillerons le fonctionnement plus tard. 
 
 Le frontend est implémenté avec **TypeScript**, un surensemble de JavaScript apportant plus de garanties statiques[^staticguarantees] permettant également de faire moins d'erreur et de rendre le refactoring plus aisé. Le Framework **React** est utilisé afin de se faciliter la tâche et de rendre le tout maintenable. Enfin, le framework d'interface **antd** sert de cadre à l'application pour lui donner une touche moderne et un peu d'esthétisme. 
 
-L'entreprise laisse carte blanche à ses employés en ce qui concerne leur environnement de travail personnel: un budget est donné à chacun pour qu'il/elle achète un ordinateur qu'il/elle garde pendant son contrat. Ainsi, le collaborateur est libre de choisir son système d'exploitation, l'IDE[^ide] qu'il utilise, et ainsi d'avoir un poste de travail vraiment personnel. Cette particularité implique cependant de standardiser l'environnement de développement, afin d'éviter les problèmes liés aux différentes plateformes. **Docker**, le système de containerisation devenu standard de l'industrie, est donc tout indiqué. Ce dernier offre également le bénéfice de pouvoir travailler facilement avec des systèmes à l'installation complexe et sensible aux erreurs comme **Redis** et **PostgreSQL**, sur lesquels le backend s'appuie. 
+![Logo du langage TypeScript (TS)](img/LogoTS.png){width="150px"}
+
+L'entreprise laisse carte blanche à ses employés en ce qui concerne leur environnement de travail personnel : un budget est donné à chacun pour qu'il/elle achète un ordinateur qu'il/elle garde pendant son contrat. Ainsi, le collaborateur est libre de choisir son système d'exploitation, l'IDE[^ide] qu'il utilise, et ainsi d'avoir un poste de travail vraiment personnel. Cette particularité implique cependant de standardiser l'environnement de développement, afin d'éviter les problèmes liés aux différentes plateformes. **Docker**, le système de containerisation devenu standard de l'industrie, est donc tout indiqué. Ce dernier offre également le bénéfice de pouvoir travailler facilement avec des systèmes à l'installation complexe et sensible aux erreurs comme **Redis** et **PostgreSQL**, sur lesquels le backend s'appuie. 
+
+![Logo de Docker](img/LogoDocker.png){width="150px"}
 
 Afin de garder une trace des différentes versions du logiciel et de permettre le travail collaboratif, Bitbucket a été mis en place. Impero bénéficie du système d'Intégration Continue (CI) de ce dernier, ce qui est d'ailleurs grandement facilité par l'utilisation de Docker sus-mentionné, dans le but d'empêcher la mise en production d'un système qui n'aurait pas été testé, et de faire travailler d'autres personnes avec un programme qui ne compile pas. 
 
@@ -201,7 +180,9 @@ Afin de garder une trace des différentes versions du logiciel et de permettre l
 
 ## Problématiques en tant qu'Ingénieur Développement
 
-L'entreprise cherchant à devenir de plus en plus importante, elle a augmenté sa capacité de production. Le nombre de développeurs est passé de 3 à 6 sur l'année 2019. Cela implique des tâches de gestion plus complexes, notamment dans la rédaction des spécifications techniques décrites plus tôt. A cet effet, le processus de spécification est en train d'évoluer pour permettre aux DevOps d'être impliqué dans la rédaction de tickets. J'ai donc été amené à participer - voire animer par moment - des **refinement meeting**. Nous développerons cela dans la troisième partie du rapport : **Développement et spécifications de nouvelles fonctionnalités**.
+L'entreprise cherchant à devenir de plus en plus importante, elle a augmenté sa capacité de production. Le nombre de développeurs est passé de 3 à 6 sur l'année 2019. Cela implique des tâches de gestion plus complexes, notamment dans la rédaction des spécifications techniques décrites plus tôt. A cet effet, le processus de spécification est en train d'évoluer pour permettre aux DevOps[^devops] d'être impliqué dans la rédaction de tickets. J'ai donc été amené à participer - voire animer par moment - des **refinement meeting**. Nous développerons cela dans la troisième partie du rapport : **Développement et spécifications de nouvelles fonctionnalités**.
+
+[^devops]: Développeurs Opérationnels, terme générique pour un développeur également en charge des infrastructures réseaux.
 
 Toujours dans sa politique d'expansion, Impero a cherché à rentrer en partenariat avec des entreprises de plus en plus grandes, comme Volkswagen. Avoir des clients d'une telle taille implique d'apporter un soin particulier au développement de l'interfaçage de sa solution avec son client, ces derniers ayant tendance à vouloir recréer des outils internes utilisant les fonctionnalités et les données proposées par les outils externes, dont le logiciel Impero fait partie. Il est donc apparu clairement qu'il faudrait trouver un moyen pour l'entreprise de : 
 
@@ -226,11 +207,13 @@ Le travail s'articule autour de l'outil Diesel que nous qualifierons d'ORM[^orm]
 * La requête SQL que l'on écrit est vérifiée **statiquement** (comprendre: à la compilation), et est garantie d'être valide. Il n'y a **aucune** possibilité de faire une faute de frappe, de requêter des champs d'une autre table par mégarde, mais surtout lorsqu'une modification est apportée à la structure de la base de données, si la requête devenait invalide, le compilateur en avertirait aussitôt le programmeur ce qui représente un gain de temps et de sécurité non-négligeable. 
 * Les structures de données qu'un programmeur écrit sont également vérifiées pour qu'elle puisse accueillir le résultat d'une requête, sans quoi le compilateur bloquera l'éxécution également. 
 
-Comme indiqué précédemment, cet outil a un prix: les structures et les requêtes à écrire sont plutôt verbeuses, et écrire plus de code amènera immédiatement des problèmes de maintenabilité. De plus, il faut également écrire le code de glue entre le serveur HTTP et l'outil Diesel, afin de mettre des actions en face d'une requête HTTP.  
+![Logo du Framework Diesel](img/LogoDiesel.png){width="150px"}
 
-Cette glue s'appelle un Service. Il s'agit d'un groupe d'Endpoints (que nous définissons par la suite), qui permet de définir quelles intéractions un client peut avoir avec le serveur. Un Service applique une logique qui est en général toujours la même (ou très similaire), mais qui agit sur des sources de données différentes. Par exemple, remplacer la définition en base de données d'un Utilisateur ou d'un Contrôle appliquera une logique très similaire, où la variante est la table que l'on modifie. En d'autres termes, très peu de code change, et celui-ci est en général fastidieux à écrire et peut ammener des erreurs. 
+Comme indiqué précédemment, cet outil a un prix: les structures et les requêtes à écrire sont plutôt verbeuses, et écrire plus de code amènera immédiatement des problèmes de maintenabilité. De plus, il faut également écrire le code de glue entre le serveur HTTP et l'outil Diesel, afin de mettre des actions en face d'une requête HTTP reçue par le serveur. 
 
-Le projet de recherche s'appelle **PEWS**. C'est un anagramme récursif pour **PEWS: Easy Web Services**. Son but est de faciliter, voire retirer la nécéssité d'écrire cette glue, ce qui permet d'exposer l'interface en écrivant moins de code, et donc d'obtenir une meilleure maintenabilité, et de la rapidité de développement sans pour autant sacrifier les performances de Rust ni la sûreté de Diesel. Il faut voir PEWS comme **une surcouche à un framework Web**, qui aura pour tâche d'écrire l'intégration des Services à la place du développeur, qui n'aura plus qu'à écrire la logique métier si celle-ci varie du fonctionnement classique du service (par exemple si l'on cherche à valider des données ou à vérifier des accès). PEWS vise en quelque sorte le paradigme de "Convention over configuration" que l'on retrouve dans des frameworks comme Spring (Java) et Rails (Ruby), pièce manquante de l'écosystème Rust. 
+Cette glue s'appelle un Service. Il s'agit d'un groupe d'Endpoints (notion que nous définirons par la suite), qui permet de définir quelles intéractions un client peut avoir avec le serveur. Un Service applique une logique qui est en général souvent la même (ou très similaire), mais qui agit sur des sources de données différentes, et qui peut varier selon ce que la logique métier implique. Par exemple, remplacer la définition en base de données d'un Utilisateur ou d'un Contrôle (pour le cas d'Impero) appliquera une logique très similaire, où la variante est la table que l'on modifie et le contrôle d'accèes. En d'autres termes, très peu de code change, et celui-ci est en général fastidieux à écrire et peut ammener des erreurs. 
+
+Le projet de recherche s'appelle **PEWS**. C'est un anagramme récursif pour **PEWS: Easy Web Services**. Son but est de faciliter, voire retirer la nécéssité d'écrire cette glue, ce qui permet d'exposer l'interface en écrivant moins de code, et donc d'obtenir une meilleure maintenabilité, et de la rapidité de développement sans pour autant sacrifier les performances de Rust ni la sûreté de Diesel. Il faut voir PEWS comme **une surcouche à un framework Web**, qui aura pour tâche d'écrire l'intégration des Services à la place du développeur, qui n'aura plus qu'à écrire la logique métier si celle-ci varie du fonctionnement classique du service (par exemple si l'on cherche à valider des données ou à vérifier des accès). PEWS vise en quelque sorte le paradigme de **Convention over configuration** que l'on retrouve dans des frameworks comme **Spring** (Java) et **Rails** (Ruby), pièce manquante de l'écosystème Web en Rust. 
 
 Dans un soucis de pérennité, il est prévu de publier la librairie sous une licence Open-Source (type **MIT**), puisqu'il nous a semblé que PEWS correspondait à un besoin de la communauté Rust de manière générale. Afin de favoriser l'utilisation au sein de ladite communauté, et de rendre l'outil le plus flexible et correct possible, il s'agit de faire en sorte que PEWS puisse faire abstraction du framework Web de l'utilisateur, auquel on ajoute des fonctionnalités. 
 
@@ -245,18 +228,37 @@ Afin de comprendre comment nous pouvons aborder ce problème et les raisons qui 
 
 Un Framework Web est une brique logicielle permettant d'exposer des fonctionnalités sur un serveur, dans le but de répondre à des requêtes utilisant le protocole de communication client-serveur HTTP (et HTTPS, si le serveur supporte l'encryption via TLS), standards du Web.
 
-Le framework a pour but d'exposer des routes, que l'on appelle communément des Endpoints. Par exemple, le site de CPE contient l'article suivant: `https://www.cpe.fr/actualite/actu-chimie-nouveau-diplome-en-chimie/`. Le endpoint qui pourrait être exposé pour accéder à cet article est le suivant: `GET /actualite/<nom_article>`. Elle se décompose de la façon suivante : 
+Le framework a pour but d'exposer des routes, que l'on appelle communément des Endpoints. Par exemple, le site de CPE contient l'article suivant: `https://www.cpe.fr/actualite/actu-chimie-nouveau-diplome-en-chimie/`. Le endpoint qui pourrait être exposé pour accéder à cet article est le suivant: `GET /actualite/<nom_article>`. Celui-ci permet de répondre à une requête précise. Pour rappel, le protocole HTTP définit une requête de la façon suivante:
 
-* `GET` est le Verbe HTTP. Il en existe 9 cf. doc mozilla, nous en utilisons communément 5 :  
+```{.svgbob name="Composition d'une Requête HTTP"}
+
++-------+ +-----+ +---------+
+| Verbe | | URI | | Version |
++-------+ +-----+ +---------+
++---------------------------+
+| Headers (en-tête d'une    |
+| requête HTTP)             |
++---------------------------+
++---------------------------+
+| Contenu de la requête     |
++---------------------------+
+
+```
+
+Dans l'exemple d'Endpoint : 
+
+* `GET` est le Verbe HTTP. Il en existe 9 cf. [@httpmozilla] nous en utilisons communément 5 :  
 	* GET - pour récupérer la définition d'une ressource
 	* POST - pour créer une ressource 
 	* PUT - pour remplacer la ressource par la nouvelle définition que l'on donne 
 	* PATCH - pour appliquer des modifications partielles sur une ressource 
 	* DELETE - pour supprimer la ressource 
-* `/actualite/` est la suite de la route, ou le chemin, auquel l'utilisateur souhaite avoir accès. 
-* `<nom_article>` est une notation qui permet d'indiquer que ce qui est à cet endroit de la route est une variable que l'on va devoir traîter côté serveur. Ici, `nom_article = actu-chimie-nouveau-diplome-en-chimie` pourraît être un identifiant qui permettrait de signaler au serveur à quel post du blog nous souhaitons accéder. 
+* `/actualite/` est la base de l'**URI[^uri]**, (ou le chemin), auquel l'utilisateur souhaite avoir accès. 
+* `<nom_article>` est une notation qui permet d'indiquer que ce qui est à cet endroit de l'URI est une **variable** que l'on va devoir traîter côté serveur. Ici, `nom_article = actu-chimie-nouveau-diplome-en-chimie`. Cela pourraît être un identifiant qui permettrait de signaler au serveur à quel post du blog nous souhaitons accéder. 
 
-Un Framework web expose donc un moyen de déclarer à quelle "route", ou plutôt "format de route" comme expliqué ci-dessus, nous pouvons répondre. En face de cette route, le serveur doit mettre une logique associée. Dans le cadre de notre exemple, il pourrait s'agir d'aller chercher le titre du blog et son contenu associé dans une base de données, de formatter le contenu, puis de retourner au client une page web valide à afficher sur son navigateur. 
+[^uri]: Uniform Resource Identifier, chaîne de caractères représentant l'adresse d'une ressource comme une page web, ou une donnée.
+
+Un Framework web expose donc un moyen de déclarer à quelle "route", ou plutôt à quelle requête HTTP comme expliqué ci-dessus, nous pouvons répondre. En face de cette route, le serveur doit mettre une logique associée. Dans le cadre de notre exemple, il pourrait s'agir d'aller chercher le titre du blog et son contenu associé dans une base de données, de formatter le contenu, puis de retourner au client une page web valide à afficher sur son navigateur. 
 
 ```{.svgbob name="UML - Diagramme de séquence montrant le fonctionnement d'un Endpoint"}
 
@@ -283,11 +285,12 @@ Le formattage de la donnée peut varier selon l'architecture du backend, comme d
 * En Web dynamique, le serveur gèrera le rendu de la page et retournera une page HTML valide,
 * En Web statique, la donnée est retournée telle qu'elle, après l'avoir **sérialisée** dans un format compréhensible par le client. 
 
-En Rust, un Framework expose un **Trait** (contrainte similaire à une interface en POO[^poo]) ou une **Structure** qu'il sait transformer en réponse HTTP à renvoyer au client. De cette façon, l'utilisateur du Framework peut retourner ses propres types dont il a défini la conversion en réponse HTTP, ce qui lui donne un contrôle total.  
+En Rust, un Framework expose un **Trait** (contrainte similaire à une interface en POO[^poo], pour en savoir plus lire "The Rust Programming Language" [@rustbook]) ou une **Structure** qu'il sait transformer en réponse HTTP à renvoyer au client. De cette façon, l'utilisateur du Framework peut retourner ses propres types dont il a défini la conversion en réponse HTTP, ce qui lui donne un contrôle total.  
 
 [^poo]: Programmation Orientée Objet, paradigme de programmation centré sur la définition et l'interaction de briques logicielles appelées objets (Wikipédia). 
 
-Un Framework Web va le plus souvent définir un moyen permettant d'accéder à des ressources internes qu'il pourra partager entre plusieurs requêtes. Par exemple: 
+Un Framework Web va le plus souvent définir un moyen permettant d'accéder à des ressources internes qu'il pourra partager entre plusieurs requêtes. Par exemple:
+
 * Un établisseur de connexion à une base de données (comme PostgreSQL), ou à un cache (comme Redis),
 * Une variable dont le contenu peut être utilisé par les routes, comme une constante par exemple, ou le contenu d'un fichier de configuration, 
 * Un accès à un système de journalisation (logs),
@@ -299,13 +302,13 @@ Pour comprendre le travail d'abstraction, de PEWS il s'agit ensuite d'étudier a
 * La réponse à un client,
 * Le partage de ressources en interne,
 
-Et ainsi de savoir comment exposer les fonctionnalités de chacun. Nous étudierons donc le fonctionnement des deux frameworks majeurs, et d'un troisième dont l'approche plus proche du paradigme de programmation fonctionnelle est intéressante. 
+Et ainsi de savoir comment exposer les fonctionnalités de chacun. Nous étudierons donc le fonctionnement des deux frameworks majeurs, et d'un troisième dont l'approche plus proche du paradigme de programmation fonctionnelle est intéressante, en particulier puisqu'elle inspire la solution vers laquelle PEWS s'est tourné. 
 
 ### Premier cas d'étude : Rocket
 
 Rocket est un framework qu'on peut considérer comme l'un des plus matures de l'écosystème Rust. C'est celui que l'entreprise utilise pour développer le backend de la solution Impero. 
 
-Selon son site internet : 
+Selon son site internet [@rocketweb] : 
 
 > Rocket est un framework web écrit avec Rust, qui permet d'écrire des applications Web rapides et sécurisées sans sacrifier la flexibilité, l'utilisabilité ni la sûreté.
 
@@ -331,9 +334,9 @@ Note pour la compréhension:
 * `format!()` est une macro formattant le contenu comme une variable de type String. 
 * Ici, pour un client qui envoie une requête sur `GET /hello/Olivier/22`, on retourne `Hello, 22 year old named Olivier!`.
 
-Comme on peut le constater, on trouve ici la définition du verbe HTTP, de la route, et de la logique interne associée, ici le formattage de la réponse en String. 
+Comme on peut le constater, on trouve ici la définition du verbe HTTP, de la route (URI), et de la logique interne associée, ici le formattage de la réponse en String. 
 
-Rocket définit un système de "Gardes de requête" pour accéder à des ressources internes. Ceux-ci permettent de tirer avantage de la sureté apportée par Rust pour écrire des services Web qui seront plus résistants aux erreurs. Dans l'exemple précédent, l'âge est de type `u8`. Si un client envoyait la requête `GET /hello/Olivier/abc`, abc n'étant pas transformable en un nombre compris entre 0 et 255, la requête doit échouer. Rocket effectue cette analyse tout seul, se rend compte que la transformation a échoué, et continue à chercher une autre route qui correspond à ce que l'utilisateur a demandé. Eventuellement, si le serveur ne définit pas de route qui correspond, il retournera le code d'erreur HTTP `404 Not Found`.
+Rocket définit un système de "Gardes de requête" pour accéder à des ressources internes. Ceux-ci permettent de tirer avantage de la sûreté apportée par Rust pour écrire des services Web qui seront plus résistants aux erreurs. Dans l'exemple précédent, l'âge est de type `u8`. Si un client envoyait la requête `GET /hello/Olivier/abc`, abc n'étant pas transformable en un nombre compris entre 0 et 255, la requête doit échouer. Rocket effectue cette analyse tout seul, se rend compte que la transformation a échoué, et continue à chercher une autre route qui correspond à ce que l'utilisateur a demandé. Eventuellement, si le serveur ne définit pas de route qui correspond, il retournera le code d'erreur HTTP `404 Not Found`.
 
 Les gardes sont appellés sous la forme d'un type que l'on donne en paramètre d'une fonction, puis grâce à ses macros procédurales, Rocket se charge d'écrire tout seul le code permettant d'appliquer le comportement de ceux-ci. 
 
@@ -341,13 +344,13 @@ Enfin, Rocket possède une grosse communauté qui a développé beaucoup d'outil
 
 ### Second cas d'étude : Actix-Web
 
-Actix-web est l'un des deux frameworks les plus populaires de l'ecosystème Rust. Pour rappel, c'est la technologie qui a été utilisée dans le cadre du projet 2. Selon son site :  
+Actix-web est l'un des deux frameworks les plus populaires de l'ecosystème Rust. Pour rappel, c'est la technologie qui a été utilisée dans le cadre du projet 2. Selon son site (cf. [@actixweb]):  
 
 > Actix est le puissant système d'Acteurs de Rust, et le Framework web le plus divertissant.
 
-Actix-web derive en effet d'Actix, le système d'acteur évoqué en projet 2. Depuis la version 2.0 du framework, il n'existe cependant plus de dépendance directe entre le framework web et Actix, cette approche ayant été jugée trop inefficace. 
+Actix-web derive en effet à l'origine d'Actix, le système d'acteur évoqué en projet 2. Depuis la version 2.0 du framework, il n'existe cependant plus de dépendance directe entre le framework web et Actix, cette approche ayant été jugée trop inefficace. Depuis, les deux frameworks partagent le nom uniquement puisque l'auteur original l'a souhaité. 
 
-Cette technologie se veut être le point de référence du secteur: actix-web est constamment dans le haut des tests de comparaison de performance (appellés benchmarks) de TechEmpower. Ces performances indécentes sont son plus grand avantage. Celui-ci compile sur la chaine stable de Rust, garantie importante pour beaucoup de professionels, et vient avec son lot de fonctionnalités très intéressantes, notamment : 
+Cette technologie se veut être le point de référence du secteur: actix-web est constamment dans le haut des tests de comparaison de performance (appellés benchmarks) de TechEmpower (cf. [@techempower]). Ces très hautes performances sont son plus grand avantage. Celui-ci compile sur la chaine stable de Rust, garantie importante pour beaucoup de professionels, et vient avec son lot de fonctionnalités très intéressantes, notamment : 
 
 * Une implémentation du protocole WebSocket,
 * Support pour HTTP SSE (similaire à WebSocket), 
@@ -355,9 +358,9 @@ Cette technologie se veut être le point de référence du secteur: actix-web es
 * Support pour HTTP/2,
 * Intégration simple avec Actix (utilisation du même éxécuteur asynchrone: Tokio)
 
-Ce dernier point est capital même si nous ne rentrerons pas dans le détail du fonctionnement de la programmation asynchrone en Rust. Des documents sont disponibles dans la bibliographie à ce sujet. Afin d'obtenir des performances toujours meilleures lui permettant de se classer régulièrement premier des tests, Actix-web rend ses réponses asynchrones. Cela veut dire que pendant que le serveur est en attente de quelque chose, comme un fichier qu'il essaie de servir à son client, ou une requête sur la base de données, il peut répondre en parallèle à un autre client, mettant les opérations à la queue dans son éxécuteur asynchrone. 
+Ce dernier point est capital même si nous ne rentrerons pas dans le détail du fonctionnement de la programmation asynchrone en Rust. Des documents sont disponibles dans la bibliographie à ce sujet (cf. Asynchronous Programming in Rust [@asyncbook]). Afin d'obtenir des performances toujours meilleures lui permettant de se classer régulièrement premier des tests, Actix-web rend ses réponses asynchrones. Cela veut dire que pendant que le serveur est en attente de quelque chose, comme un fichier qu'il essaie de servir à son client, ou une requête sur la base de données, il peut répondre en parallèle à un autre client, mettant les opérations à la queue dans son éxécuteur asynchrone. 
 
-Cette particularité complique la tâche de l'abstraction de PEWS. En effet, on ne peut pas implémenter de surcouche permettant de rendre un framework asynchrone. Il est possible en revanche de bloquer une opération asynchrone sur une opération synchrone, et donc d'en émuler le fonctionnement, mais il est évident qu'une telle méthode implique nécéssairement un sacrifice de performances et la perte de l'intérêt de l'utilisation d'un framework asynchrone. 
+Cette particularité complique la tâche de l'abstraction de PEWS. En effet, on ne peut pas implémenter de surcouche permettant de rendre un framework asynchrone. Il est toutefois possible - c'est la solution qu'utilise PEWS - d'embarquer une opération synchrone dans une opération asynchrone, et donc d'en émuler le fonctionnement. Cependant, il est évident qu'une telle méthode implique nécéssairement un sacrifice de performances et la perte de l'intérêt de l'utilisation d'un framework asynchrone. A ce jour, PEWS n'a pas de bonnes solutions pour la résolution de ce problème vu que la cible principale est Rocket. 
 
 La déclaration d'une route avec Actix-web s'effectue de la manière suivante (code simplifié pour le main): 
 
@@ -389,14 +392,14 @@ Si on voulait extraire un JSON du corps de la requête HTTP, on ajouterait en pa
 La création de route est manuelle: on monte une route sur une structure `App` en spécifiant le chemin, le verbe HTTP, et la logique à appliquer.
 
 Notons qu'actix-web version 3.0 propose également une macro procédurale pour générer ses routes comme Rocket le fait. 
+
+Enfin, il est important de noter que le focus sur actix-web est principalement dû à son énorme popularité dans l'écosystème Rust. Beaucoup d'entreprises et d'individuels refusent de travailler sur celui-ci car le framework s'appuie énormément sur l'utilisation d'`unsafe`[^unsafe], de manière déraisonnée, et qu'historiquement, il a posé problème dans la communauté. 
  
+[^unsafe]: Rust est un langage qui force un programme a être sécurisé et enlève la possibilité de travailler avec des valeurs pouvant causer des comportements indéfinis. `unsafe` permet d'enlever certaines restrictions pour des raisons de performance, mais il faut alors garantir soi-même la sécurité du code. 
+
 ### Troisième cas d'étude : Warp
 
-Warp est un framework montant de l'écosystème Rust qui a beaucoup gagné en popularité ces derniers temps. Son approche intéréssante sur la création de Web-Services en fait un bon candidat à l'étude de l'abstraction. Selon sa page github : 
-
-> Warp est un framework super-facile et composable pour des serveurs Web à la vitesse de la lumière
-
-Ce framework qui dérive du projet Hyper, (une implémentation standard, correcte et performante du protocole HTTP) compile sur la chaîne stable de Rust. Son approche fortement inspirée du paradigme de programmation fonctionnelle est basée sur son système de Filtre. 
+Warp est un framework montant de l'écosystème Rust qui a beaucoup gagné en popularité ces derniers temps. Son approche intéréssante sur la création de Web-Services en fait un bon candidat à l'étude de l'abstraction. Selon sa page github (cf. bibliographie : [@warpweb]) :
 
 `Filtre` est un trait scellé (il est directement implémenté uniquement par les structures proposées par Warp). Un filtre possède un type d'Extraction, et un type de Rejection, et le point important est qu'un filtre est **composable**, c'est à dire que l'on peut notamment : 
 
@@ -735,7 +738,46 @@ Dans la première itération, on prenait une structure `Service<S, M>` avec deux
 
 # Gestion de projet, planification et spécification de nouvelles fonctionnalités 
 
-Le travail de cette année 3 a également été la participation à la gestion de projet au sein de l'entreprise. Dans la suite du document, nous évoquerons le travail de spécification et de planification qui a été effectué au sein d'Impero. D'abord dans le cadre de PEWS, puis en partie 3 dans le cadre du développement de nouvelles fonctionnalités. 
+Le travail de cette année 3 a également été la participation à la gestion de projet au sein de l'entreprise. Dans la suite du document, nous évoquerons le travail de spécification et de planification qui a été effectué au sein d'Impero. D'abord dans le cadre de PEWS, puis dans le cadre du développement de nouvelles fonctionnalités. 
+
+## Méthode de travail agile en remote
+
+Impero est une organisation jeune et dynamique, basé sur un modèle de type start-up ; elle applique une méthode de gestion de projet moderne et standard de l'industrie : la méthode **agile**. Si l'entreprise emprunte certains principes et met en place la plupart des artéfacts agiles, elle ne définit pas son fonctionnement par une méthode précise comme **Scrum** ou **Kanban**. Celle-ci s'organise de la façon suivante :
+
+* Des réunions nommées "**Dev Meeting**" se tiennent **tous les lundis et mercredis à 10h**, elles servent à la fois de **rétrospection** sur la semaine passée, et de **planning** pour la semaine à suivre, permettant au passage de vérifier que personne n'est bloqué sur le travail d'un autre.
+* Un outil de **suivi de tâches** est utilisé quasi-quotidiennement par toute l'équipe. Il s'agit de Clubhouse, qui offre certains avantages comme la possibilité d'être intégré à Slack et à Bitbucket pour faciliter le flux de travail de tout un chacun. A l'heure actuelle, le CTO de l'entreprise gère la rédaction de la majorité des tickets, nous verrons par la suite que ceci est en train de changer. 
+* L'évolution du logiciel est menée par l'un des co-fondateurs, Morten Balle, Product Owner du logiciel Impero, qui veille à ce que le produit reste dans sa vision et atteigne l'objectif définit par la stratégie d'entreprise.
+
+Le processus de développement suit le schéma suivant  
+
+```{.svgbob name="Cycle de développement d'une fonctionnalité chez Impero"}
+                                          |
+           Phase de rafinement            |               Phase de développement
+                                          |
+ +----------------+     +---------------+ | +----------------+   +--------+     Validation
+ | Identification |---->| Spécification |-+-| Développement  |-->| Revue  |-----------------+
+ +-+--------------+     +-+-------------+ | +----------------+   ++-------+                 |
+   |                      |               |                       |                         |
+  "Refinement meeting"   Rédaction du     |             Chaque développeur peut             |
+  (Slack - MS Teams)     (Clubhouse)      |             relire le code d'une personne       |
+                                          |             et demander des changements pour    |
+                                          |             améliorer la qualité de celui-ci    |
+                                          |                                                 |
+   +--------------------------------------+-------------------------------------------------+
+   |                                      |
+   |      Phase de pré-production         |                                
+   v                                                +---------------------+
+ +-+--------------+      +------+    Validation     |  Fonctionnalité en  |
+ | Pré-production |----->| Test |---------+-------->|      production     |
+ +----------------+      +------+         |         +---------------------+
+  |                                       |
+ La fonctionnalité est mise à             |    La fonctionnalité est  
+ disposition sur le serveur "staging".    |    utilisable par les clients d'Impero
+ Elle est prête à être testée             |
+                                          |
+```
+
+La phase de rafinement correspond à l'identification du problème, suite à un besoin remonté par un client ou une volonté d'évolution du logiciel. Au cours de nombreuses réunions, appellées **refinement meeting**, le besoin client est analysé. Elle a lieu avec le Product Owner de l'entreprise qui a la vision du produit, le directeur artistique qui garde en tête l'experience utilisateur de l'application, et le directeur technique de qui connaît l'architecture de la solution et estime la faisabilité des demandes. On cherche à définir une fonctionnalité qui comblera le besoin identifié de la façon la plus générique possible (en évitant par exemple d'avoir une fonctionnalité qui ne servira qu'à un seul client).
 
 ## Gestion d'un projet de recherche 
 
@@ -843,6 +885,8 @@ Finalement, on pourra utiliser des outils de gestion de projet classique comme l
 
 Cette partie de planification est encore en cours de réalisation au moment de l'écriture de ce rapport, et constitue la suite logique en matière de gestion de projet. 
 
+\newpage
+
 # Conclusion 
 
 A l'issue de cette formation en alternance, il convient de faire le point sur les compétences acquises au cours des 3 années, en les appuyant sur des exemples d'application précis au sein de l'entreprise qui m'a embauché. 
@@ -851,5 +895,6 @@ Par la réalisation en **autonomie** d'un projet de recherche complexe incluant 
 
 Le travail a été globalement agréable grâce à l'organisation au sein de l'entreprise. J'ai en effet pu participer à **toutes les tâches de développement** d'un logiciel, y compris celles de **gestion de projet** allant jusqu'à la **rédaction de tickets**. Par la suite, je serai amené à travailler sur la planification et espère continuer l'expérimentation que l'entreprise mène sur la **décentralisation du processus d'amélioration du logiciel**, que j'ai découvert au long de cette 3ème année et apprécie particulièrement. 
 
-La découverte et l'adaptation 
+\newpage 
 
+# Bibliographie
