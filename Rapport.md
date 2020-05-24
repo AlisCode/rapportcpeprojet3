@@ -4,11 +4,11 @@ author:
     - \newline Grégory Obanos - Maître d'apprentissage 
     - \newline Marion Foare - Tutrice école
 date: Année universitaire 2019/2020
-title: Abstraction de Framework Web et développement agile en remote 
-subtitle: Abstracting Web Frameworks and remote agile development 
+title: Abstraction de framework Web et développement agile en remote 
+subtitle: Abstracting Web frameworks and remote agile development 
 caption: Projet 3 - Informatique et Réseaux de Communication (IRC) 
 lang: "fr-FR"
-keywords: [Rust, Web-Services, REST, Framework Web, Open-Source]
+keywords: [Rust, Web-Services, REST, framework Web, Open-Source]
 titlepage: true
 logo: img/LogoAll.png
 logo-width: 550
@@ -26,11 +26,11 @@ abstract: Au cours de cette troisième année d'alternance, j'ai travaillé pour
 
 **Remerciements**: 
 
-J'adresse mes premiers remerciements à Monsieur Grégory OBANOS, maître d'apprentissage durant la majorité de ma formation, pour le soutien dont il a fait preuve à mon égard. Son expérience et sa sympathie ont fait de ces 3 années l'expérience enrichissante qu'elle a été. 
+J'adresse mes premiers remerciements à Monsieur Grégory Obanos, maître d'apprentissage durant la majorité de ma formation, pour le soutien dont il a fait preuve à mon égard. Son expérience et sa sympathie ont fait de ces 3 années l'expérience enrichissante qu'elle a été. 
 
 \
 
-Je souhaite remercier Messieurs Emmanuel SURLEAU et Arnaud DE BOSSOREILLE pour leur suivi sur l'année, les conseils qu'ils m'ont prodigué, la confiance qu'ils m'ont accordé sur le projet de recherche et la relecture du présent rapport.  
+Je souhaite remercier Messieurs Emmanuel Surleau et Arnaud De Bossoreille pour leur suivi sur l'année, les conseils qu'ils m'ont prodigué, la confiance qu'ils m'ont accordé sur le projet de recherche et la relecture du présent rapport.  
 
 \
 
@@ -42,7 +42,7 @@ Finalement, je remercie l'ensemble de mes collègues chez Impero avec qui j'ai b
 
 ## Société Impero 
 
-**Impero A/S** est une société **Danoise** basée à **Aarhus**, dont l'activité réside dans le développement d'une solution logicielle de type **Software As A Service** (SAAS) permettant à ses clients de s'assurer du bon suivi interne en ce qui concerne la **compliance**, c'est à dire les **obligations légales** de celles-ci. Par sa fléxibilité, l'outil permet notamment de suivre : 
+**Impero A/S** est une société **Danoise** basée à **Aarhus**, dont l'activité réside dans le développement d'une solution logicielle de type **Software As A Service** (SAAS) permettant à ses clients de s'assurer du bon suivi interne en ce qui concerne la *compliance*, c'est à dire leurs **obligations légales**. Par sa fléxibilité, l'outil permet notamment de suivre : 
 
 * La déclarations des taxes,
 * La **gestion des risques** liés à l'activité de l'entreprise, 
@@ -55,7 +55,7 @@ Finalement, je remercie l'ensemble de mes collègues chez Impero avec qui j'ai b
 	* Processus de recrutement
 * L'application correcte de la **RGPD[^rgpd]** 
 
-L'entreprise a été crée en 2014. Elle développe un unique produit, qui lui rapporte sur l'année 2019 un chiffre d'affaires de plus de 7.500.000 DKK (soit 1.000.000 EUR). Elle est en forte croissance, puisque malgré les circonstances économiques actuelles[^covid], Impero affiche un CA prévisoire de 8.600.000 DKK (1.460.0000 EUR) mi-Q2 2020, soit une augmentation de plus de 100% sur moins de la moitié du temps de l'exercice précédent. 
+L'entreprise a été créée en 2014. Elle développe un unique produit, qui lui rapporte sur l'année 2019 un chiffre d'affaires (CA) de plus de 7.500.000 DKK (soit 1.000.000 EUR). Elle est en forte croissance, puisque malgré les circonstances économiques actuelles[^covid], Impero affiche un CA prévisoire de 8.600.000 DKK (1.460.0000 EUR) mi-Q2 2020, soit une augmentation de plus de 100% sur moins de la moitié du temps de l'exercice précédent. 
 
 ![Logo de l'entreprise Impero](img/LogoImpero.png){width="175px"}
 
@@ -77,14 +77,14 @@ Afin de comprendre l'intérêt du logiciel, il faut d'abord voir comment il rés
 
 ![Capture d'écran Impero - Carte des risques](img/ScreenImpero1.png){width="95%"}
 
-Ceci est la **Risk Map**, ou "Carte des risques". Elle permet de lister certains risques auxquels l'entreprise cliente doit faire face. Par exemple, si l'entreprise X produit des bateaux, elle pourrait avoir un fournisseur qui n'a pas pu honorer sa commande, ce qui implique des risques de retard de production et/ou de livraison pour l'entreprise X. Il faut donc mener des actions pour en minimiser l'impact  économique. Comme on peut le voir, un risque est placé sur la carte par deux caractéristiques : 
+Ceci est la **carte de risques**, ou "Risk Map". Elle permet de lister certains risques auxquels l'entreprise cliente doit faire face. Par exemple, si l'entreprise X produit des bateaux, elle pourrait avoir un fournisseur qui n'a pas pu honorer sa commande, ce qui implique des risques de retard de production et/ou de livraison pour l'entreprise X. Il faut donc mener des actions pour en minimiser l'impact  économique. Comme on peut le voir, un risque est placé sur la carte par deux caractéristiques : 
 
 * Son **impact** (s'il s'avère que l'évènement a réellement eu lieu, *e.g.* le fournisseur n'a pas livré sa commande, au combien est-ce grave pour l'entreprise sur une échelle de 1 à 5), et 
 * Sa **probabilité** (combien de chances cet évènement a-t-il d'arriver, sur une échelle de 1 à 5). 
 
-Il va de soi que plus un **risque inhérent** à l'entreprise a un fort impact et une grande probabilité d'arriver, plus c'est un risque critique pour celle-ci. Il convient alors de mettre en place un processus face à celui-ci pour en limiter les effets négatifs. On parle alors d'**atténuation de risque**, et le risque une fois atténué est dénommé "risque résiduel", qu'on peut observer en cliquant sur le bouton de séléction en haut à droite. Lorsque l'on cherche à appliquer un processus en face d'un risque, c'est là qu'interviennent les **contrôles** et les **programmes de contrôle**.
+Il va de soi que plus un **risque inhérent** à l'entreprise a un fort impact et une grande probabilité d'arriver, plus c'est un risque critique pour celle-ci. Il convient alors de mettre en place un processus face à celui-ci pour en limiter les effets négatifs. On parle alors d'**atténuation de risque**, et le risque une fois atténué est dénommé "risque résiduel", qu'on peut observer en cliquant sur le bouton de sélection en haut à droite. Lorsque l'on cherche à appliquer un processus en face d'un risque, c'est là qu'interviennent les **contrôles** et les **programmes de contrôle**.
 
-Un **contrôle** est une partie d'un processus que l'on met en oeuvre. L'outil Impero permet à l'utilisateur de personnaliser ceux-ci, dans le but qu'il puisse coller au mieux à son processus interne. Concrètement, un contrôle est un **formulaire personnalisé** envoyé à un utilisateur. Il peut contenir : 
+Un **contrôle** est une partie d'un processus que l'on met en œuvre. L'outil Impero permet à l'utilisateur de personnaliser ceux-ci, dans le but qu'il puisse coller au mieux à son processus interne. Concrètement, un contrôle est un **formulaire personnalisé** envoyé à un utilisateur. Il peut contenir : 
 
 * Des champs de textes, qu'ils soient numériques ou non.
 * Des réponses par bouton radio (une seule réponse possible parmis n choix)
@@ -92,7 +92,7 @@ Un **contrôle** est une partie d'un processus que l'on met en oeuvre. L'outil I
 * Un choix via un dropdown (une seule réponse possible parmis n choix)
 * Des fichiers associés (PDF comme un bon de livraison, Image comme une photo témoignant du bon déroulé de l'opération)
 
-Chaque utilisateur de l'application (et donc membre de l'entreprise cliente d'Impero) peut être assigné au remplissage d'un contrôle, générant alors un **résultat de contrôle**, ou "control result". Celui-ci sera stocké sur les serveurs d'Impero, et pourra être relu *a posteriori* par un utilisateur ayant les droits adéquats, afin qu'il puisse attester à tout moment de la réalisation correcte de toutes les étapes du processus. Optionellement, on peut paramétrer des **contrôles récurrents**. Par exemple, les paies sont à gérer tous les mois. On peut assigner tous les employés au remplissage du contrôle "Saisie des congés et heures supplémentaires" tous les 20 du mois, ce qui permet d'éviter un suivi individuel autrement plus fastidieux. On pourra également appliquer des rappels sur ces contrôles (X heures ou Y jours avant une date, par exemple). 
+Chaque utilisateur de l'application (et donc membre de l'entreprise cliente d'Impero) peut être assigné au remplissage d'un contrôle, générant alors un **résultat de contrôle**, ou "control result". Celui-ci sera stocké sur les serveurs d'Impero, et pourra être relu *a posteriori* par un utilisateur ayant les droits adéquats, afin qu'il puisse attester à tout moment de la réalisation correcte de toutes les étapes du processus. Optionellement, on peut paramétrer des **contrôles récurrents**. Par exemple, on peut assigner tous les employés au remplissage du contrôle "Saisie des congés et heures supplémentaires" tous les 20 du mois, ce qui permet d'éviter un suivi individuel autrement plus fastidieux. On pourra également appliquer des rappels sur ces contrôles (X heures ou Y jours avant une date, par exemple). 
 
 La figure suivante montre le contrôle que l'entreprise Impero utilise pour le suivi des congés de ses employés. Chaque personne notera ses jours pris pendant la période précédente, et ses déplacements si applicable. La confiance est de mise : aucun contrôle individuel des horaires n'est mis en place chez Impero. Chacun sait quel objectif est à remplir dans la semaine, et il appartient à la personne d'arranger ses horaires de manière adéquate - sans toutefois s'exposer à trop de pression.  
 
@@ -144,32 +144,32 @@ L'entreprise est composée de 14 collaborateurs dont 6 ont des compétences tech
 
 ```
 
-Le travail à distance (pas seulement en contexte de pandémie mondiale!) a été intégré dans la culture de l'entreprise depuis quelques années. Chaque employé est autorisé au télétravail, ce qui permet à celle-ci de ne pas s'encombrer de recrutements conditionnés par la situation géographique des candidats. Le recrutement est donc parfaitement équitable puisqu'il s'effectue donc sur les **compétences** du candidat, et non sur d'autres critères arbitraires. 
+Le travail à distance (pas seulement en contexte de pandémie mondiale !) a été intégré dans la culture de l'entreprise depuis quelques années. Chaque employé est autorisé au télétravail, ce qui permet à celle-ci de ne pas s'encombrer de recrutements conditionnés par la situation géographique des candidats. Le recrutement est donc parfaitement équitable puisqu'il s'effectue donc sur les **compétences** du candidat, et non sur d'autres critères arbitraires. 
 
 L'équipe de développement est intégralement décentralisée (mais travaille sur le même fuseau horaire tout de même), avec trois ingénieurs en France, un en Allemagne, un en Hongrie, et le CTO[^cto] au siège de l'entreprise, à Aarhus. 
 
-A titre personnel, cette méthode de travail dite "**remote**" (comprendre: à distance) était très nouvelle, mais j'y ai pris goût pour la liberté d'action qu'elle offre, bien qu'elle implique d'avoir une organisation correcte de son temps afin de ne pas mixer vie professionelle et personnelle.  
+A titre personnel, cette méthode de travail dite "**remote**" (comprendre : à distance) était très nouvelle, mais j'y ai pris goût pour la liberté d'action qu'elle offre, bien qu'elle implique d'avoir une organisation correcte de son temps afin de ne pas mixer vie professionelle et personnelle.  
 
 [^cto]: Chief Technical Officer, Directeur Technique.
 
 
 ## Environnement technique
 
-L'entreprise Impero déploie sa solution Web sur un serveur à l'aide d'`Ansible`, un outil open-source permettant la mise en production, qui est gérée manuellement par le CTO et le lead développeur. 
+L'entreprise Impero déploie sa solution Web sur un serveur à l'aide d'**Ansible**, un outil open-source permettant la mise en production, qui est gérée manuellement par le CTO et le lead développeur. 
 
 L'architecture du logiciel est composée d'un serveur, que nous appelerons **"backend"** et qui héberge une application Web, que nous appelerons **"frontend"**. 
 
-Le backend est implémenté avec le langage de programmation **Rust**, qui vise à permettre à tout développeur de fournir des programmes sécurisés et performants, tirant avantage des technologies modernes (comme le **multithreading**) tout en leur offrant beaucoup d'outils pour se faciliter la tâche. Rust est un langage dit "système" capable de cibler toutes les plateformes allant d'**Android** au **Web** (via **WebAssembly**) en passant par les OS plus conventionnels, jusqu'à l'**informatique embarquée**. Celui-ci est **multi-paradigme** (on peut s'en servir comme d'un language fonctionnel, impératif, voire même orienté objet sur certains aspects). Son **compilateur strict** élimine une bonne partie des erreurs avant qu'elles n'arrivent en production grâce au **typage fort**, et force une architecture propre des structures de données grâce à son système d'**ownership** qui empêche d'avoir des références mutables sur un même élément à plusieurs endroits dans le code. Pour en savoir plus, consulter "The Rust Programming Language" [@rustbook]. 
+Le backend est implémenté avec le langage de programmation **Rust**, qui vise à permettre à tout développeur de fournir des programmes sécurisés et performants, tirant avantage des technologies modernes (comme le **multithreading**) tout en leur offrant beaucoup d'outils pour se faciliter la tâche. Rust est un langage dit "système" capable de cibler toutes les plateformes allant d'**Android** au **Web** (via **WebAssembly**) en passant par les OS plus conventionnels, jusqu'à l'**informatique embarquée**. Celui-ci est **multi-paradigme** (on peut s'en servir comme d'un langage fonctionnel, impératif, voire même orienté objet sur certains aspects). Son **compilateur strict** élimine une bonne partie des erreurs avant qu'elles n'arrivent en production grâce au **typage fort**, et force une architecture propre des structures de données grâce à son système d'**ownership** qui empêche d'avoir des références mutables sur un même élément à plusieurs endroits dans le code. Pour en savoir plus, consulter "The Rust Programming Language" [@rustbook]. 
 
 ![Logo du langage Rust](img/LogoRust.png){width="150px"}
 
 Dans le cadre du logiciel Impero, le serveur Web est implémenté à l'aide de Rocket, un framework web très complet dont nous détaillerons le fonctionnement plus tard. 
 
-Le frontend est implémenté avec **TypeScript**, un surensemble de JavaScript apportant plus de garanties statiques[^staticguarantees] permettant également de faire moins d'erreur et de rendre le refactoring plus aisé. Le Framework **React** est utilisé afin de se faciliter la tâche et de rendre le tout maintenable. Enfin, le framework d'interface **antd** sert de cadre à l'application pour lui donner une touche moderne et un peu d'esthétisme. 
+Le frontend est implémenté avec **TypeScript**, un surensemble de JavaScript apportant plus de garanties statiques[^staticguarantees] permettant également de faire moins d'erreur et de rendre le refactoring plus aisé. Le framework **React** est utilisé afin de se faciliter la tâche et de rendre le tout maintenable. Enfin, le framework d'interface **antd** sert de cadre à l'application pour lui donner une touche moderne et un peu d'esthétisme. 
 
 ![Logo du langage TypeScript (TS)](img/LogoTS.png){width="150px"}
 
-L'entreprise laisse carte blanche à ses employés en ce qui concerne leur environnement de travail personnel : un budget est donné à chacun pour qu'il/elle achète un ordinateur qu'il/elle garde pendant son contrat. Ainsi, le collaborateur est libre de choisir son système d'exploitation, l'IDE[^ide] qu'il utilise, et ainsi d'avoir un poste de travail vraiment personnel. Cette particularité implique cependant de standardiser l'environnement de développement, afin d'éviter les problèmes liés aux différentes plateformes. **Docker**, le système de containerisation devenu standard de l'industrie, est donc tout indiqué. Ce dernier offre également le bénéfice de pouvoir travailler facilement avec des systèmes à l'installation complexe et sensible aux erreurs comme **Redis** et **PostgreSQL**, sur lesquels le backend s'appuie. 
+L'entreprise laisse carte blanche à ses employés en ce qui concerne leur environnement de travail personnel : un budget est donné à chacun pour acheter un ordinateur gardé pendant son contrat. Ainsi, le collaborateur est libre de choisir son système d'exploitation, l'IDE[^ide] utilisé, et ainsi d'avoir un poste de travail vraiment personnel. Cette particularité implique cependant de standardiser l'environnement de développement, afin d'éviter les problèmes liés aux différentes plateformes. **Docker**, le système de containerisation devenu standard de l'industrie, est donc tout indiqué. Ce dernier offre également le bénéfice de pouvoir travailler facilement avec des systèmes à l'installation complexe et sensible aux erreurs comme **Redis** et **PostgreSQL**, sur lesquels le backend s'appuie. 
 
 ![Logo de Docker](img/LogoDocker.png){width="150px"}
 
@@ -180,7 +180,7 @@ Afin de garder une trace des différentes versions du logiciel et de permettre l
 
 ## Problématiques en tant qu'Ingénieur Développement
 
-L'entreprise cherchant à devenir de plus en plus importante, elle a augmenté sa capacité de production. Le nombre de développeurs est passé de 3 à 6 sur l'année 2019. Cela implique des tâches de gestion plus complexes, notamment dans la rédaction des spécifications techniques décrites plus tôt. A cet effet, le processus de spécification est en train d'évoluer pour permettre aux DevOps[^devops] d'être impliqué dans la rédaction de tickets. J'ai donc été amené à participer - voire animer par moment - des **refinement meeting**. Nous développerons cela dans la partie **Développement et spécifications de nouvelles fonctionnalités**.
+Dans l'optique de s'agrandir, l'entreprise a augmenté sa capacité de production. Le nombre de développeurs est passé de 3 à 6 sur l'année 2019. Cela implique des tâches de gestion plus complexes, notamment dans la rédaction des spécifications techniques décrites plus tôt. A cet effet, le processus de spécification est en train d'évoluer pour permettre aux DevOps[^devops] d'être impliqué dans la rédaction de tickets. J'ai donc été amené à participer - voire animer par moment - des **refinement meeting**. Nous développerons cela dans la partie **Développement et spécifications de nouvelles fonctionnalités**.
 
 [^devops]: Développeurs Opérationnels, terme générique pour un développeur également en charge des infrastructures réseaux.
 
@@ -190,62 +190,64 @@ Toujours dans sa politique d'expansion, Impero a cherché à rentrer en partenar
 * Documenter celui-ci 
 * Faire en sorte qu'il respecte au maximum les standards de l'industrie du logiciel, dans le cas présent, une API REST
 
-L'objectif du projet de recherche qui a été mené était de faciliter l'écriture et le maintien de nouveaux services avancés exposés directement au client. 
+L'objectif du projet de recherche qui a été mené était de faciliter l'écriture et le maintien de nouveaux services complexes, qui seront directement exposés au client. 
 
 > Note: Le développement du projet de recherche est actuellement (Mai 2020) à l'arrêt puisque toutes les ressources de développement de l'entreprise sont mises à contribution pour l'écriture des fonctionnalités promises aux clients, mais ce projet correspond à une période de travail allant de Septembre 2019 à Mars 2020 qu'il convient de développer dans ce rapport.  
 
 [^api]: Application Programming Interface, ou interface logicielle permettant d'intéragir avec notre système.
 
-# Recherche - Couche d'abstraction pour Framework Web
+# Recherche - Couche d'abstraction pour framework Web
 
 ## Contexte et objectif 
 
 Afin de résoudre la problématique d'ouverture de l'API que nous venons d'énoncer, il est important de comprendre le contexte dans lequel le backend est développé, et quels objectifs ce projet de recherche se propose d'atteindre. 
 
-Le travail s'articule autour de l'outil Diesel, déjà utilisé en année deux (cf. [@rapport2]) que nous qualifierons d'ORM[^orm]. Cette librairie ajoute de la sureté lorsque l'on travaille avec du SQL[^sql], uniquement sur les systèmes de gestion de base de données relationnelles, au prix de l'écriture d'un code un peu plus verbeux. Cette sureté se traduit concrètement de la façon suivante : 
+Le travail s'articule autour de l'outil Diesel, déjà utilisé en année deux (cf. Rapport 2, [@rapport2]) que nous qualifierons d'ORM[^orm]. Cette librairie ajoute de la sureté lorsque l'on travaille avec du SQL[^sql], uniquement sur les systèmes de gestion de base de données relationnelles, au prix de l'écriture d'un code un peu plus verbeux. Cette sureté se traduit concrètement de la façon suivante : 
 
-* La requête SQL que l'on écrit est vérifiée **statiquement** (comprendre: à la compilation), et est garantie d'être valide. Il n'y a **aucune** possibilité de faire une faute de frappe, de requêter des champs d'une autre table par mégarde, mais surtout lorsqu'une modification est apportée à la structure de la base de données, si la requête devenait invalide, le compilateur en avertirait aussitôt le programmeur ce qui représente un gain de temps et de sécurité non-négligeable. 
+* La requête SQL que l'on écrit est vérifiée **statiquement** (comprendre : à la compilation), et est garantie d'être valide. Il n'y a **aucune** possibilité de faire une faute de frappe, de requêter des champs d'une autre table par mégarde, mais surtout lorsqu'une modification est apportée à la structure de la base de données, si la requête devenait invalide, le compilateur en avertirait aussitôt le programmeur ce qui représente un gain de temps et de sécurité non-négligeable. 
 * Les structures de données qu'un programmeur écrit sont également vérifiées pour qu'elle puisse accueillir le résultat d'une requête, sans quoi le compilateur bloquera l'éxécution également. 
 
-![Logo du Framework Diesel](img/LogoDiesel.png){width="150px"}
+![Logo du framework Diesel](img/LogoDiesel.png){width="150px"}
 
 Comme indiqué précédemment, cet outil a un prix: les structures et les requêtes à écrire sont plutôt verbeuses, et écrire plus de code amènera immédiatement des problèmes de maintenabilité. De plus, il faut également écrire le code de glue entre le serveur HTTP et l'outil Diesel, afin de mettre des actions en face d'une requête HTTP reçue par le serveur. 
 
-Cette glue s'appelle un Service. Il s'agit d'un groupe d'Endpoints (notion que nous définirons par la suite), qui permet de définir quelles intéractions un client peut avoir avec le serveur. Un Service applique une logique qui est en général souvent la même (ou très similaire), mais qui agit sur des sources de données différentes, et qui peut varier selon ce que la logique métier implique. Par exemple, remplacer la définition en base de données d'un Utilisateur ou d'un Contrôle (pour le cas d'Impero) appliquera une logique très similaire, où la variante est la table que l'on modifie et le contrôle d'accèes. En d'autres termes, très peu de code change, et celui-ci est en général fastidieux à écrire et peut ammener des erreurs. 
+Cette glue s'appelle un Service. Il s'agit d'un groupe d'endpoints (notion que nous définirons par la suite), qui permet de définir quelles interactions un client peut avoir avec le serveur. Un Service applique une logique qui est en général souvent la même (ou très similaire), mais qui agit sur des sources de données différentes, et qui peut varier selon ce que la logique métier implique. Par exemple, remplacer la définition en base de données d'un Utilisateur ou d'un Contrôle (pour le cas d'Impero) appliquera une logique très similaire, où la variante est la table que l'on modifie et le contrôle d'accès. En d'autres termes, très peu de code change, et celui-ci est en général fastidieux à écrire et peut ammener des erreurs. 
 
-Le projet de recherche s'appelle **PEWS**. C'est un anagramme récursif pour **PEWS: Easy Web Services**. Son but est de faciliter, voire retirer la nécéssité d'écrire cette glue, ce qui permet d'exposer l'interface en écrivant moins de code, et donc d'obtenir une meilleure maintenabilité, et de la rapidité de développement sans pour autant sacrifier les performances de Rust ni la sûreté de Diesel. Il faut voir PEWS comme **une surcouche à un framework Web**, qui aura pour tâche d'écrire l'intégration des Services à la place du développeur, qui n'aura plus qu'à écrire la logique métier si celle-ci varie du fonctionnement classique du service (par exemple si l'on cherche à valider des données ou à vérifier des accès). PEWS vise en quelque sorte le paradigme de **Convention over configuration** que l'on retrouve dans des frameworks comme **Spring** (Java) et **Rails** (Ruby), pièce manquante de l'écosystème Web en Rust. 
+Le projet de recherche s'appelle **PEWS**. C'est un anagramme récursif pour **PEWS : Easy Web Services**. Son but est de faciliter, voire retirer la nécessité d'écrire cette glue, ce qui permet d'exposer l'interface en écrivant moins de code, et donc d'obtenir une meilleure maintenabilité, et de la rapidité de développement sans pour autant sacrifier les performances de Rust ni la sûreté de Diesel. Il faut voir PEWS comme **une surcouche à un framework Web**, qui aura pour tâche d'écrire l'intégration des Services à la place du développeur, qui n'aura plus qu'à écrire la logique métier si celle-ci varie du fonctionnement classique du service (par exemple si l'on cherche à valider des données ou à vérifier des accès). PEWS vise en quelque sorte le paradigme de **Convention over configuration** que l'on retrouve dans des frameworks comme **Spring** (Java) et **Rails** (Ruby), pièce manquante de l'écosystème Web en Rust. 
 
 Dans un soucis de pérennité, il est prévu de publier la librairie sous une licence Open-Source (type **MIT**), puisqu'il nous a semblé que PEWS correspondait à un besoin de la communauté Rust de manière générale. Afin de favoriser l'utilisation au sein de ladite communauté, et de rendre l'outil le plus flexible et correct possible, il s'agit de faire en sorte que PEWS puisse faire abstraction du framework Web de l'utilisateur, auquel on ajoute des fonctionnalités. 
 
-Afin de comprendre comment nous pouvons aborder ce problème et les raisons qui ont poussé vers l'architecture de PEWS, il faut d'abord appréhender le fonctionnement d'un framework web.
+Afin de comprendre comment nous pouvons aborder ce problème et les raisons qui ont poussées vers l'architecture de PEWS, il faut d'abord appréhender le fonctionnement d'un framework web.
 
 [^orm]: Object Relational Mapping, couche logicielle permettant de faciliter l'intéraction avec la base de données.
-[^sql]: Structured Query Language, language utilisé pour effectuer des requêtes sur des bases de données relationelles.
+[^sql]: Structured Query Language, langage utilisé pour effectuer des requêtes sur des bases de données relationelles.
 
 ## Etat de l'art
 
-### Qu'est ce qu'un Framework Web
+### Définition d'un framework web
 
-Un Framework Web est une brique logicielle permettant d'exposer des fonctionnalités sur un serveur, dans le but de répondre à des requêtes utilisant le protocole de communication client-serveur HTTP (et HTTPS, si le serveur supporte l'encryption via TLS), standards du Web.
+Un framework web est une brique logicielle permettant d'exposer des fonctionnalités sur un serveur, dans le but de répondre à des requêtes utilisant le protocole de communication client-serveur HTTP (et HTTPS, si le serveur supporte l'encryption via TLS), standards du Web.
 
-Le framework a pour but d'exposer des routes, que l'on appelle communément des Endpoints. Par exemple, le site de CPE contient l'article suivant: `https://www.cpe.fr/actualite/actu-chimie-nouveau-diplome-en-chimie/`. Le endpoint qui pourrait être exposé pour accéder à cet article est le suivant: `GET /actualite/<nom_article>`. Celui-ci permet de répondre à une requête précise. Pour rappel, le protocole HTTP définit une requête de la façon suivante:
+Le framework a pour but d'exposer des routes, que l'on appelle communément des endpoints. Par exemple, le site de CPE contient l'article suivant: `https://www.cpe.fr/actualite/actu-chimie-nouveau-diplome-en-chimie/`. Le endpoint qui pourrait être exposé pour accéder à cet article est le suivant: `GET /actualite/<nom_article>`. Celui-ci permet de répondre à une requête précise. Pour rappel, le protocole HTTP définit une requête de la façon suivante:
 
-```{.svgbob name="Composition d'une Requête HTTP"}
+```{.svgbob name="Composition d'une Requête HTTP" width="400px"}
 
 +-------+ +-----+ +---------+
 | Verbe | | URI | | Version |
 +-------+ +-----+ +---------+
+
 +---------------------------+
 | Headers (en-tête d'une    |
 | requête HTTP)             |
 +---------------------------+
+
 +---------------------------+
 | Contenu de la requête     |
 +---------------------------+
 
 ```
 
-Dans l'exemple d'Endpoint : 
+Dans l'exemple d'endpoint : 
 
 * `GET` est le Verbe HTTP. Il en existe 9 cf. [@httpmozilla] nous en utilisons communément 5 :  
 	* GET - pour récupérer la définition d'une ressource
@@ -258,11 +260,11 @@ Dans l'exemple d'Endpoint :
 
 [^uri]: Uniform Resource Identifier, chaîne de caractères représentant l'adresse d'une ressource comme une page web, ou une donnée.
 
-Un Framework web expose donc un moyen de déclarer à quelle "route", ou plutôt à quelle requête HTTP comme expliqué ci-dessus, nous pouvons répondre. En face de cette route, le serveur doit mettre une logique associée. Dans le cadre de notre exemple, il pourrait s'agir d'aller chercher le titre du blog et son contenu associé dans une base de données, de formatter le contenu, puis de retourner au client une page web valide à afficher sur son navigateur. 
+Un framework web expose donc un moyen de déclarer à quelle "route", ou plutôt à quelle requête HTTP comme expliqué ci-dessus, nous pouvons répondre. En face de cette route, le serveur doit mettre une logique associée. Dans le cadre de notre exemple, il pourrait s'agir d'aller chercher le titre du blog et son contenu associé dans une base de données, de formatter le contenu, puis de retourner au client une page web valide à afficher sur son navigateur. 
 
-```{.svgbob name="UML - Diagramme de séquence montrant le fonctionnement d'un Endpoint"}
+```{.svgbob name="UML - Diagramme de séquence montrant le fonctionnement d'un endpoint"}
 
-Base de données           Framework Web                           Client 
+Base de données           framework Web                           Client 
      _                          _                                    _
      |                          |    GET / actualite / actuXXX       |
      |                        +-+<-----------------------------------|
@@ -278,25 +280,25 @@ Base de données           Framework Web                           Client
       
 ```
 
-Dans ce cas, la logique interne peut valider l'accès d'un client via un cookie ou un header HTTP, puis initier une connection à la base de données, récupérer le contenu de l'article, le formatter et l'afficher. 
+Dans ce cas, la logique interne peut valider l'accès d'un client via un cookie ou un header HTTP, puis initier une connexion à la base de données, récupérer le contenu de l'article, le formatter et l'afficher. 
 
 Le formattage de la donnée peut varier selon l'architecture du backend, comme dans les cours vus en 4ème année : 
 
 * En Web dynamique, le serveur gèrera le rendu de la page et retournera une page HTML valide,
-* En Web statique, la donnée est retournée telle qu'elle, après l'avoir **sérialisée** dans un format compréhensible par le client. 
+* En Web statique, la donnée est retournée telle quelle, après l'avoir **sérialisée** dans un format compréhensible par le client. 
 
-En Rust, un Framework expose un **Trait** (contrainte similaire à une interface en POO[^poo], pour en savoir plus lire "The Rust Programming Language" [@rustbook]) ou une **Structure** qu'il sait transformer en réponse HTTP à renvoyer au client. De cette façon, l'utilisateur du Framework peut retourner ses propres types dont il a défini la conversion en réponse HTTP, ce qui lui donne un contrôle total.  
+En Rust, un framework expose un **Trait** (contrainte similaire à une interface en POO[^poo], pour en savoir plus lire "The Rust Programming Language" [@rustbook]) ou une **Structure** qu'il sait transformer en réponse HTTP à renvoyer au client. De cette façon, l'utilisateur du framework peut retourner ses propres types dont il a défini la conversion en réponse HTTP, ce qui lui donne un contrôle total.  
 
 [^poo]: Programmation Orientée Objet, paradigme de programmation centré sur la définition et l'interaction de briques logicielles appelées objets (Wikipédia). 
 
-Un Framework Web va le plus souvent définir un moyen permettant d'accéder à des ressources internes qu'il pourra partager entre plusieurs requêtes. Par exemple:
+Un framework Web va le plus souvent définir un moyen permettant d'accéder à des ressources internes qu'il pourra partager entre plusieurs requêtes. Par exemple:
 
 * Un établisseur de connexion à une base de données (comme PostgreSQL), ou à un cache (comme Redis),
 * Une variable dont le contenu peut être utilisé par les routes, comme une constante par exemple, ou le contenu d'un fichier de configuration, 
 * Un accès à un système de journalisation (logs),
 * Une brique logicielle permettant de gérer l'autorisation ou l'authentification d'un utilisateur. 
 
-Pour comprendre le travail d'abstraction, de PEWS il s'agit ensuite d'étudier au cas par cas les différents Framework Web existants dans l'écosystème Rust, dans le but de comprendre comment chacun gère : 
+Pour comprendre le travail d'abstraction de PEWS il s'agit ensuite d'étudier au cas par cas les différents framework Web existants dans l'écosystème Rust, dans le but de comprendre comment chacun gère : 
 
 * La déclaration d'une route et le routing, 
 * La réponse à un client,
@@ -346,7 +348,7 @@ Enfin, Rocket possède une grosse communauté qui a développé beaucoup d'outil
 
 Actix-web est l'un des deux frameworks les plus populaires de l'ecosystème Rust. Pour rappel, c'est la technologie qui a été utilisée dans le cadre du projet 2. Selon son site (cf. [@actixweb]):  
 
-> Actix est le puissant système d'Acteurs de Rust, et le Framework web le plus divertissant.
+> Actix est le puissant système d'Acteurs de Rust, et le framework web le plus divertissant.
 
 Actix-web derive en effet à l'origine d'Actix, le système d'acteur évoqué en projet 2. Depuis la version 2.0 du framework, il n'existe cependant plus de dépendance directe entre le framework web et Actix, cette approche ayant été jugée trop inefficace. Depuis, les deux frameworks partagent le nom uniquement puisque l'auteur original l'a souhaité. 
 
@@ -454,7 +456,7 @@ Warp est entièrement asynchrone. La composition de filtre inspirée du paradigm
 
 Suite à ces trois études de cas, on peut tirer le tableau suivant : 
 
-| Framework | Création de route                    | Type de réponse              | Partage de ressource | Asynchrone           | Chaine de compilation |
+| framework | Création de route                    | Type de réponse              | Partage de ressource | Asynchrone           | Chaine de compilation |
 |:---------:|:------------------------------------:|:----------------------------:|:--------------------:|:--------------------:|:---------------------:|
 | Rocket    | Macro procédurale                    | Trait "rocket::Responder"    | Gardes de requête    | Non (pour l'instant) | Nightly (instable)    |
 | Actix-web | Manuelle ou Macro procédurale        | Trait "actix_web::Responder" | Gardes de requête    | Oui                  | Stable                |
@@ -467,7 +469,7 @@ Dans un premier temps, un framework cible est libre de choisir une chaîne de co
 * Une librairie principale, appellée `pews_core`, basée sur stable pour être utilisable sur tous les framework, 
 * Une librairie secondaire pour chaque framework cible, *e.g.* `pews_rocket`, qui peut utiliser nightly si le framework cible utilise cette chaîne. 
 
-Comme l'approche des gardes de requêtes semble être une norme, le rôle de PEWS sera de fournir des extracteurs qui pourront être transformés en gardes compatibles avec chaque Framework. 
+Comme l'approche des gardes de requêtes semble être une norme, le rôle de PEWS sera de fournir des extracteurs qui pourront être transformés en gardes compatibles avec chaque framework. 
 
 On voit que chaque librairie expose son propre trait lui permettant de gérer l'envoi d'une réponse au client de sa propre façon. PEWS devra, selon la cible, retourner une structure qui implémente le trait imposé par la plateforme. 
 
@@ -492,7 +494,7 @@ Implémentations concrètes | | pews_rocket | | pews_actix | | pews_warp |
                           | +--------+----+ +-----+------+ +---+-------+
                           |          |            |            |
                           |      +---+----+ +-----+-----+ +----+-+
-      Framework cible     |      | Rocket | | Actix-web | | Warp |
+      framework cible     |      | Rocket | | Actix-web | | Warp |
                           |      +--------+ +-----------+ +------+
 ``` 
 
@@ -505,9 +507,9 @@ En résumé :
 * L'implémentation concrète contient la définition d'un "Backend Pews". Celui-ci doit fournir la capacité de prendre les routes abstraites crées par PEWS et les monter sur la cible, ainsi que d'exposer le mécanisme de partage de ressources pour répondre correctement aux extracteurs de PEWS.
 * Le framework cible peut être utilisé normalement, et avec le mécanisme de montage de l'implémentation concrète. Ainsi, PEWS peut être utilisé pour créer rapidement des routes dont la logique est générique, sans impacter du code pré-existant et donc sacrifier la fléxibilité de la cible. 
 
-## Abstraction de Framework Web 
+## Abstraction de framework Web 
 
-### L'abstraction de Route - Endpoint
+### L'abstraction de Route - endpoint
 
 Comme expliqué en introduction, une route sur un framework web est composée au minimum des informations suivantes : 
 
@@ -525,8 +527,8 @@ PEWS définit une liste d'extracteurs qui peuvent être paramétrés. Ceux-ci pr
 
 * PewsBody<T>: Lit le contenu de la requête et le transforme en structure de type T 
 * PewsDeserializer<T>: Similaire à PewsBody, mais spécialisé dans la désérialisation de contenu en structure de type T. Note: Pews n'intègre pas de définition pour la désérialisation, elle se base sur une librairie externe nommée **serde**, standard dans l'écosystème Rust. 
-* PewsState<T>: Extrait de l'état du Framework (s'il existe) une structure de type T. Permet notamment de récupérer une connexion à la base de données, au système de logs, à un cache ... 
-* PewsRequest<T>: Extrait une information de la requête (Cookies, Headers HTTP, IP Source, ...) où l'opération est supportée par le Framework. 
+* PewsState<T>: Extrait de l'état du framework (s'il existe) une structure de type T. Permet notamment de récupérer une connexion à la base de données, au système de logs, à un cache ... 
+* PewsRequest<T>: Extrait une information de la requête (Cookies, Headers HTTP, IP Source, ...) où l'opération est supportée par le framework. 
 * PewsUrlParam<T>: Extrait une information depuis l'URL de la requête cliente.
 * Potentiellement d'autres extracteurs selon les cas d'utilisation qui seront identifiés.
 
@@ -590,10 +592,10 @@ En interne, PEWS crée donc une route dont la logique interne appelle le génér
 
 Evidemment, avant toute chose, PEWS s'est assuré **à la compilation** que la fonction `retrieve()` existait en s'assurant que le backend cible (RocketBackend pour exemple) implémente  le trait `Retriever<PewsDeserializer<User>>`, puis que la fonction de logique avait bien comme entrée le type d'Output qui est défini dans l'implémentation de Retriever, à savoir User. L'abstraction de retriever permet également d'être sûr que si un framework cible n'implémente pas de fonctionnalité pour désérialiser le corps de la requête par exemple, alors le trait Retriever n'est simplement pas implémenté et PEWS ne pourra pas faire fonctionner la route sur ce backend: les garanties de sécurité sont ainsi préservées. 
 
-La première itération des Endpoints de PEWS fournissait la définition suivante : 
+La première itération des endpoints de PEWS fournissait la définition suivante : 
 
 ```rust
-pub struct Endpoint<Extractors, Input, Response> {
+pub struct endpoint<Extractors, Input, Response> {
 	route: String,
 	method: http::Method,
 	gen_retrievers: fn() -> Extractors,
@@ -691,20 +693,20 @@ PEWS caractérise un Service par tout endpoint montable sur un backend. Par exem
 
 L'ensemble de service ainsi formé est appelé un Repository.
 
-Repository est un patterne présent dans beaucoup de librairies visant à faciliter la création de services web, comme Spring ou Rails. Dans sa définition la plus simple, un Repository est une couche d'abstraction permettant d'éditer et d'accéder au contenu d'une partie de la base de données. Dans le language de PEWS, Repository correspond à un ensemble de Services. 
+Repository est un patterne présent dans beaucoup de librairies visant à faciliter la création de services web, comme Spring ou Rails. Dans sa définition la plus simple, un Repository est une couche d'abstraction permettant d'éditer et d'accéder au contenu d'une partie de la base de données. Dans le langage de PEWS, Repository correspond à un ensemble de Services. 
 
 
 Nous avons vu comment PEWS gérait la création de services, il convient maintenant d'étudier comment PEWS expose un moyen pour des librairies externes d'implémenter les Repository.   
 
 #### Le problème des Repository 
 
-Dans sa première version, PEWS cherchait à encoder le maximum d'information sur un Endpoint au niveau de son type. La structure Endpoint contenait dans ses génériques les informations sur les types qui rentraient en jeu durant l'éxécution de la logique. Cette approche comporte un problème majeur: le trait Service ne peut refléter ces informations. En effet, en Rust, le polymorphisme est limité à cause des contraintes de design du langage qui permettent de garantir "l'object-safety". Pour plus de contexte sur le sujet, cf. l'article sur l'Object-safety [@objectsafety] et "The Rust Programming Language". On ne peut actuellement, en Rust, pas stocker une liste d'endpoints contenant des informations de type différentes, comme on pourrait le faire en Java en utilisant l'abstraction Service définie précédemment. En d'autres termes, il était impossible d'implémenter Repository, ceux-ci devant effectivement stocker une liste de Services. Il a donc fallu effacer de l'abstraction Service toute information de type sur le fonctionnement interne d'un Endpoint. 
+Dans sa première version, PEWS cherchait à encoder le maximum d'information sur un endpoint au niveau de son type. La structure endpoint contenait dans ses génériques les informations sur les types qui rentraient en jeu durant l'éxécution de la logique. Cette approche comporte un problème majeur: le trait Service ne peut refléter ces informations. En effet, en Rust, le polymorphisme est limité à cause des contraintes de design du langage qui permettent de garantir "l'object-safety". Pour plus de contexte sur le sujet, cf. l'article sur l'Object-safety [@objectsafety] et "The Rust Programming Language". On ne peut actuellement, en Rust, pas stocker une liste d'endpoints contenant des informations de type différentes, comme on pourrait le faire en Java en utilisant l'abstraction Service définie précédemment. En d'autres termes, il était impossible d'implémenter Repository, ceux-ci devant effectivement stocker une liste de Services. Il a donc fallu effacer de l'abstraction Service toute information de type sur le fonctionnement interne d'un endpoint. 
 
 De plus, le design ne permettait pas de composer les services en ajoutant des bouts de logiques. Cela veut dire que PEWS était peu flexible: on ne pouvait pas brancher de bouts de logique permettant la validation d'une donnée ou le contrôle d'accès, par exemple.  
 
 Ce problème majeur d'architecture a été résolu par une ré-écriture suivant une architecture un peu plus proche conceptuellement des Filtres de Warp. Cependant, elle perd la sécurité au niveau des types que nous avons vu précédemment.
 
-La dernière itération en data de PEWS introduit le concept de Passes. Une passe est une opération similaire à un filtre : elle peut échouer, et accède à une pièce interne mutable nommée `Storage`, dont on se sert pour échanger des données entre Passes, en évitant donc d'expliciter cet échange au niveau du type. Cette approche permet de composer un Endpoint d'une suite d'instructions (comme les filtres de Warp). Le désavantage de cette méthode est qu'un Endpoint est composé d'une suite de Passes qui ne connaissent pas d'information sur les autres Passes (ce qui constitue la principale différence avec les Filtres) et qui peuvent par conséquent être éxécutées dans n'importe quel sens définit par l'utilisateur, potentiellement dans un sens qui pourrait paniquer en production. On casse donc pour le moment les garanties de sécurité de Rust : cette approche n'est pas idéale, et des améliorations sont à l'étude pour contourner cette difficulté, qui seront appliquées quand le projet ne sera plus en pause. 
+La dernière itération en data de PEWS introduit le concept de Passes. Une passe est une opération similaire à un filtre : elle peut échouer, et accède à une pièce interne mutable nommée `Storage`, dont on se sert pour échanger des données entre Passes, en évitant donc d'expliciter cet échange au niveau du type. Cette approche permet de composer un endpoint d'une suite d'instructions (comme les filtres de Warp). Le désavantage de cette méthode est qu'un endpoint est composé d'une suite de Passes qui ne connaissent pas d'information sur les autres Passes (ce qui constitue la principale différence avec les Filtres) et qui peuvent par conséquent être éxécutées dans n'importe quel sens définit par l'utilisateur, potentiellement dans un sens qui pourrait paniquer en production. On casse donc pour le moment les garanties de sécurité de Rust : cette approche n'est pas idéale, et des améliorations sont à l'étude pour contourner cette difficulté, qui seront appliquées quand le projet ne sera plus en pause. 
 
 ### Le montage des routes  
 
