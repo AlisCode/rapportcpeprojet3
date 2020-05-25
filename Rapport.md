@@ -738,6 +738,92 @@ Dans la première itération, on prenait une structure `Service<S, M>` avec deux
 * Sur actix-web, on utilise le même mécanisme également (fonction App::service ou App::route),
 * Sur Warp, on peut générer une structure qui implémente Filter, et la composer avec d'autres filtres.
 
+## Démonstration du projet 
+
+Pour conclure cette partie du rapport traitant de PEWS, il convient de donner un exemple d'utilisation de la librairie. Il est important de noter qu'elle est toujours très en développement, de plus les ré-écritures ont un peu changé l'interface. 
+
+Le but était de faciliter l'écriture de services. Voici par exemple le code nécéssaire pour générer une API permettant d'exposer un service de type REST permettant d'effectuer les opérations type **CRUD** (Create Read Update Delete).
+
+Dans un premier temps, on définit les modèles de données (pour cet exemple ludique, on définit un Heros avec ID, année de création, nom et super-pouvoir) 
+
+```rust 
+#[derive(Queryable, Serialize)]
+/// Simple Hero Queryable representation
+pub struct Hero {
+    pub id: i32,
+    pub year: i32,
+    pub name: String,
+    pub power: String,
+}
+
+#[derive(Serialize, Deserialize, Insertable)]
+#[table_name = "hero"]
+/// Simple Hero Insertable representation
+pub struct InsertableHero {
+    pub year: i32,
+    pub name: String,
+    pub power: String,
+}
+
+#[derive(Serialize, Deserialize, AsChangeset)]
+#[table_name = "hero"]
+/// Simple Hero Insertable representation
+pub struct UpdatableHero {
+    pub year: Option<i32>,
+    pub name: Option<String>,
+    pub power: Option<String>,
+}
+
+#[database("rocket_example_pgsql")]
+/// Rocket bridge to access the PostgreSQL connection
+pub struct ExampleDb(diesel::pg::PgConnection);
+```
+
+Ces structures utilisent l'API de Diesel pour intéragir automatiquement avec la base de données. La structure `ExampleDb` utilise l'API de Rocket pour créer automatique une connection à une base de données PostgreSQL définie dans le fichier de configuration de Rocket. Ensuite, on utilise PEWS pour déclarer le template Rest :  
+
+```rust 
+#[derive(Repository)]
+#[pews(defaults(
+    Backend = "diesel::pg::Pg",
+    Bridge = "ExampleDb",
+    Table = "schema::hero::table"
+))]
+#[pews(url = "/hero")]
+#[pews(template(
+    name = "Rest",
+    types(
+        QueryType = "models::Hero",
+        InsertType = "models::InsertableHero",
+        UpdateType = "models::UpdatableHero",
+        IdType = "i32"
+    )
+))]
+pub struct MyHeroTemplate;
+``` 
+
+Ce Repository utilise le template Rest, pour lequel on doit spécifier les types pour les opérations de type CRUD. On spécifie l'URL à laquelle monter les services, et on définit également la table que l'on modifie et la connection à la base de données (ici, `ExampleDb` qu'on ne montre pas pour rester simple).  
+
+Enfin, on peut monter les routes dans le style manuel de Rocket :  
+
+```rust 
+fn main() {
+	Rocket::ignite()
+		.attach(ExampleDb::fairing())
+		.mount("/api", mount_repositories![MyHero])
+		.launch();
+}
+```
+
+Les endpoints ainsi exposés sont : 
+
+* `GET /api/hero/` : Retourne tous les héros de la base de données 
+* `GET /api/hero/<id>` : Retourne la définition d'un héros de la base de données dont l'ID est donné en paramètre dans l'URI. 
+* `POST /api/hero` : Crée un nouveau héros. Nécéssite en corps de la requête HTTP une représentation JSON d'un InsertableHero.  
+* `PATCH /api/hero/<id>` : Met à jour la définition d'un héros dont l'ID est donné en paramètre dans l'URI, et le contenu en représentation JSON d'un UpdatableHero.  
+* `DELETE /api/hero/<id>` : Supprime un héros de la base de données dont l'ID est donné en paramètre dans l'URI.
+
+Pour l'utilisateur final, le code requis pour créer un **service REST basique** qui bénéficie de la **sûreté** apportée par Diesel et des **performances** de Rust, sans sacrifier la **fléxibilité** de Rocket est donc d'environ une trentaine de lignes. Le code est hautement maintenable est requiert très peu de modifications. Il manque cependant dans cet exemple quelques fonctionnalités comme évoqué plus haut, notamment la possibilité d'intégrer des passes personalisées pour pouvoir gérer des accès ou valider des données. Ce seront les prochains objectifs à atteindre quand le développement de PEWS reprendra. 
+ 
 # Gestion de projet, planification et spécification de nouvelles fonctionnalités 
 
 Le travail de cette année 3 a également été la participation à la gestion de projet au sein de l'entreprise. Dans la suite du document, nous évoquerons le travail de spécification et de planification qui a été effectué au sein d'Impero. D'abord dans le cadre de PEWS, puis dans le cadre du développement de nouvelles fonctionnalités. 
