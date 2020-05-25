@@ -314,7 +314,7 @@ Selon son site internet [@rocketweb] :
 
 > Rocket est un framework web écrit avec Rust, qui permet d'écrire des applications Web rapides et sécurisées sans sacrifier la flexibilité, l'utilisabilité ni la sûreté.
 
-La particularité de Rocket est qu'il utilise la chaine de compilation Rust **nightly** (comprendre: instable), qui lui permet d'accéder à certaines fonctionnalités des macros procédurales du langage, au prix de l'utilisation d'un chaîne Rust qui peut potentiellement casser d'une semaine à l'autre. Ce n'est pas nécéssairement un désavantage, il n'y a pas eu de problème de ce genre pour l'instant, et celui-ci serait de toute façon contournable simplement.  
+La particularité de Rocket est qu'il utilise la chaîne de compilation Rust **nightly** (comprendre : instable), qui lui permet d'accéder à certaines fonctionnalités des macros procédurales du langage, au prix de l'utilisation d'une chaîne Rust qui peut potentiellement casser d'une semaine à l'autre. Ce n'est pas nécessairement un désavantage, il n'y a pas eu de problème de ce genre pour l'instant, et celui-ci serait de toute façon contournable simplement.  
 
 L'utilisation des macros procédurales permet à l'utilisateur d'être très expressif dans la définition des routes : 
 
@@ -346,23 +346,23 @@ Enfin, Rocket possède une grosse communauté qui a développé beaucoup d'outil
 
 ### Second cas d'étude : Actix-Web
 
-Actix-web est l'un des deux frameworks les plus populaires de l'ecosystème Rust. Pour rappel, c'est la technologie qui a été utilisée dans le cadre du projet 2. Selon son site (cf. [@actixweb]):  
+Actix-web est l'un des deux frameworks les plus populaires de l'écosystème Rust. Pour rappel, c'est la technologie qui a été utilisée dans le cadre du projet 2. Selon son site (cf. [@actixweb]):  
 
 > Actix est le puissant système d'Acteurs de Rust, et le framework web le plus divertissant.
 
-Actix-web derive en effet à l'origine d'Actix, le système d'acteur évoqué en projet 2. Depuis la version 2.0 du framework, il n'existe cependant plus de dépendance directe entre le framework web et Actix, cette approche ayant été jugée trop inefficace. Depuis, les deux frameworks partagent le nom uniquement puisque l'auteur original l'a souhaité. 
+Actix-web dérive en effet à l'origine d'Actix, le système d'acteur évoqué en projet 2. Depuis la version 2.0 du framework, il n'existe cependant plus de dépendance directe entre le framework web et Actix, cette approche ayant été jugée trop inefficace. Depuis, les deux frameworks partagent le nom uniquement puisque l'auteur original l'a souhaité. 
 
-Cette technologie se veut être le point de référence du secteur: actix-web est constamment dans le haut des tests de comparaison de performance (appellés benchmarks) de TechEmpower (cf. [@techempower]). Ces très hautes performances sont son plus grand avantage. Celui-ci compile sur la chaine stable de Rust, garantie importante pour beaucoup de professionels, et vient avec son lot de fonctionnalités très intéressantes, notamment : 
+Cette technologie se veut être le point de référence du secteur: actix-web est constamment dans le haut des tests de comparaison de performance (appellés benchmarks) de TechEmpower (cf. [@techempower]). Ces très hautes performances représentent le plus gros avantage du Framework. Celui-ci compile sur la chaine stable de Rust, garantie importante pour beaucoup de professionels, et vient avec son lot de fonctionnalités très intéressantes, notamment : 
 
 * Une implémentation du protocole WebSocket,
 * Support pour HTTP SSE (similaire à WebSocket), 
 * Support pour TLS (HTTPS, encryption),
 * Support pour HTTP/2,
-* Intégration simple avec Actix (utilisation du même éxécuteur asynchrone: Tokio)
+* Intégration simple avec Actix (utilisation du même éxécuteur asynchrone : Tokio).
 
-Ce dernier point est capital même si nous ne rentrerons pas dans le détail du fonctionnement de la programmation asynchrone en Rust. Des documents sont disponibles dans la bibliographie à ce sujet (cf. Asynchronous Programming in Rust [@asyncbook]). Afin d'obtenir des performances toujours meilleures lui permettant de se classer régulièrement premier des tests, Actix-web rend ses réponses asynchrones. Cela veut dire que pendant que le serveur est en attente de quelque chose, comme un fichier qu'il essaie de servir à son client, ou une requête sur la base de données, il peut répondre en parallèle à un autre client, mettant les opérations à la queue dans son éxécuteur asynchrone. 
+Ce dernier point est capital même si nous ne rentrerons pas dans le détail du fonctionnement de la programmation asynchrone en Rust. Des documents sont disponibles dans la bibliographie à ce sujet (cf. Asynchronous Programming in Rust [@asyncbook]). Afin d'obtenir des performances toujours meilleures lui permettant de se classer régulièrement premier des tests, Actix-web rend ses réponses asynchrones. Cela veut dire que pendant que le serveur est en attente de quelque chose, comme un fichier qu'il essaie de servir à son client, ou une requête sur la base de données, il peut répondre en parallèle à un autre client, mettant les opérations à la queue dans son exécuteur asynchrone. 
 
-Cette particularité complique la tâche de l'abstraction de PEWS. En effet, on ne peut pas implémenter de surcouche permettant de rendre un framework asynchrone. Il est toutefois possible - c'est la solution qu'utilise PEWS - d'embarquer une opération synchrone dans une opération asynchrone, et donc d'en émuler le fonctionnement. Cependant, il est évident qu'une telle méthode implique nécéssairement un sacrifice de performances et la perte de l'intérêt de l'utilisation d'un framework asynchrone. A ce jour, PEWS n'a pas de bonnes solutions pour la résolution de ce problème vu que la cible principale est Rocket. 
+Cette particularité complique la tâche de l'abstraction de PEWS. En effet, on ne peut pas implémenter de surcouche permettant de rendre un framework asynchrone. Il est toutefois possible - c'est la solution qu'utilise PEWS - d'embarquer une opération synchrone dans une opération asynchrone, et donc d'en émuler le fonctionnement. Cependant, il est évident qu'une telle méthode implique nécessairement un sacrifice de performances et la perte de l'intérêt de l'utilisation d'un framework asynchrone. A ce jour, PEWS n'a pas de solutions efficace pour résoudre ce problème vu que la cible principale est Rocket. 
 
 La déclaration d'une route avec Actix-web s'effectue de la manière suivante (code simplifié pour le main): 
 
@@ -385,17 +385,17 @@ Notes pour la compréhension :
 * La requête `GET /hello` retourne `Hello World!`
 * La requête `GET /hello/Olivier` retourne `Hello Olivier!`
 * `impl Responder` correspond à n'importe quel type implémentant le trait `Responder`. `String`, retourné par la macro `format!`, implémente ce trait.
-* La logique appliquée par le serveur est encore une fois contenue dans une unique fonction: la fonction `greet` 
+* La logique appliquée par le serveur est encore une fois contenue dans une unique fonction: la fonction `greet`. 
 
 On voit ici un système similaire aux Gardes de Rocket: on passe une structure `HttpRequest` à la fonction qui contient la logique de la route, puis on s'en sert pour extraire des informations (*e.g.* le nom de la personne à saluer. A défaut, on saluera le monde entier). 
 
-Si on voulait extraire un JSON du corps de la requête HTTP, on ajouterait en paramètre de greet le garde `web::Json<StructureADeserializer>`. Si on voulait accéder à une ressource interne stockée dans le serveur, on ajouterait en paramètre le garde `web::State<RessourceInterneARecuperer>`
+Si on voulait extraire un JSON du corps de la requête HTTP, on ajouterait en paramètre de greet le garde `web::Json<StructureADeserializer>`. Si on voulait accéder à une ressource interne stockée dans le serveur, on ajouterait en paramètre le garde `web::State<RessourceInterneARecuperer>`.
 
 La création de route est manuelle: on monte une route sur une structure `App` en spécifiant le chemin, le verbe HTTP, et la logique à appliquer.
 
-Notons qu'actix-web version 3.0 propose également une macro procédurale pour générer ses routes comme Rocket le fait. 
+Notons qu'Actix-web version 3.0 propose également une macro procédurale pour générer ses routes comme Rocket le fait. 
 
-Enfin, il est important de noter que le focus sur actix-web est principalement dû à son énorme popularité dans l'écosystème Rust. Beaucoup d'entreprises et d'individuels refusent de travailler sur celui-ci car le framework s'appuie énormément sur l'utilisation d'`unsafe`[^unsafe], de manière déraisonnée, et qu'historiquement, il a posé problème dans la communauté. 
+Enfin, il est important de noter que le focus sur Actix-web est principalement dû à son énorme popularité dans l'écosystème Rust. Beaucoup d'entreprises et d'individuels refusent de travailler sur celui-ci car le framework s'appuie énormément sur l'utilisation d'`unsafe`[^unsafe], de manière déraisonnée, et qu'historiquement, il a posé problème au sein de la communauté Rust à cause de certains problèmes de sécurité potentiellement engendrés. 
  
 [^unsafe]: Rust est un langage qui force un programme a être sécurisé et enlève la possibilité de travailler avec des valeurs pouvant causer des comportements indéfinis. `unsafe` permet d'enlever certaines restrictions pour des raisons de performance, mais il faut alors garantir soi-même la sécurité du code. 
 
@@ -504,7 +504,7 @@ En résumé :
 
 * L'abstraction commune, pews_core, définit le fonctionnement interne: à quoi ressemble une route, quels extracteurs sont à définir, comment la logique d'un endpoint est executée, comment représenter un Service... C'est une sorte de spécification que chaque implémentation concrète, ou `backend`, cherchera à exprimer pour sa cible.  
 * pews_derive est un outil qui permettra de créer 
-* L'implémentation concrète contient la définition d'un "Backend Pews". Celui-ci doit fournir la capacité de prendre les routes abstraites crées par PEWS et les monter sur la cible, ainsi que d'exposer le mécanisme de partage de ressources pour répondre correctement aux extracteurs de PEWS.
+* L'implémentation concrète contient la définition d'un "Backend PEWS". Celui-ci doit fournir la capacité de prendre les routes abstraites crées par PEWS et les monter sur la cible, ainsi que d'exposer le mécanisme de partage de ressources pour répondre correctement aux extracteurs de PEWS.
 * Le framework cible peut être utilisé normalement, et avec le mécanisme de montage de l'implémentation concrète. Ainsi, PEWS peut être utilisé pour créer rapidement des routes dont la logique est générique, sans impacter du code pré-existant et donc sacrifier la fléxibilité de la cible. 
 
 ## Abstraction de framework Web 
@@ -564,7 +564,7 @@ fn display_age(user: User) -> String {
 }
 ```
 
-Ici, l'extracteur est paramétré pour déserialiser un contenu JSON du corps de la requête, qui représente une structure User. Puis la logique prend cet utilisateur, et en retourne l'âge en formattant la réponse en String. Nous verrons ensuite comment Pews s'assure que le framework cible puisse retourner un type String à son client. 
+Ici, l'extracteur est paramétré pour désérialiser un contenu JSON du corps de la requête, qui représente une structure User. Puis la logique prend cet utilisateur, et en retourne l'âge en formattant la réponse en String. Nous verrons ensuite comment Pews s'assure que le framework cible puisse retourner un type String à son client. 
 
 Cette approche impose que les extracteurs soient définis comme des structures, et que chaque backend puisse traîter ces structures comme des extracteurs. La première définition a donc été le trait "Retriever". 
 
