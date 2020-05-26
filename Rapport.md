@@ -167,7 +167,7 @@ On mentionnera également que beaucoup de gros noms de l'industrie (Google et Fa
 
 Dans le cadre du logiciel Impero, le serveur Web est implémenté à l'aide de Rocket, un framework web très complet dont nous détaillerons le fonctionnement plus tard. 
 
-Le frontend est implémenté avec **TypeScript**, une couche de sûreté sur JavaScript apportant plus de garanties statiques[^staticguarantees] permettant également de faire moins d'erreur et de rendre le refactoring plus aisé. Le framework **React** est utilisé pour faciliter la développement d'une interface utilisateur techniquement très complexe et fonctionnellement intuitive, tout en la rendant maintenable. Enfin, le framework d'interface **antd** sert de cadre à l'application pour lui donner une touche moderne et un peu d'esthétisme.
+Le frontend est implémenté avec **TypeScript**, une couche de sûreté sur JavaScript apportant plus de garanties statiques[^staticguarantees] permettant également de faire moins d'erreur et de rendre le refactoring plus aisé. Le framework **React** est utilisé pour faciliter la développement d'une interface utilisateur techniquement très complexe et fonctionnellement intuitive, tout en la rendant maintenable. Enfin, le framework d'interface **Ant Design** sert de cadre à l'application pour lui donner une touche moderne et un peu d'esthétisme.
 
 ![Logo du langage TypeScript (TS)](img/LogoTS.png){width="150px"}
 
