@@ -59,7 +59,7 @@ L'entreprise a été créée en 2014. Elle développe un seul produit, qui lui r
 
 ![Logo de l'entreprise Impero](img/LogoImpero.png){width="175px"}
 
-[^covid]: Ce document est écrit en Mai 2020 dans le contexte de la crise sanitaire liée à COVID-19
+[^covid]: Ce document est écrit en Mai 2020 dans le contexte de la crise sanitaire liée à la COVID-19
 
 Les clients de l'entreprise sont en général de **grandes** (voire **très grandes**) entreprises, telles **Maersk (+100.000 salariés)** ou **Bestseller**, qui mettent en place des processus complexes et bénéficient donc du logiciel de manière acrue. Depuis plus d'un an, l'entreprise a revu son fonctionnement pour acquérir de nouveaux clients, et opté pour un partenariat avec une grosse entreprise de conseil / audit: **KPMG**.
 
@@ -207,15 +207,15 @@ Afin de résoudre la problématique d'ouverture de l'API que nous venons d'énon
 Le travail s'articule autour de l'outil Diesel, déjà utilisé en année deux (cf. Rapport 2, [@rapport2]) que nous qualifierons d'ORM[^orm]. Cette librairie ajoute de la sureté lorsque l'on travaille avec du SQL[^sql], uniquement sur les systèmes de gestion de base de données relationnelles, au prix de l'écriture d'un code un peu plus verbeux. Cette sureté se traduit concrètement de la façon suivante : 
 
 * La requête SQL que l'on écrit est vérifiée **statiquement** (comprendre : à la compilation), et est garantie d'être valide. Il n'y a **aucune** possibilité de faire une faute de frappe, de requêter des champs d'une autre table par mégarde, mais surtout lorsqu'une modification est apportée à la structure de la base de données, si la requête devenait invalide, le compilateur en avertirait aussitôt le programmeur ce qui représente un gain de temps et de sécurité non-négligeable. 
-* Les structures de données qu'un programmeur écrit sont également vérifiées pour qu'elle puisse accueillir le résultat d'une requête, sans quoi le compilateur bloquera l'éxécution également. 
+* Les structures de données qu'un programmeur écrit sont également vérifiées pour qu'elle puisse accueillir le résultat d'une requête, sans quoi le compilateur ne générera pas de code exécutable.
 
 ![Logo du framework Diesel](img/LogoDiesel.png){width="150px"}
 
-Comme indiqué précédemment, cet outil a un prix: les structures et les requêtes à écrire sont plutôt verbeuses, et écrire plus de code amènera immédiatement des problèmes de maintenabilité. De plus, il faut également écrire le code de glue entre le serveur HTTP et l'outil Diesel, afin de mettre des actions en face d'une requête HTTP reçue par le serveur. 
+Comme indiqué précédemment, cet outil a un prix: les structures et les requêtes à écrire sont plutôt verbeuses, et écrire plus de code amène immédiatement des problèmes de maintenabilité. De plus, il faut écrire le code de glue entre le serveur HTTP et l'outil Diesel, afin de mettre des actions en face d'une requête HTTP reçue par le serveur.
 
 Cette glue s'appelle un Service. Il s'agit d'un groupe d'endpoints (notion que nous définirons par la suite), qui permet de définir quelles interactions un client peut avoir avec le serveur. Un Service applique une logique qui est en général souvent la même (ou très similaire), mais qui agit sur des sources de données différentes, et qui peut varier selon ce que la logique métier implique. Par exemple, remplacer la définition en base de données d'un Utilisateur ou d'un Contrôle (pour le cas d'Impero) appliquera une logique très similaire, où la variante est la table que l'on modifie et le contrôle d'accès. En d'autres termes, très peu de code change, et celui-ci est en général fastidieux à écrire et peut ammener des erreurs. 
 
-Le projet de recherche s'appelle **PEWS**. C'est un anagramme récursif pour **PEWS : Easy Web Services**. Son but est de faciliter, voire retirer la nécessité d'écrire cette glue, ce qui permet d'exposer l'interface en écrivant moins de code, et donc d'obtenir une meilleure maintenabilité, et de la rapidité de développement sans pour autant sacrifier les performances de Rust ni la sûreté de Diesel. Il faut voir PEWS comme **une surcouche à un framework Web**, qui aura pour tâche d'écrire l'intégration des Services à la place du développeur, qui n'aura plus qu'à écrire la logique métier si celle-ci varie du fonctionnement classique du service (par exemple si l'on cherche à valider des données ou à vérifier des accès). PEWS vise en quelque sorte le paradigme de **Convention over configuration** que l'on retrouve dans des frameworks comme **Spring** (Java) et **Rails** (Ruby), pièce manquante de l'écosystème Web en Rust. 
+Le projet de recherche s'appelle **PEWS**. C'est un anagramme récursif pour **PEWS : Easy Web Services**. Son but est de faciliter, voire retirer la nécessité d'écrire cette glue, ce qui permet d'exposer l'interface en écrivant moins de code, donc d'obtenir une meilleure maintenabilité, et de la rapidité de développement sans pour autant sacrifier les performances de Rust ni la sûreté de Diesel. Il faut voir PEWS comme **une surcouche à un framework Web**, qui aura pour tâche d'écrire l'intégration des Services à la place du développeur qui n'aura plus qu'à écrire la logique métier si celle-ci varie du fonctionnement classique du service (par exemple si l'on cherche à valider des données ou à vérifier des accès). PEWS vise en quelque sorte le paradigme de **Convention over configuration** que l'on retrouve dans des frameworks comme **Spring** (Java) et **Rails** (Ruby), pièce manquante de l'écosystème Web en Rust. 
 
 Dans un soucis de pérennité, il est prévu de publier la librairie sous une licence Open-Source (type **MIT**), puisqu'il nous a semblé que PEWS correspondait à un besoin de la communauté Rust de manière générale. Afin de favoriser l'utilisation au sein de ladite communauté, et de rendre l'outil le plus flexible et correct possible, il s'agit de faire en sorte que PEWS puisse faire abstraction du framework Web de l'utilisateur, auquel on ajoute des fonctionnalités. 
 
@@ -228,7 +228,7 @@ Afin de comprendre comment nous pouvons aborder ce problème et les raisons qui 
 
 ### Définition d'un framework web
 
-Un framework web est une brique logicielle permettant d'exposer des fonctionnalités sur un serveur, dans le but de répondre à des requêtes utilisant le protocole de communication client-serveur HTTP (et HTTPS, si le serveur supporte l'encryption via TLS), standards du Web.
+Un framework web est une brique logicielle permettant d'exposer des fonctionnalités sur un serveur, dans le but de répondre à des requêtes utilisant le protocole de communication client-serveur HTTP (et HTTPS, si le serveur supporte le chiffrement via TLS), standards du Web.
 
 Le framework a pour but d'exposer des routes, que l'on appelle communément des endpoints. Par exemple, le site de CPE contient l'article suivant: `https://www.cpe.fr/actualite/actu-chimie-nouveau-diplome-en-chimie/`. Le endpoint qui pourrait être exposé pour accéder à cet article est le suivant: `GET /actualite/<nom_article>`. Celui-ci permet de répondre à une requête précise. Pour rappel, le protocole HTTP définit une requête de la façon suivante:
 
@@ -252,9 +252,9 @@ Le framework a pour but d'exposer des routes, que l'on appelle communément des 
 Dans l'exemple d'endpoint : 
 
 * `GET` est le Verbe HTTP. Il en existe 9 cf. [@httpmozilla] nous en utilisons communément 5 :  
-	* GET - pour récupérer la définition d'une ressource
+	* GET - pour récupérer une ressource
 	* POST - pour créer une ressource 
-	* PUT - pour remplacer la ressource par la nouvelle définition que l'on donne 
+	* PUT - pour appliquer une modification totale sur une ressource
 	* PATCH - pour appliquer des modifications partielles sur une ressource 
 	* DELETE - pour supprimer la ressource 
 * `/actualite/` est la base de l'**URI[^uri]**, (ou le chemin), auquel l'utilisateur souhaite avoir accès. 
@@ -295,18 +295,18 @@ En Rust, un framework expose un **Trait** (contrainte similaire à une interface
 
 Un framework Web va le plus souvent définir un moyen permettant d'accéder à des ressources internes qu'il pourra partager entre plusieurs requêtes. Par exemple:
 
-* Un établisseur de connexion à une base de données (comme PostgreSQL), ou à un cache (comme Redis),
-* Une variable dont le contenu peut être utilisé par les routes, comme une constante par exemple, ou le contenu d'un fichier de configuration, 
+* Un connecteur à une base de données (comme PostgreSQL), ou à un cache (comme Redis),
+* Une variable dont le contenu peut être utilisé par les routes, comme une constante de configuration par exemple, ou le contenu d'un fichier, également de configuration,
 * Un accès à un système de journalisation (logs),
-* Une brique logicielle permettant de gérer l'autorisation ou l'authentification d'un utilisateur. 
+* Une brique logicielle permettant de gérer l'identification ou les autorisations d'un utilisateur.
 
 Pour comprendre le travail d'abstraction de PEWS il s'agit ensuite d'étudier au cas par cas les différents framework Web existants dans l'écosystème Rust, dans le but de comprendre comment chacun gère : 
 
-* La déclaration d'une route et le routing, 
+* La déclaration d'une route et le routage,
 * La réponse à un client,
 * Le partage de ressources en interne,
 
-Et ainsi de savoir comment exposer les fonctionnalités de chacun. Nous étudierons donc le fonctionnement des deux frameworks majeurs, et d'un troisième dont l'approche plus proche du paradigme de programmation fonctionnelle est intéressante, en particulier puisqu'elle inspire la solution vers laquelle PEWS s'est tourné. 
+Et ainsi de savoir comment exposer les fonctionnalités de chacun. Nous étudierons donc le fonctionnement des deux frameworks majeurs, et d'un troisième dont l'implémentation plus proche du paradigme de programmation fonctionnelle est intéressante, particulièrement parce qu'elle a inspiré la solution vers laquelle PEWS s'est tourné.
 
 ### Premier cas d'étude : Rocket
 
