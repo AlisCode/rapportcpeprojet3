@@ -405,18 +405,18 @@ Enfin, il est important de noter que le focus sur Actix-web est principalement d
 
 Warp est un framework montant de l'écosystème Rust qui a beaucoup gagné en popularité ces derniers temps. Son approche intéréssante sur la création de Web-Services en fait un bon candidat à l'étude de l'abstraction. Selon sa page github (cf. bibliographie : [@warpweb]) :
 
-`Filtre` est un trait scellé (il est directement implémenté uniquement par les structures proposées par Warp). Un filtre possède un type d'Extraction, et un type de Rejection, et le point important est qu'un filtre est **composable**, c'est à dire que l'on peut notamment : 
+`Filtre` est un trait scellé (il est uniquement implémenté par les structures proposées par Warp). Un filtre possède un type d'Extraction et un type de Rejection. On dit qu'ils sont **composable**, c'est à dire que l'on peut :
 
 * Chaîner plusieurs filtres les uns à la suite des autres avec `and` et `and_then`, 
-* Exécuter un autre si le traitement d'un filtre échoue avec `or`, 
+* Exécuter un autre filtre si le traitement du précédent échoue avec `or`,
 * Transformer le résultat d'un filtre avec `map`, 
 
 L'idée du framework est la suivante : pour chaque requête d'un client, on fait passer celle-ci dans un filtre (le premier de la chaîne). Puis : 
 
-* Soit celui-ci a réussi à extraire une information (il retourne son type d'Extraction). On passe alors ce résultat au Filtre suivant s'il est composé, par exemple avec `map`, `and` ou `and_then`, sinon, ce type est renvoyé au client comme réponse de la requête. 
+* Soit celui-ci a réussi à extraire une information (il retourne son type d'Extraction). On passe alors ce résultat au filtre suivant s'il est composé, par exemple avec `map`, `and` ou `and_then`, sinon, ce type est renvoyé au client comme réponse à la requête.
 * Soit celui-ci a échoué dans son traitement (il a produit son type de Rejection). On va alors chercher à éxécuter un filtre composé par `or`. Si celui-ci n'est pas composé, on appellera la méthode dite de `recover`, qui permet de gérer les erreurs. Celle-ci enverra la réponse au client, le plus souvent avec un code d'erreur comme 400, 403, 404, 422, 500 ... 
 
-L'auteur a fourni des filtres pré-faits permettant de gérer informations sur la requête HTTP qui arrive au serveur. Par exemple : 
+L'auteur fournit des filtres prédéfinis permettant de gérer informations sur la requête HTTP qui arrive au serveur. Par exemple :
 
 * Le filtre `path` sert à vérifier que le chemin de la requête correspond bien à ce que l'on souhaite, 
 * Le filtre `get` permet de vérifier qu'une requête utilise le verbe HTTP GET,
@@ -449,7 +449,7 @@ Notes pour la compréhension :
 
 On s'apperçoit que la création de route est manuelle puisqu'on compose la logique des routes en même temps que la déclaration de son chemin et du verbe HTTP. 
 
-Afin que l'on puisse lancer le serveur, il faut que le type d'Extraction du Filtre implémente le trait Reply défini par Warp, et son type de Rejection implémente le trait Reject. Ainsi, on peut être certain à la compilation que le framework sait répondre à n'importe quelle requête qu'il devra gérer. 
+Afin que l'on puisse lancer le serveur, il faut que le type d'Extraction du Filtre implémente le trait Reply défini par Warp, et que son type de Rejection implémente le trait Reject. Ainsi, on peut être certain à la compilation de la capacité du framework à répondre à n'importe quelle requête qu'il devra gérer.
 
 Warp est entièrement asynchrone. La composition de filtre inspirée du paradigme fonctionnel marche très bien ici: chaque filtre attend le résultat du précédent avant d'être éxécuté, et peut filtrer d'autres requêtes par la suite. Il faut voir le filtre comme un tuyau qui va effectuer tout le temps les mêmes opérations avec des entrées différentes (les requêtes des clients). 
 
@@ -464,7 +464,7 @@ Suite à ces trois études de cas, on peut tirer le tableau suivant :
 | Actix-web | Manuelle ou Macro procédurale        | Trait "actix_web::Responder" | Gardes de requête    | Oui                  | Stable                |
 | Warp      | Manuelle                             | Trait "Reply"                | Filtre ( ~Gardes )   | Oui                  | Stable                |
 
-Son étude conditionne les choix qui ont été faits durant le développement de PEWS. Une couche d'abstraction doit offrir les possibilités de plusieurs frameworks, il est donc primordial de choisir une méthode qui soit le dénominateur commun des technologies que nous venons d'étudier. 
+Son étude conditionne les choix qui ont été faits durant le développement de PEWS. Une couche d'abstraction doit offrir les possibilités de plusieurs frameworks, il est donc primordial de choisir une méthode qui puisse s'appliquer aux technologies que nous venons d'étudier tout en ne nivelant pas les fonctionnalités par le bas.
 
 Dans un premier temps, un framework cible est libre de choisir une chaîne de compilation (nightly ou stable). Si un framework fonctionne sur stable, l'utilisateur cherchera en général à éviter une librairie nightly. On ne peut donc pas fournir une seule librairie qui fonctionnerait avec tout framework. A la place, il faut séparer l'implémentation en plusieurs blocs : 
 
@@ -500,12 +500,17 @@ Implémentations concrètes | | pews_rocket | | pews_actix | | pews_warp |
                           |      +--------+ +-----------+ +------+
 ``` 
 
-L'application de l'utilisateur dépendra au final de pews_core, pews_derive, un framework cible, et un e implémentation concrète de pews qui cible ce framework.
+L'application de l'utilisateur dépendra au final de quatres bibliothèques: 
+
+* pews_core, 
+* pews_derive pour automatiser l'écriture des Repository, 
+* un framework cible, 
+* une implémentation concrète de PEWS qui cible ce framework.
 
 En résumé : 
 
 * L'abstraction commune, pews_core, définit le fonctionnement interne: à quoi ressemble une route, quels extracteurs sont à définir, comment la logique d'un endpoint est executée, comment représenter un Service... C'est une sorte de spécification que chaque implémentation concrète, ou `backend`, cherchera à exprimer pour sa cible.  
-* pews_derive est un outil qui permettra de créer 
+* pews_derive est un outil qui permettra de créer les Repository de manière automatisée grâce à des macros procédurales (nous ne rentrerons pas dans ces détails, mais nous montrerons tout de même à quoi ressemble le code final que l'utilisateur doit écrire), 
 * L'implémentation concrète contient la définition d'un "Backend PEWS". Celui-ci doit fournir la capacité de prendre les routes abstraites crées par PEWS et les monter sur la cible, ainsi que d'exposer le mécanisme de partage de ressources pour répondre correctement aux extracteurs de PEWS.
 * Le framework cible peut être utilisé normalement, et avec le mécanisme de montage de l'implémentation concrète. Ainsi, PEWS peut être utilisé pour créer rapidement des routes dont la logique est générique, sans impacter du code pré-existant et donc sacrifier la fléxibilité de la cible. 
 
