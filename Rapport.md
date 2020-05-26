@@ -34,7 +34,7 @@ Je souhaite remercier Messieurs Emmanuel Surleau et Arnaud de Bossoreille pour l
 
 \
 
-Finalement, je remercie l'ensemble de mes collègues chez Impero avec qui j'ai beaucoup de plaisir à travailler chaque semaine et à retrouver à l'étranger par périodes plus ou moins régulières. Cette équipe sympathique, dynamique et experimentée m'apporte beaucoup sur le plan professionel et m'a permis durant cette troisième année de m'épanouir et de progresser dans une variété de secteurs.
+Finalement, je remercie l'ensemble de mes collègues chez Impero avec qui j'ai beaucoup de plaisir à travailler chaque semaine et à retrouver à l'étranger par périodes plus ou moins régulières. Cette équipe sympathique, dynamique et experimentée m'apporte beaucoup sur le plan professionnel et m'a permis durant cette troisième année de m'épanouir et de progresser dans une variété de secteurs.
 
 \newpage
 
@@ -42,7 +42,7 @@ Finalement, je remercie l'ensemble de mes collègues chez Impero avec qui j'ai b
 
 ## Société Impero 
 
-**Impero A/S** est une société **Danoise** basée à **Aarhus**, dont l'activité réside dans le développement d'une solution logicielle de type **Software As A Service** (SAAS) permettant à ses clients d'assurer le suivi interne en ce qui concerne la **conformité** (compliance en anglais), c'est à dire leurs **obligations légales**. Par sa fléxibilité, l'outil permet notamment de suivre :
+**Impero A/S** est une société **Danoise** basée à **Aarhus**, dont l'activité réside dans le développement d'une solution logicielle de type **Software As A Service** (SAAS) permettant à ses clients d'assurer le suivi interne en ce qui concerne la **conformité** (compliance en anglais), c'est à dire leurs **obligations légales**. Par sa flexibilité, l'outil permet notamment de suivre :
 
 * La déclarations des taxes,
 * La **gestion des risques** liés à l'activité de l'entreprise, 
@@ -148,7 +148,7 @@ Le travail à distance (pas seulement en contexte de pandémie mondiale !) a ét
 
 L'équipe de développement est intégralement décentralisée (mais travaille sur le même fuseau horaire tout de même), avec trois ingénieurs en France, un en Allemagne, un en Hongrie, et le CTO[^cto] au siège de l'entreprise, à Aarhus. 
 
-Cette méthode de travail dite "**remote**" (comprendre : à distance) était nouvelle pour moi, mais j'y ai pris goût pour la liberté d'action qu'elle offre, bien qu'elle implique d'avoir une organisation correcte de son temps afin de ne pas mixer vie professionelle et personnelle.
+Cette méthode de travail dite "**remote**" (comprendre : à distance) était nouvelle pour moi, mais j'y ai pris goût pour la liberté d'action qu'elle offre, bien qu'elle implique d'avoir une organisation correcte de son temps afin de ne pas mixer vie professionnelle et personnelle.
 
 [^cto]: Chief Technical Officer, Directeur Technique.
 
@@ -167,7 +167,7 @@ On mentionnera également que beaucoup de gros noms de l'industrie (Google et Fa
 
 Dans le cadre du logiciel Impero, le serveur Web est implémenté à l'aide de Rocket, un framework web très complet dont nous détaillerons le fonctionnement plus tard. 
 
-Le frontend est implémenté avec **TypeScript**, une couche de sûreté sur JavaScript apportant plus de garanties statiques[^staticguarantees] permettant également de faire moins d'erreur et de rendre le refactoring plus aisé. Le framework **React** est utilisé pour faciliter la développement d'une interface utilisateur techniquement très complexe et fonctionnellement intuitive, tout en la rendant maintenable. Enfin, le framework d'interface **antd** sert de cadre à l'application pour lui donner une touche moderne et un peu d'esthétisme.
+Le frontend est implémenté avec **TypeScript**, une couche de sûreté sur JavaScript apportant plus de garanties statiques[^staticguarantees] permettant également de faire moins d'erreur et de rendre le refactoring plus aisé. Le framework **React** est utilisé pour faciliter la développement d'une interface utilisateur techniquement très complexe et fonctionnellement intuitive, tout en la rendant maintenable. Enfin, le framework d'interface **Ant Design** sert de cadre à l'application pour lui donner une touche moderne et un peu d'esthétisme.
 
 ![Logo du langage TypeScript (TS)](img/LogoTS.png){width="150px"}
 
@@ -366,7 +366,7 @@ Ce dernier point est capital même si nous ne rentrerons pas dans le détail du 
 
 Cette particularité complique la tâche de l'abstraction de PEWS. En effet, on ne peut pas implémenter de surcouche permettant de rendre un framework asynchrone. Il est toutefois possible - c'est la solution qu'utilise PEWS - d'embarquer une opération synchrone dans une opération asynchrone, et donc d'en émuler le fonctionnement. Cependant, il est évident qu'une telle méthode implique nécessairement un sacrifice de performances et la perte de l'intérêt de l'utilisation d'un framework asynchrone. A ce jour, PEWS n'a pas de solutions efficace pour résoudre ce problème vu que la cible principale est Rocket. 
 
-La déclaration d'une route avec Actix-web s'effectue de la manière suivante (code simplifié pour le main): 
+La déclaration d'une route avec Actix-web s'effectue de la manière suivante (code simplifié pour la fonction `main`): 
 
 ```rust 
 async fn greet(req: HttpRequest) -> impl Responder {
@@ -414,7 +414,7 @@ Warp est un framework montant de l'écosystème Rust qui a beaucoup gagné en po
 L'idée du framework est la suivante : pour chaque requête d'un client, on fait passer celle-ci dans un filtre (le premier de la chaîne). Puis : 
 
 * Soit celui-ci a réussi à extraire une information (il retourne son type d'Extraction). On passe alors ce résultat au filtre suivant s'il est composé, par exemple avec `map`, `and` ou `and_then`, sinon, ce type est renvoyé au client comme réponse à la requête.
-* Soit celui-ci a échoué dans son traitement (il a produit son type de Rejection). On va alors chercher à éxécuter un filtre composé par `or`. Si celui-ci n'est pas composé, on appellera la méthode dite de `recover`, qui permet de gérer les erreurs. Celle-ci enverra la réponse au client, le plus souvent avec un code d'erreur comme 400, 403, 404, 422, 500 ... 
+* Soit celui-ci a échoué dans son traitement (il a produit son type de Rejection). On va alors chercher à éxécuter un filtre composé par `or`. Si celui-ci n'est pas composé, on appellera la méthode dite de `recover`, qui permet de gérer les erreurs. Celle-ci enverra la réponse au client, le plus souvent avec un code d'erreur comme `400 Bad Request`, `403 Forbidden`, `404 Not Found`, `422 Unprocessable entity`, `500 Internal Server Error` ... 
 
 L'auteur fournit des filtres prédéfinis permettant de gérer informations sur la requête HTTP qui arrive au serveur. Par exemple :
 
@@ -423,7 +423,7 @@ L'auteur fournit des filtres prédéfinis permettant de gérer informations sur 
 * Le filtre `json` permet de désérialiser le contenu d'une requête avec le format JSON en une structure utilisable en Rust 
 * Le filtre `map` permet de transformer le résultat, mais aussi d'embarquer une ressource externe comme une connexion à la base de données. 
 
-On peut approximer les filtres comme des gardes de requête. Ils servent à extraire des informations du framework, la différence principale résidant dans la composition qui offre plus de fléxibilité, et une gestion des erreurs plus granulaire. 
+On peut approximer les filtres comme des gardes de requête. Ils servent à extraire des informations du framework, la différence principale résidant dans la composition qui offre plus de flexibilité, et une gestion des erreurs plus granulaire. 
 
 Example d'utilisation de Warp : 
 
@@ -434,7 +434,8 @@ fn main() {
         .map(|name| format!("Hello, {}!", name));
 
     // Le filtre de base utilisé par le serveur est hello.
-    // Si on voulait plusieurs routes, on pourrait composer hello avec hello.or(autre_filtre); 
+    // Si on voulait plusieurs routes, on pourrait composer hello
+    // avec hello.or(autre_filtre); 
     warp::serve(hello)
         .run(([127, 0, 0, 1], 3030));
 }
@@ -444,8 +445,8 @@ Notes pour la compréhension :
 
 * La requête `GET /hello/Olivier` retourne "Hello, Olivier!",
 * Ici, le serveur sera hebergé à l'adresse 127.0.0.1:3030,
-* Le filtre path est généré par la macro `path!`. On signale que la route qu'on déclare ici est de la forme `/hello/<name>`, où name doit être de type String. Si name n'est pas un string, une Rejection est générée, et on retournera une erreur 404.
-* On transforme le résultat en "Hello, <name>!", et on retourne cette String au client. 
+* Le filtre path est généré par la macro `path!`. On signale que la route qu'on déclare ici est de la forme `/hello/<name>`, où name doit être de type String. Si name n'est pas un string, une Rejection est générée, et on retournera une erreur `404 Not Found`.
+* On transforme le résultat en "Hello, \<name\>!", et on retourne cette String au client. 
 
 On s'apperçoit que la création de route est manuelle puisqu'on compose la logique des routes en même temps que la déclaration de son chemin et du verbe HTTP. 
 
@@ -512,7 +513,7 @@ En résumé :
 * L'abstraction commune, pews_core, définit le fonctionnement interne: à quoi ressemble une route, quels extracteurs sont à définir, comment la logique d'un endpoint est executée, comment représenter un Service... C'est une sorte de spécification que chaque implémentation concrète, ou `backend`, cherchera à exprimer pour sa cible.  
 * pews_derive est un outil qui permettra de créer les Repository de manière automatisée grâce à des macros procédurales (nous ne rentrerons pas dans ces détails, mais nous montrerons tout de même à quoi ressemble le code final que l'utilisateur doit écrire), 
 * L'implémentation concrète contient la définition d'un "Backend PEWS". Celui-ci doit fournir la capacité de prendre les routes abstraites crées par PEWS et les monter sur la cible, ainsi que d'exposer le mécanisme de partage de ressources pour répondre correctement aux extracteurs de PEWS.
-* Le framework cible peut être utilisé normalement, et avec le mécanisme de montage de l'implémentation concrète. Ainsi, PEWS peut être utilisé pour créer rapidement des routes dont la logique est générique, sans impacter du code pré-existant et donc sacrifier la fléxibilité de la cible. 
+* Le framework cible peut être utilisé normalement, et avec le mécanisme de montage de l'implémentation concrète. Ainsi, PEWS peut être utilisé pour créer rapidement des routes dont la logique est générique, sans impacter du code pré-existant et donc sacrifier la flexibilité de la cible. 
 
 ## Abstraction de framework Web 
 
@@ -683,7 +684,7 @@ A ce moment-là, PEWS devait être la seule librairie, et l'implémentation conc
 
 Dans PewsV2, pews_core est toujours en charge de définir le trait Retriever et les structures extracteurs. Mais au lieu de demander à l'implémenteur d'un backend d'écrire directement le code `impl Retriever<PewsDeserializer> for Backend`, PEWS définit un trait pour CHAQUE extracteur. Par exemple, le trait `PewsDeserializer<T>` définit la logique nécéssaire à la désérialisation d'un type T. Ensuite, grâce à ce que l'on appelle une "implémentation couverture", tout type `T: PewsDeserializer<T>` implémente automatiquement le trait Retriever<PewsDeserialize<T>>. 
  
-Ce paterne nettement plus composable permet à chaque implémentation concrète d'être écrite dans sa propre librairie.  
+Ce pattern nettement plus composable permet à chaque implémentation concrète d'être écrite dans sa propre librairie.  
  
 ### Les abstractions Services et Repository
 
@@ -713,7 +714,7 @@ De plus, le design ne permettait pas de composer les services en ajoutant des bo
 
 Ce problème majeur d'architecture a été résolu par une ré-écriture suivant une architecture un peu plus proche conceptuellement des Filtres de Warp. Cependant, elle perd la sécurité au niveau des types que nous avons vu précédemment.
 
-La dernière itération en data de PEWS introduit le concept de Passes. Une passe est une opération similaire à un filtre : elle peut échouer, et accède à une pièce interne mutable nommée `Storage`, dont on se sert pour échanger des données entre Passes, en évitant donc d'expliciter cet échange au niveau du type. Cette approche permet de composer un endpoint d'une suite d'instructions (comme les filtres de Warp). Le désavantage de cette méthode est qu'un endpoint est composé d'une suite de Passes qui ne connaissent pas d'information sur les autres Passes (ce qui constitue la principale différence avec les Filtres) et qui peuvent par conséquent être éxécutées dans n'importe quel sens définit par l'utilisateur, potentiellement dans un sens qui pourrait paniquer en production. On casse donc pour le moment les garanties de sécurité de Rust : cette approche n'est pas idéale, et des améliorations sont à l'étude pour contourner cette difficulté, qui seront appliquées quand le projet ne sera plus en pause. 
+La dernière itération en date de PEWS introduit le concept de Passes. Une passe est une opération similaire à un filtre : elle peut échouer, et accède à une pièce interne mutable nommée `Storage`, dont on se sert pour échanger des données entre Passes, en évitant donc d'expliciter cet échange au niveau du type. Cette approche permet de composer un endpoint d'une suite d'instructions (comme les filtres de Warp). Le désavantage de cette méthode est qu'un endpoint est composé d'une suite de Passes qui ne connaissent pas d'information sur les autres Passes (ce qui constitue la principale différence avec les Filtres) et qui peuvent par conséquent être exécutées dans n'importe quel sens définit par l'utilisateur, potentiellement dans un sens qui pourrait paniquer en production. On casse donc pour le moment les garanties de sécurité de Rust : cette approche n'est pas idéale, et des améliorations sont à l'étude pour contourner cette difficulté, qui seront appliquées quand le projet ne sera plus en pause. 
 
 ### Le montage des routes  
 
@@ -721,7 +722,7 @@ Comme expliqué précédemment, PEWS doit être utilisable sans perturber le fon
 
 Dans le cadre d'un framework comme Rocket ou actix qui définit les routes à l'aide de macros procédurales, il s'agit de regarder quel code est produit pour l'utilisateur afin de savoir ce que l'intégration doit produire comme structure, et quel trait il faut implémenter ; ce n'est donc pas chose aisée. 
 
-Heureusement, les contraintes à appliquer sont majoritairement les mêmes en ce qui concernent les routes. Sur les trois frameworks étudiés, tous exposent leur propre trait qui doit être implémenté par toue structure pour être considéré comme une route : 
+Heureusement, les contraintes à appliquer sont majoritairement les mêmes en ce qui concernent les routes. Sur les trois frameworks étudiés, tous exposent leur propre trait qui doit être implémenté par toute structure pour être considéré comme une route : 
 
 * Rocket expose le trait Handler, et une structure Route qui contient un implémenteur d'Handler.
 * Actix expose le trait HttpServiceFactory 
@@ -733,7 +734,7 @@ L'implémentation de ces traits est soumise à quelques conditions. Pour tous le
 
 Dans un second temps, la structure doit être `Send + Sync`, c'est à dire qu'elle implémente les traits Send et Sync. Ceux sont des traits définis par la librairie standard de Rust qui permettent d'assurer qu'une structure peut être envoyée d'un thread à un autre sans problème (Send) et qu'on peut partager une référence à cette structure depuis un autre thread (Sync). Cela permet aux frameworks de dupliquer les routes sur plusieurs threads pour pouvoir gérer les requêtes client en parallèle. Là encore, ces deux traits sont automatiquement implémentés pour les fonctions, mais pas forcément pour les structures issues des implémentations concrètes. 
 
-Enfin, la plupart du temps, ces structures doivent implémenter `Clone`, encore un trait de la librariie standard de Rust permettant de cloner la structure. Les frameworks préfèrent en général cloner les endpoints sur différents thread plutôt que de les avoir par référence afin d'éviter d'avoir à écrire explicitement la gestion des durées de vie (lifetimes), souvent fastidieuse et compliquée. Encore une fois, les fonctions de rust implémentent Clone, il s'agit uniquement de copier un pointeur.  
+Enfin, la plupart du temps, ces structures doivent implémenter `Clone`, encore un trait de la librairie standard de Rust permettant de cloner la structure. Les frameworks préfèrent en général cloner les endpoints sur différents thread plutôt que de les avoir par référence afin d'éviter d'avoir à écrire explicitement la gestion des durées de vie (lifetimes), souvent fastidieuse et compliquée. Encore une fois, les fonctions de rust implémentent Clone, il s'agit uniquement de copier un pointeur.  
 
 Chaque implémentation concrète fournit une structure qui suit les contraintes du framework cible, ces contraintes n'ont pas amenés de difficultés majeures. 
 
@@ -829,7 +830,7 @@ Les endpoints ainsi exposés sont :
 * `PATCH /api/hero/<id>` : Met à jour la définition d'un héros dont l'ID est donné en paramètre dans l'URI, et le contenu en représentation JSON d'un UpdatableHero.  
 * `DELETE /api/hero/<id>` : Supprime un héros de la base de données dont l'ID est donné en paramètre dans l'URI.
 
-Pour l'utilisateur final, le code requis pour créer un **service REST basique** qui bénéficie de la **sûreté** apportée par Diesel et des **performances** de Rust, sans sacrifier la **fléxibilité** de Rocket est donc d'environ une trentaine de lignes. Le code est hautement maintenable est requiert très peu de modifications. Il manque cependant dans cet exemple quelques fonctionnalités comme évoqué plus haut, notamment la possibilité d'intégrer des passes personalisées pour pouvoir gérer des accès ou valider des données. Ce seront les prochains objectifs à atteindre quand le développement de PEWS reprendra. 
+Pour l'utilisateur final, le code requis pour créer un **service REST basique** qui bénéficie de la **sûreté** apportée par Diesel et des **performances** de Rust, sans sacrifier la **flexibilité** de Rocket est donc d'environ une trentaine de lignes. Le code est hautement maintenable est requiert très peu de modifications. Il manque cependant dans cet exemple quelques fonctionnalités comme évoqué plus haut, notamment la possibilité d'intégrer des passes personalisées pour pouvoir gérer des accès ou valider des données. Ce seront les prochains objectifs à atteindre quand le développement de PEWS reprendra. 
  
 # Gestion de projet, planification et spécification de nouvelles fonctionnalités 
 
@@ -853,9 +854,9 @@ Le processus de développement suit le schéma suivant
  | Identification |---->| Spécification |-+-| Développement  |-->| Revue  |-----------------+
  +-+--------------+     +-+-------------+ | +----------------+   ++-------+                 |
    |                      |               |                       |                         |
-  "Refinement meeting"   Rédaction du     |             Chaque développeur peut             |
-  (Slack - MS Teams)     (Clubhouse)      |             relire le code d'une personne       |
-                                          |             et demander des changements pour    |
+  "Refinement meeting"   Rédaction        |             Chaque développeur peut             |
+  (Slack - MS Teams)     du ticket        |             relire le code d'une personne       |
+                         (Clubhouse)      |             et demander des changements pour    |
                                           |             améliorer la qualité de celui-ci    |
                                           |                                                 |
    +--------------------------------------+-------------------------------------------------+
@@ -898,7 +899,7 @@ L'experience apportée par ce projet montre qu'il est très compliqué de défin
 
 Pour contourner cette difficulté, une solution peut être de voir la tâche comme l'exploration d'une hypothèse, et fixer à l'avance une limite de temps pour l'investiguer. Si on a plusieurs solutions, on sait alors trouver celle qui semble la plus fiable, ou qui donne les meilleurs résultats.  
 
-#### Les réunions à caractère trop techniques étaient confusantes
+#### Les réunions à caractère trop techniques étaient source de confusion
 
 Il s'est avéré que les réunions étaient souvent une explication trop technique et proche du code, plutôt qu'une explication des enjeux puis des problématiques techniques rencontrées. Ces meetings ont de manière générale été assez peu productifs puisque le public ne pouvait pas gérer le flux d'information trop complexe auquel ils étaient exposés. 
 
@@ -922,7 +923,7 @@ L'objectif pendant la période d'apprentissage était de participer aux réunion
 
 Le déroulement d'un meeting suit en général le même plan. Dans un premier temps, on rappelle ce qui a été couvert lors du dernier point, afin de redonner aux participants le contexte de la discussion. Cela permet également de réfléchir "à froid" aux choix qui ont été faits pendant la réunion précédente et ainsi de revenir sur une décision qui pourrait être améliorée. 
 
-Ensuite, on fixe de nouveaux objectifs pour donner un cadre à cette réunion - sans quoi la discussion à tendance à divaguer sur divers sujets et à devenir contre-productive. En général, l'objectif de réunion correspond à définir le fonctionnement exact d'un écran ou d'un ensemble de fonctionnalités. Cela nécéssite une préparation en ammont : le directeur artistique de l'entreprise (Thomas), a en général préparé des maquettes d'application via l'outil Sketch, sur lesquelles l'équipe s'appuie pour discuter des fonctionnalités. Il est toujours plus facile de discuter du comportement attendu de quelque chose quand on en a un exemple sous les yeux.  
+Ensuite, on fixe de nouveaux objectifs pour donner un cadre à cette réunion - sans quoi la discussion à tendance à divaguer sur divers sujets et à devenir contre-productive. En général, l'objectif de réunion correspond à définir le fonctionnement exact d'un écran ou d'un ensemble de fonctionnalités. Cela nécéssite une préparation en amont : le directeur artistique de l'entreprise (Thomas) a en général préparé des maquettes d'application via l'outil Sketch, sur lesquelles l'équipe s'appuie pour discuter des fonctionnalités. Il est toujours plus facile de discuter du comportement attendu de quelque chose quand on en a un exemple sous les yeux.  
 
 Pour assurer le bon suivi de ces réunions, un backlog de sujets mentionnés a été mis en place. Sobrement intitulé "journal", il permet de retracer les discussions qui ont été faites pendant le meeting et note une suggestion pour le prochain, tout en gardant en tête les sujets qui n'ont pas encore été traîtés. Pour chaque sujet abordé, des notes (plutôt techniques) sont prises par les deux personnes de la réunion ayant à charge le point de vue technique (le CTO Emmanuel et moi-même). Ces notes servent de point de repère lorsque nous rediscutons par la suite des tickets qu'il s'agit de créer pour l'implémentation d'une fonctionnalité qui a été identifiée.  
 
@@ -940,7 +941,7 @@ Le travail de rédaction d'un ticket technique correspond à la réfléxion sur 
 
 La première étape est de contextualiser la demande technique. Cela permet à l'implémenteur d'obtenir des références sur l'existant, sur l'objectif et sur quoi son travail doit s'appuyer. 
 
-La partie "Contexte" rapelle :
+La partie "Contexte" rappelle :
 
 * Le besoin fonctionnel (cas d'utilisation), exprimé sous la forme suivante : 
 	* En tant que (persona)
@@ -949,13 +950,13 @@ La partie "Contexte" rapelle :
 * Les tickets précédents dont on va potentiellement réutiliser le travail
 * Eventuellement, le ticket qui découlera de l'implémentation de celui-ci
 
-Optionellement, on ajoutera une note à l'intention de l'implémenteur. Par exemple, elle servira à dire qu'on limite la portée de ce ticket à telle partie de la fonctionnalité. 
+Optionnellement, on ajoutera une note à l'intention de l'implémenteur. Par exemple, elle servira à dire qu'on limite la portée de ce ticket à telle partie de la fonctionnalité. 
 
 #### Objectif technique 
 
 La spécification correspond à une explication technique pouvant aller jusqu'à une reférence pour l'implémentation. On ne cherche pas à écrire l'algorithme exact, mais à en définir les attentes et les résultats. 
 
-On définit la structure de données pour l'échange entre le serveur et le client, en général en langageTypeScript, ou en Rust si le ticket concerne le backend. On définit également les traits qui seraient à ajouter. On cherche donc avec l'écriture de ces tickets à définir l'abstraction et les attentes, laissant libre choix à l'implémenteur. 
+On définit la structure de données pour l'échange entre le serveur et le client, en général en langage TypeScript, ou en Rust si le ticket concerne le backend. On définit également les traits qui seraient à ajouter. On cherche donc avec l'écriture de ces tickets à définir l'abstraction et les attentes, laissant libre choix à l'implémenteur. 
  
 Enfin, si le ticket concerne le backend, on définit une liste de tests unitaires à mettre en place afin d'éviter de potentielles régressions par la suite et de vérifier l'implémentation correcte du ticket. Impero ne garde pas pour l'instant d'information sur le coverage[^coverage] de sa base de code.
 
@@ -972,9 +973,9 @@ Dans les commentaires du ticket, l'équipe des relations clients pourra marquer 
 
 A la suite de l'écriture des spécifications techniques, nous planifions le travail et fournissons des estimations afin de pouvoir rendre compte à la hiérarchie des avancements du logiciel. 
 
-Ces estimations sont données en tant qu'équipe. L'entreprise appliquant une méthodologie agile, nous effectuons l'estimation des tâches avec du Poker Planning. Pour ce faire, on organise une réunion sur Slack. Nous choisissons une unité de mesurement, dans notres cas les nombres de la suite de Fibonacci (c'est un standard de la méthode Poker Planning, pratique puisque les nombres rendent bien compte de l'évolution de la difficulté d'une taĉhe). Puis nous montrons la liste des tickets, et expliquons à l'équipe l'objectif. Chaque membre de l'équipe donne une approximation en points, et défend son point de vue avec le reste de l'équipe jusqu'à ce que l'on arrive à un consensus. La tâche est alors estimée qualitativement, les points ne pouvant être transformés directement en mesure de temps. 
+Ces estimations sont données en tant qu'équipe. L'entreprise appliquant une méthodologie agile, nous effectuons l'estimation des tâches avec du Poker Planning. Pour ce faire, on organise une réunion sur Slack. Nous choisissons une unité de mesurement, dans notre cas les nombres de la suite de Fibonacci (c'est un standard de la méthode Poker Planning, pratique puisque les nombres rendent bien compte de l'évolution de la difficulté d'une taĉhe). Puis nous montrons la liste des tickets, et expliquons à l'équipe l'objectif. Chaque membre de l'équipe donne une approximation en points, et défend son point de vue avec le reste de l'équipe jusqu'à ce que l'on arrive à un consensus. La tâche est alors estimée qualitativement, les points ne pouvant être transformés directement en mesure de temps. 
 
-On utilise ensuite cette analyse qualitative pour produire une estimation du nombres d'heures nécéssaires à la réalsation d'une tâche technique. Le problème majoritaire de la gestion de projet chez Impero repose dans l'estimation des tâches, qui est toujours compliquée dans l'informatique. Cependant, le processus de développement mis en place permet de réduire en grande partie les problèmes de délais. 
+On utilise ensuite cette analyse qualitative pour produire une estimation du nombres d'heures nécéssaires à la réalisation d'une tâche technique. Le problème majoritaire de la gestion de projet chez Impero repose dans l'estimation des tâches, qui est toujours compliquée dans l'informatique. Cependant, le processus de développement mis en place permet de réduire en grande partie les problèmes de délais. 
 
 Finalement, on pourra utiliser des outils de gestion de projet classique comme les diagrammes de Gantt ou l'analyse du chemin critique pour déterminer une date de fin de projet. L'assignation des tâches est faite par le lead développeur et le CTO de l'entreprise lors de réunions ayant lieu avant les deux **dev meetings** hebdomadaires.  
 
@@ -994,7 +995,7 @@ Impero est une entreprise très accueillante qui pousse réellement les employé
 
 Travailler dans l'entreprise a été agréable grâce à l'organisation de celle-ci. J'ai en effet pu participer à **toutes les tâches de développement** d'un logiciel, y compris celles de **gestion de projet** allant jusqu'à la **rédaction de tickets**. Par la suite, je serai amené à travailler sur la planification et espère continuer l'expérimentation que l'entreprise mène sur la **décentralisation du processus d'amélioration du logiciel**, que j'ai découvert au long de cette 3ème année et apprécie particulièrement.
 
-Ce dernier point est certainement le plus fort ajout à mes compétences. L'écriture technique permet d'**envisager une autre façon d'aborder un problème**, incite à le **poser à plat** et à discuter puis **challenger ses opinions** avec d'autres membres avant la réalisation, dans le but d'aboutir aux meilleures solutions. Pendant mes premières années de parcours professionel, je n'avais pas eu l'occasion d'effectuer ces démarches complètes.  
+Ce dernier point est certainement le plus fort ajout à mes compétences. L'écriture technique permet d'**envisager une autre façon d'aborder un problème**, incite à le **poser à plat** et à discuter puis **challenger ses opinions** avec d'autres membres avant la réalisation, dans le but d'aboutir aux meilleures solutions. Pendant mes premières années de parcours professionnel, je n'avais pas eu l'occasion d'effectuer ces démarches complètes.  
 
 Pour conclure, ces trois années d'apprentissage et en particulier la dernière m'auront appris que la **remise en question** et la **critique de son propre travail** sont les facteurs clés de la progression. Par la variété des activités réalisées, le challenge technique et le contact avec mes collègues expérimentés, cette formation en alternance m'a permis d'**apprendre à apprendre**. 
 
