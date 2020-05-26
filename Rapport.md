@@ -722,7 +722,7 @@ Comme expliqué précédemment, PEWS doit être utilisable sans perturber le fon
 
 Dans le cadre d'un framework comme Rocket ou actix qui définit les routes à l'aide de macros procédurales, il s'agit de regarder quel code est produit pour l'utilisateur afin de savoir ce que l'intégration doit produire comme structure, et quel trait il faut implémenter ; ce n'est donc pas chose aisée. 
 
-Heureusement, les contraintes à appliquer sont majoritairement les mêmes en ce qui concernent les routes. Sur les trois frameworks étudiés, tous exposent leur propre trait qui doit être implémenté par toue structure pour être considéré comme une route : 
+Heureusement, les contraintes à appliquer sont majoritairement les mêmes en ce qui concernent les routes. Sur les trois frameworks étudiés, tous exposent leur propre trait qui doit être implémenté par toute structure pour être considéré comme une route : 
 
 * Rocket expose le trait Handler, et une structure Route qui contient un implémenteur d'Handler.
 * Actix expose le trait HttpServiceFactory 
