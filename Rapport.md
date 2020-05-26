@@ -314,9 +314,9 @@ Rocket est un framework qu'on peut considérer comme l'un des plus matures de l'
 
 Selon son site internet [@rocketweb] : 
 
-> Rocket est un framework web écrit avec Rust, qui permet d'écrire des applications Web rapides et sécurisées sans sacrifier la flexibilité, l'utilisabilité ni la sûreté.
+> Rocket est un framework web écrit avec Rust, qui permet d'écrire des applications Web rapides et sécurisées sans sacrifier la flexibilité, la facilité d'utilisation ni la sûreté.
 
-La particularité de Rocket est qu'il utilise la chaîne de compilation Rust **nightly** (comprendre : instable), qui lui permet d'accéder à certaines fonctionnalités des macros procédurales du langage, au prix de l'utilisation d'une chaîne Rust qui peut potentiellement casser d'une semaine à l'autre. Ce n'est pas nécessairement un désavantage, il n'y a pas eu de problème de ce genre pour l'instant, et celui-ci serait de toute façon contournable simplement.  
+La particularité de Rocket est qu'il utilise la chaîne de compilation Rust **nightly** (comprendre : instable), qui lui permet d'accéder à certaines fonctionnalités des macros procédurales du langage, au prix de l'utilisation d'une chaîne Rust qui peut potentiellement casser d'une semaine à l'autre. Ce n'est pas nécessairement un désavantage, il n'y a pas eu de problème de ce genre pour l'instant, et celui-ci serait de toute façon contournable simplement. Pour palier les problèmes d'instabilité, Impero ne met à jour cette chaîne qu'après une long période de temps et à un moment où le risque est limité (pas de mise en production à court terme).
 
 L'utilisation des macros procédurales permet à l'utilisateur d'être très expressif dans la définition des routes : 
 
@@ -335,10 +335,10 @@ fn main() {
 Note pour la compréhension:
 
 * u8 est un entier non-signé codé sur 8 bits (valeurs dans l'intervalle 0 -> 255).
-* `format!()` est une macro formattant le contenu comme une variable de type String. 
+* `format!()` est une macro mettant les paramètres sous la forme d'une variable de type String (chaîne de caractères).
 * Ici, pour un client qui envoie une requête sur `GET /hello/Olivier/22`, on retourne `Hello, 22 year old named Olivier!`.
 
-Comme on peut le constater, on trouve ici la définition du verbe HTTP, de la route (URI), et de la logique interne associée, ici le formattage de la réponse en String. 
+Comme on peut le constater, on trouve ici la définition du verbe HTTP, de la route (URI), et de la logique interne associée, ici le formattage de la réponse en chaîne de caractères.
 
 Rocket définit un système de "Gardes de requête" pour accéder à des ressources internes. Ceux-ci permettent de tirer avantage de la sûreté apportée par Rust pour écrire des services Web qui seront plus résistants aux erreurs. Dans l'exemple précédent, l'âge est de type `u8`. Si un client envoyait la requête `GET /hello/Olivier/abc`, abc n'étant pas transformable en un nombre compris entre 0 et 255, la requête doit échouer. Rocket effectue cette analyse tout seul, se rend compte que la transformation a échoué, et continue à chercher une autre route qui correspond à ce que l'utilisateur a demandé. Eventuellement, si le serveur ne définit pas de route qui correspond, il retournera le code d'erreur HTTP `404 Not Found`.
 
@@ -354,13 +354,13 @@ Actix-web est l'un des deux frameworks les plus populaires de l'écosystème Rus
 
 Actix-web dérive en effet à l'origine d'Actix, le système d'acteur évoqué en projet 2. Depuis la version 2.0 du framework, il n'existe cependant plus de dépendance directe entre le framework web et Actix, cette approche ayant été jugée trop inefficace. Depuis, les deux frameworks partagent le nom uniquement puisque l'auteur original l'a souhaité. 
 
-Cette technologie se veut être le point de référence du secteur: actix-web est constamment dans le haut des tests de comparaison de performance (appellés benchmarks) de TechEmpower (cf. [@techempower]). Ces très hautes performances représentent le plus gros avantage du Framework. Celui-ci compile sur la chaine stable de Rust, garantie importante pour beaucoup de professionels, et vient avec son lot de fonctionnalités très intéressantes, notamment : 
+Cette technologie se veut être le point de référence du secteur: actix-web est constamment dans le haut des tests de comparaison de performance (appellés benchmarks) de TechEmpower (cf. [@techempower]). Ces très hautes performances représentent le plus gros avantage du Framework. Celui-ci compile sur la chaîne stable de Rust, garantie importante pour beaucoup de professionnels, et vient avec son lot de fonctionnalités très intéressantes, notamment :
 
 * Une implémentation du protocole WebSocket,
 * Support pour HTTP SSE (similaire à WebSocket), 
 * Support pour TLS (HTTPS, encryption),
 * Support pour HTTP/2,
-* Intégration simple avec Actix (utilisation du même éxécuteur asynchrone : Tokio).
+* Intégration simple avec Actix (utilisation du même exécuteur asynchrone : Tokio).
 
 Ce dernier point est capital même si nous ne rentrerons pas dans le détail du fonctionnement de la programmation asynchrone en Rust. Des documents sont disponibles dans la bibliographie à ce sujet (cf. Asynchronous Programming in Rust [@asyncbook]). Afin d'obtenir des performances toujours meilleures lui permettant de se classer régulièrement premier des tests, Actix-web rend ses réponses asynchrones. Cela veut dire que pendant que le serveur est en attente de quelque chose, comme un fichier qu'il essaie de servir à son client, ou une requête sur la base de données, il peut répondre en parallèle à un autre client, mettant les opérations à la queue dans son exécuteur asynchrone. 
 
@@ -389,7 +389,7 @@ Notes pour la compréhension :
 * `impl Responder` correspond à n'importe quel type implémentant le trait `Responder`. `String`, retourné par la macro `format!`, implémente ce trait.
 * La logique appliquée par le serveur est encore une fois contenue dans une unique fonction: la fonction `greet`. 
 
-On voit ici un système similaire aux Gardes de Rocket: on passe une structure `HttpRequest` à la fonction qui contient la logique de la route, puis on s'en sert pour extraire des informations (*e.g.* le nom de la personne à saluer. A défaut, on saluera le monde entier). 
+On voit ici un système similaire aux Gardes de Rocket: on passe une structure `HttpRequest` à la fonction qui contient la logique de la route, puis on s'en sert pour extraire des informations (*e.g.* le nom de la personne à saluer).
 
 Si on voulait extraire un JSON du corps de la requête HTTP, on ajouterait en paramètre de greet le garde `web::Json<StructureADeserializer>`. Si on voulait accéder à une ressource interne stockée dans le serveur, on ajouterait en paramètre le garde `web::State<RessourceInterneARecuperer>`.
 
@@ -397,7 +397,7 @@ La création de route est manuelle: on monte une route sur une structure `App` e
 
 Notons qu'Actix-web version 3.0 propose également une macro procédurale pour générer ses routes comme Rocket le fait. 
 
-Enfin, il est important de noter que le focus sur Actix-web est principalement dû à son énorme popularité dans l'écosystème Rust. Beaucoup d'entreprises et d'individuels refusent de travailler sur celui-ci car le framework s'appuie énormément sur l'utilisation d'`unsafe`[^unsafe], de manière déraisonnée, et qu'historiquement, il a posé problème au sein de la communauté Rust à cause de certains problèmes de sécurité potentiellement engendrés. 
+Enfin, il est important de noter que le focus sur Actix-web est principalement dû à son énorme popularité dans l'écosystème Rust. Beaucoup d'entreprises et d'individuels refusent de travailler sur celui-ci car le framework s'appuie énormément sur l'utilisation d'`unsafe`[^unsafe], de manière déraisonnée, et parce qu'historiquement il a fait l'objet de controverses au sein de la communauté Rust à cause de problèmes de sécurité potentiels.
  
 [^unsafe]: Rust est un langage qui force un programme a être sécurisé et enlève la possibilité de travailler avec des valeurs pouvant causer des comportements indéfinis. `unsafe` permet d'enlever certaines restrictions pour des raisons de performance, mais il faut alors garantir soi-même la sécurité du code. 
 
