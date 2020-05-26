@@ -434,7 +434,8 @@ fn main() {
         .map(|name| format!("Hello, {}!", name));
 
     // Le filtre de base utilisé par le serveur est hello.
-    // Si on voulait plusieurs routes, on pourrait composer hello avec hello.or(autre_filtre); 
+    // Si on voulait plusieurs routes, on pourrait composer hello
+    // avec hello.or(autre_filtre); 
     warp::serve(hello)
         .run(([127, 0, 0, 1], 3030));
 }
