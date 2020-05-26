@@ -30,7 +30,7 @@ J'adresse mes premiers remerciements à Monsieur Grégory Obanos, maître d'appr
 
 \
 
-Je souhaite remercier Messieurs Emmanuel Surleau et Arnaud De Bossoreille pour leur suivi sur l'année, les conseils qu'ils m'ont prodigué, la confiance qu'ils m'ont accordé sur le projet de recherche et la relecture du présent rapport.  
+Je souhaite remercier Messieurs Emmanuel Surleau et Arnaud de Bossoreille pour leur suivi sur l'année, les conseils qu'ils m'ont prodigué, la confiance qu'ils m'ont accordé sur le projet de recherche et la relecture du présent rapport.
 
 \
 
@@ -42,7 +42,7 @@ Finalement, je remercie l'ensemble de mes collègues chez Impero avec qui j'ai b
 
 ## Société Impero 
 
-**Impero A/S** est une société **Danoise** basée à **Aarhus**, dont l'activité réside dans le développement d'une solution logicielle de type **Software As A Service** (SAAS) permettant à ses clients de s'assurer du bon suivi interne en ce qui concerne la *compliance*, c'est à dire leurs **obligations légales**. Par sa fléxibilité, l'outil permet notamment de suivre : 
+**Impero A/S** est une société **Danoise** basée à **Aarhus**, dont l'activité réside dans le développement d'une solution logicielle de type **Software As A Service** (SAAS) permettant à ses clients d'assurer le suivi interne en ce qui concerne la **conformité** (compliance en anglais), c'est à dire leurs **obligations légales**. Par sa fléxibilité, l'outil permet notamment de suivre :
 
 * La déclarations des taxes,
 * La **gestion des risques** liés à l'activité de l'entreprise, 
@@ -51,42 +51,42 @@ Finalement, je remercie l'ensemble de mes collègues chez Impero avec qui j'ai b
 	* Le contrôle de qualité
 	* La logistique
 * La gestion des **ressources humaines**, notamment :
-	* Congés
-	* Processus de recrutement
+	* Les congés
+	* Le processus de recrutement
 * L'application correcte de la **RGPD[^rgpd]** 
 
-L'entreprise a été créée en 2014. Elle développe un unique produit, qui lui rapporte sur l'année 2019 un chiffre d'affaires (CA) de plus de 7.500.000 DKK (soit 1.000.000 EUR). Elle est en forte croissance, puisque malgré les circonstances économiques actuelles[^covid], Impero affiche un CA prévisoire de 8.600.000 DKK (1.460.0000 EUR) mi-Q2 2020, soit une augmentation de plus de 100% sur moins de la moitié du temps de l'exercice précédent. 
+L'entreprise a été créée en 2014. Elle développe un seul produit, qui lui rapporte sur l'année 2019 un chiffre d'affaires (CA) de plus de 7.500.000 DKK (soit 1.000.000 EUR). Elle est en forte croissance, en dépit des circonstances économiques[^covid], Impero affiche un CA provisoire de 8.600.000 DKK (1.460.0000 EUR) mi-Q2 2020, soit une augmentation de plus de 100% sur moins de la moitié du temps de l'exercice précédent.
 
 ![Logo de l'entreprise Impero](img/LogoImpero.png){width="175px"}
 
 [^covid]: Ce document est écrit en Mai 2020 dans le contexte de la crise sanitaire liée à COVID-19
 
-Les clients de l'entreprise sont en général de **grandes** (voire **très grandes**) entreprises, telles **Siemens** ou **Volkswagen**, qui mettent en place des processus complexes et bénéficient donc du logiciel de manière acrue. Depuis plus d'un an, l'entreprise a revu son fonctionnement pour acquérir de nouveaux clients, et a opté pour un partenariat avec une grosse entreprise de consulting / audit: **KPMG**.
+Les clients de l'entreprise sont en général de **grandes** (voire **très grandes**) entreprises, telles **Maersk (+100.000 salariés)** ou **Bestseller**, qui mettent en place des processus complexes et bénéficient donc du logiciel de manière acrue. Depuis plus d'un an, l'entreprise a revu son fonctionnement pour acquérir de nouveaux clients, et opté pour un partenariat avec une grosse entreprise de conseil / audit: **KPMG**.
 
-Ce partenariat vise à pousser l'entreprise à répondre aux attentes de gros groupes qui choisissent KPMG comme consultant, permettant à Impero d'être **utilisé et éprouvé par des clients sérieux** - qui de plus sont en général très satisfaits de la solution proposée - et ainsi d'avoir une **bonne image**, et des clients qui lui rapportent un chiffre d'affaires relativement (par rapport à la taille de l'entreprise) conséquent.  
+Ce partenariat vise à pousser l'entreprise à répondre aux attentes de grands groupes qui choisissent KPMG comme consultant, permettant à Impero d'être **utilisé et éprouvé par des clients sérieux** - qui de plus sont en général très satisfaits de la solution proposée - et ainsi d'avoir une **bonne image**, et des clients qui lui rapportent un chiffre d'affaires relativement important, rapporté à la taille de l'entreprise.
 
 [^rgpd]: Règlement Général sur la Protection des Données, règlement visant à renforcer et unifier la protection des données pour les individus au sein de l'UE 
 
 ## Logiciel Impero
 
-Le logiciel se présente sous la forme d'une application web. Le principe de la solution est d'être très générique dans sa résolution des besoins, de sorte que le client puisse utiliser le produit comme il l'entend pour correspondre aux contraintes propres à son entreprise.    
+Le logiciel se présente sous la forme d'une application web. Le principe de la solution est d'être très générique dans sa réponse aux besoins, de sorte que le client puisse utiliser le produit comme il l'entend pour correspondre aux contraintes propres à son entreprise.    
 
-> Note: Afin de ne pas polluer le document avec trop de captures d'écran, seules 2 sont présentées ici. Il s'agit de parties de l'application qui ont été développées durant l'alternance. D'autres écrans du logiciel sont disponibles en Annexes de ce rapport. 
+> Note: afin de ne pas surcharger le document avec trop de captures d'écran, seules 2 sont présentées ici. Il s'agit de parties de l'application qui ont été développées durant l'alternance. D'autres écrans du logiciel sont disponibles dans les annexes de ce rapport.
 
 Afin de comprendre l'intérêt du logiciel, il faut d'abord voir comment il résout le problème de gestion des risques dans une entreprise. 
 
 ![Capture d'écran Impero - Carte des risques](img/ScreenImpero1.png){width="95%"}
 
-Ceci est la **carte de risques**, ou "Risk Map". Elle permet de lister certains risques auxquels l'entreprise cliente doit faire face. Par exemple, si l'entreprise X produit des bateaux, elle pourrait avoir un fournisseur qui n'a pas pu honorer sa commande, ce qui implique des risques de retard de production et/ou de livraison pour l'entreprise X. Il faut donc mener des actions pour en minimiser l'impact  économique. Comme on peut le voir, un risque est placé sur la carte par deux caractéristiques : 
+Ceci est la **carte de risques**, ou "Risk Map". Elle permet de lister certains risques auxquels l'entreprise cliente fait face. Par exemple, si l'entreprise X produit des bateaux, elle pourrait avoir un fournisseur qui n'a pas pu honorer sa commande, ce qui implique un risque de retard de production et/ou de livraison pour l'entreprise X. Il faut donc mettre en place des actions pour en minimiser l'impact économique. Comme on peut le voir, un risque est placé sur la carte en fonction de deux caractéristiques :
 
-* Son **impact** (s'il s'avère que l'évènement a réellement eu lieu, *e.g.* le fournisseur n'a pas livré sa commande, au combien est-ce grave pour l'entreprise sur une échelle de 1 à 5), et 
-* Sa **probabilité** (combien de chances cet évènement a-t-il d'arriver, sur une échelle de 1 à 5). 
+* Son **impact** (s'il s'avère que l'évènement a réellement eu lieu, *e.g.* le fournisseur n'a pas livré sa commande, quelle en est la gravité pour l'entreprise sur une échelle de 1 à 5), et
+* Sa **probabilité** (combien de chances cet événement a-t-il d'arriver, sur une échelle de 1 à 5).
 
-Il va de soi que plus un **risque inhérent** à l'entreprise a un fort impact et une grande probabilité d'arriver, plus c'est un risque critique pour celle-ci. Il convient alors de mettre en place un processus face à celui-ci pour en limiter les effets négatifs. On parle alors d'**atténuation de risque**, et le risque une fois atténué est dénommé "risque résiduel", qu'on peut observer en cliquant sur le bouton de sélection en haut à droite. Lorsque l'on cherche à appliquer un processus en face d'un risque, c'est là qu'interviennent les **contrôles** et les **programmes de contrôle**.
+Il va de soi que plus un **risque inhérent** à l'entreprise a un fort impact et une forte probabilité d'arriver, plus ce risque est critique pour celle-ci. Il convient alors de mettre en place un processus face à celui-ci pour en limiter les effets négatifs. On parle alors d'**atténuation de risque**, et le risque une fois atténué laisse place à un "risque résiduel", qu'on peut observer en cliquant sur le bouton de sélection en haut à droite. Lorsque l'on cherche à appliquer un processus en face d'un risque, c'est là qu'interviennent les **contrôles** et les **programmes de contrôle**.
 
-Un **contrôle** est une partie d'un processus que l'on met en œuvre. L'outil Impero permet à l'utilisateur de personnaliser ceux-ci, dans le but qu'il puisse coller au mieux à son processus interne. Concrètement, un contrôle est un **formulaire personnalisé** envoyé à un utilisateur. Il peut contenir : 
+Un **contrôle** est une partie d'un processus que l'on met en œuvre. L'outil Impero permet à l'utilisateur de personnaliser ceux-ci, dans le but de coller au mieux à son processus interne. Concrètement, un contrôle est un **formulaire personnalisé** envoyé à un utilisateur. Il peut contenir :
 
-* Des champs de textes, qu'ils soient numériques ou non.
+* Des champs de textes, qu'ils soient numériques ou non
 * Des réponses par bouton radio (une seule réponse possible parmis n choix)
 * Des réponses par checkbox (plusieurs réponses possible parmis n choix)
 * Un choix via un dropdown (une seule réponse possible parmis n choix)
