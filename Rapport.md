@@ -34,7 +34,7 @@ Je souhaite remercier Messieurs Emmanuel Surleau et Arnaud de Bossoreille pour l
 
 \
 
-Finalement, je remercie l'ensemble de mes collègues chez Impero avec qui j'ai beaucoup de plaisir à travailler chaque semaine et à retrouver à l'étranger par périodes plus ou moins régulières. Cette équipe sympathique, dynamique et experimentée m'apporte beaucoup sur le plan professionel et m'a permis durant cette troisième année de m'épanouir et de progresser dans une variété de secteurs.
+Finalement, je remercie l'ensemble de mes collègues chez Impero avec qui j'ai beaucoup de plaisir à travailler chaque semaine et à retrouver à l'étranger par périodes plus ou moins régulières. Cette équipe sympathique, dynamique et experimentée m'apporte beaucoup sur le plan professionnel et m'a permis durant cette troisième année de m'épanouir et de progresser dans une variété de secteurs.
 
 \newpage
 
@@ -148,7 +148,7 @@ Le travail à distance (pas seulement en contexte de pandémie mondiale !) a ét
 
 L'équipe de développement est intégralement décentralisée (mais travaille sur le même fuseau horaire tout de même), avec trois ingénieurs en France, un en Allemagne, un en Hongrie, et le CTO[^cto] au siège de l'entreprise, à Aarhus. 
 
-Cette méthode de travail dite "**remote**" (comprendre : à distance) était nouvelle pour moi, mais j'y ai pris goût pour la liberté d'action qu'elle offre, bien qu'elle implique d'avoir une organisation correcte de son temps afin de ne pas mixer vie professionelle et personnelle.
+Cette méthode de travail dite "**remote**" (comprendre : à distance) était nouvelle pour moi, mais j'y ai pris goût pour la liberté d'action qu'elle offre, bien qu'elle implique d'avoir une organisation correcte de son temps afin de ne pas mixer vie professionnelle et personnelle.
 
 [^cto]: Chief Technical Officer, Directeur Technique.
 
@@ -995,7 +995,7 @@ Impero est une entreprise très accueillante qui pousse réellement les employé
 
 Travailler dans l'entreprise a été agréable grâce à l'organisation de celle-ci. J'ai en effet pu participer à **toutes les tâches de développement** d'un logiciel, y compris celles de **gestion de projet** allant jusqu'à la **rédaction de tickets**. Par la suite, je serai amené à travailler sur la planification et espère continuer l'expérimentation que l'entreprise mène sur la **décentralisation du processus d'amélioration du logiciel**, que j'ai découvert au long de cette 3ème année et apprécie particulièrement.
 
-Ce dernier point est certainement le plus fort ajout à mes compétences. L'écriture technique permet d'**envisager une autre façon d'aborder un problème**, incite à le **poser à plat** et à discuter puis **challenger ses opinions** avec d'autres membres avant la réalisation, dans le but d'aboutir aux meilleures solutions. Pendant mes premières années de parcours professionel, je n'avais pas eu l'occasion d'effectuer ces démarches complètes.  
+Ce dernier point est certainement le plus fort ajout à mes compétences. L'écriture technique permet d'**envisager une autre façon d'aborder un problème**, incite à le **poser à plat** et à discuter puis **challenger ses opinions** avec d'autres membres avant la réalisation, dans le but d'aboutir aux meilleures solutions. Pendant mes premières années de parcours professionnel, je n'avais pas eu l'occasion d'effectuer ces démarches complètes.  
 
 Pour conclure, ces trois années d'apprentissage et en particulier la dernière m'auront appris que la **remise en question** et la **critique de son propre travail** sont les facteurs clés de la progression. Par la variété des activités réalisées, le challenge technique et le contact avec mes collègues expérimentés, cette formation en alternance m'a permis d'**apprendre à apprendre**. 
 
