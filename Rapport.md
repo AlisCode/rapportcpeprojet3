@@ -366,7 +366,7 @@ Ce dernier point est capital même si nous ne rentrerons pas dans le détail du 
 
 Cette particularité complique la tâche de l'abstraction de PEWS. En effet, on ne peut pas implémenter de surcouche permettant de rendre un framework asynchrone. Il est toutefois possible - c'est la solution qu'utilise PEWS - d'embarquer une opération synchrone dans une opération asynchrone, et donc d'en émuler le fonctionnement. Cependant, il est évident qu'une telle méthode implique nécessairement un sacrifice de performances et la perte de l'intérêt de l'utilisation d'un framework asynchrone. A ce jour, PEWS n'a pas de solutions efficace pour résoudre ce problème vu que la cible principale est Rocket. 
 
-La déclaration d'une route avec Actix-web s'effectue de la manière suivante (code simplifié pour le main): 
+La déclaration d'une route avec Actix-web s'effectue de la manière suivante (code simplifié pour la fonction `main`): 
 
 ```rust 
 async fn greet(req: HttpRequest) -> impl Responder {
