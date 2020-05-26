@@ -854,9 +854,9 @@ Le processus de développement suit le schéma suivant
  | Identification |---->| Spécification |-+-| Développement  |-->| Revue  |-----------------+
  +-+--------------+     +-+-------------+ | +----------------+   ++-------+                 |
    |                      |               |                       |                         |
-  "Refinement meeting"   Rédaction du     |             Chaque développeur peut             |
-  (Slack - MS Teams)     (Clubhouse)      |             relire le code d'une personne       |
-                                          |             et demander des changements pour    |
+  "Refinement meeting"   Rédaction        |             Chaque développeur peut             |
+  (Slack - MS Teams)     du ticket        |             relire le code d'une personne       |
+                         (Clubhouse)      |             et demander des changements pour    |
                                           |             améliorer la qualité de celui-ci    |
                                           |                                                 |
    +--------------------------------------+-------------------------------------------------+
