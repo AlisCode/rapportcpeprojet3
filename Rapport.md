@@ -98,7 +98,7 @@ La figure suivante montre le contrôle que l'entreprise Impero utilise pour le s
 
 ![Capture d'écran Impero - Remplissage d'un contrôle](img/ScreenImpero2.png){width="90%"}
 
-L'outil est en **développement continu** depuis 5 ans, et il est actuellement en cours de restructuration au niveau de son interface et de son ergonomie. Il faut également noter qu'une **ré-écriture côté serveur** afin d'effacer la dette technique induite par la couche logicielle existante (dite **"Legacy"**) que nous évoquerons plus loin. 
+L'outil est en **développement continu** depuis 5 ans, et il est actuellement en cours de restructuration au niveau de son interface et de son ergonomie. Il faut également noter une **ré-écriture côté serveur** afin d'effacer la dette technique induite par la couche logicielle existante (dite **"Legacy"**) que nous évoquerons plus loin.
 
 Le but actuel de l'entreprise est de prendre en compte les remarques des clients et d'engager la ré-écriture des modules existants sur une nouvelle technologie, afin de repartir sur des bases saines pour l'évolution du logiciel tout en satisfaisant les clients. 
 
@@ -148,28 +148,30 @@ Le travail à distance (pas seulement en contexte de pandémie mondiale !) a ét
 
 L'équipe de développement est intégralement décentralisée (mais travaille sur le même fuseau horaire tout de même), avec trois ingénieurs en France, un en Allemagne, un en Hongrie, et le CTO[^cto] au siège de l'entreprise, à Aarhus. 
 
-A titre personnel, cette méthode de travail dite "**remote**" (comprendre : à distance) était très nouvelle, mais j'y ai pris goût pour la liberté d'action qu'elle offre, bien qu'elle implique d'avoir une organisation correcte de son temps afin de ne pas mixer vie professionelle et personnelle.  
+Cette méthode de travail dite "**remote**" (comprendre : à distance) était nouvelle pour moi, mais j'y ai pris goût pour la liberté d'action qu'elle offre, bien qu'elle implique d'avoir une organisation correcte de son temps afin de ne pas mixer vie professionelle et personnelle.
 
 [^cto]: Chief Technical Officer, Directeur Technique.
 
 
 ## Environnement technique
 
-L'entreprise Impero déploie sa solution Web sur un serveur à l'aide d'**Ansible**, un outil open-source permettant la mise en production, qui est gérée manuellement par le CTO et le lead développeur. 
+L'entreprise Impero déploie sa solution Web sur un serveur à l'aide d'**Ansible**, un outil open-source permettant la mise en production déclenchée sur ordre du CTO ou du lead développeur après l'application de la procédure de test et validation, et l'avis conforme du product owner.
 
 L'architecture du logiciel est composée d'un serveur, que nous appelerons **"backend"** et qui héberge une application Web, que nous appelerons **"frontend"**. 
 
-Le backend est implémenté avec le langage de programmation **Rust**, qui vise à permettre à tout développeur de fournir des programmes sécurisés et performants, tirant avantage des technologies modernes (comme le **multithreading**) tout en leur offrant beaucoup d'outils pour se faciliter la tâche. Rust est un langage dit "système" capable de cibler toutes les plateformes allant d'**Android** au **Web** (via **WebAssembly**) en passant par les OS plus conventionnels, jusqu'à l'**informatique embarquée**. Celui-ci est **multi-paradigme** (on peut s'en servir comme d'un langage fonctionnel, impératif, voire même orienté objet sur certains aspects). Son **compilateur strict** élimine une bonne partie des erreurs avant qu'elles n'arrivent en production grâce au **typage fort**, et force une architecture propre des structures de données grâce à son système d'**ownership** qui empêche d'avoir des références mutables sur un même élément à plusieurs endroits dans le code. Pour en savoir plus, consulter "The Rust Programming Language" [@rustbook]. 
+Le backend est implémenté avec le langage de programmation **Rust**, qui vise à permettre à tout développeur de fournir des programmes sûrs et performants, tirant avantage des technologies modernes (comme le **multithreading**) tout en leur offrant beaucoup d'outils pour leur faciliter la tâche. Rust est un langage dit "système" capable de cibler toutes les plateformes allant d'**Android** au **Web** (via **WebAssembly**) en passant par les OS plus conventionnels, jusqu'à l'**informatique embarquée**. Celui-ci est **multi-paradigme** (on peut s'en servir comme d'un langage fonctionnel, impératif, voire même orienté objet sur certains aspects). Son **compilateur strict** élimine une bonne partie des erreurs avant qu'elles n'arrivent en production grâce au **typage fort** et à la **vérification des accès**, et facilite la définition de structures de données propres grâce à son système d'**ownership** qui empêche d'avoir des références mutables sur un même élément à plusieurs endroits dans le code. Pour en savoir plus, consulter "The Rust Programming Language" [@rustbook].
+
+On mentionnera également que beaucoup de gros noms de l'industrie (Google et Facebook notamment) ont de forts intérêts dans le langage car il permet de faciliter le travail autour des problèmes de sécurité. Microsoft a notamment engagé un travail dérivé de celui-ci pour apporter plus de souplesse sans sacrifier les garanties apportées.
 
 ![Logo du langage Rust](img/LogoRust.png){width="150px"}
 
 Dans le cadre du logiciel Impero, le serveur Web est implémenté à l'aide de Rocket, un framework web très complet dont nous détaillerons le fonctionnement plus tard. 
 
-Le frontend est implémenté avec **TypeScript**, un surensemble de JavaScript apportant plus de garanties statiques[^staticguarantees] permettant également de faire moins d'erreur et de rendre le refactoring plus aisé. Le framework **React** est utilisé afin de se faciliter la tâche et de rendre le tout maintenable. Enfin, le framework d'interface **antd** sert de cadre à l'application pour lui donner une touche moderne et un peu d'esthétisme. 
+Le frontend est implémenté avec **TypeScript**, une couche de sûreté sur JavaScript apportant plus de garanties statiques[^staticguarantees] permettant également de faire moins d'erreur et de rendre le refactoring plus aisé. Le framework **React** est utilisé pour faciliter la développement d'une interface utilisateur techniquement très complexe et fonctionnellement intuitive, tout en la rendant maintenable. Enfin, le framework d'interface **antd** sert de cadre à l'application pour lui donner une touche moderne et un peu d'esthétisme.
 
 ![Logo du langage TypeScript (TS)](img/LogoTS.png){width="150px"}
 
-L'entreprise laisse carte blanche à ses employés en ce qui concerne leur environnement de travail personnel : un budget est donné à chacun pour acheter un ordinateur gardé pendant son contrat. Ainsi, le collaborateur est libre de choisir son système d'exploitation, l'IDE[^ide] utilisé, et ainsi d'avoir un poste de travail vraiment personnel. Cette particularité implique cependant de standardiser l'environnement de développement, afin d'éviter les problèmes liés aux différentes plateformes. **Docker**, le système de containerisation devenu standard de l'industrie, est donc tout indiqué. Ce dernier offre également le bénéfice de pouvoir travailler facilement avec des systèmes à l'installation complexe et sensible aux erreurs comme **Redis** et **PostgreSQL**, sur lesquels le backend s'appuie. 
+L'entreprise laisse carte blanche à ses employés en ce qui concerne leur environnement de travail personnel : un budget est donné à chacun pour acheter un ordinateur détenu pendant la durée de son contrat. Ainsi, le collaborateur est libre de choisir son système d'exploitation, l'IDE[^ide] utilisé, et ainsi d'avoir un poste de travail vraiment personnel. Cette particularité implique cependant de standardiser l'environnement de développement, afin d'éviter les problèmes liés aux différentes plateformes. **Docker**, le système de conteneurs devenu standard de l'industrie, est donc tout indiqué. Ce dernier offre également le bénéfice de pouvoir travailler facilement avec des systèmes à l'installation complexe et sensible aux erreurs comme **Redis** et **PostgreSQL**, sur lesquels le backend s'appuie.
 
 ![Logo de Docker](img/LogoDocker.png){width="150px"}
 
@@ -180,15 +182,15 @@ Afin de garder une trace des différentes versions du logiciel et de permettre l
 
 ## Problématiques en tant qu'Ingénieur Développement
 
-Dans l'optique de s'agrandir, l'entreprise a augmenté sa capacité de production. Le nombre de développeurs est passé de 3 à 6 sur l'année 2019. Cela implique des tâches de gestion plus complexes, notamment dans la rédaction des spécifications techniques décrites plus tôt. A cet effet, le processus de spécification est en train d'évoluer pour permettre aux DevOps[^devops] d'être impliqué dans la rédaction de tickets. J'ai donc été amené à participer - voire animer par moment - des **refinement meeting**. Nous développerons cela dans la partie **Développement et spécifications de nouvelles fonctionnalités**.
+Dans l'optique de s'agrandir, l'entreprise a augmenté sa capacité de production. Le nombre de développeurs est passé de 3 à 6 sur l'année 2019. Cela implique des tâches de gestion plus complexes, notamment dans la rédaction des spécifications techniques décrites plus tôt. A cet effet, le processus de spécification est en train d'évoluer pour permettre aux DevOps[^devops] d'être impliqué dans la rédaction des tickets. J'ai donc été amené à participer - voire animer par moment - des **refinement meeting**. Nous développerons cela dans la partie **Développement et spécifications de nouvelles fonctionnalités**.
 
 [^devops]: Développeurs Opérationnels, terme générique pour un développeur également en charge des infrastructures réseaux.
 
-Toujours dans sa politique d'expansion, Impero a cherché à rentrer en partenariat avec des entreprises de plus en plus grandes, comme Volkswagen. Avoir des clients d'une telle taille implique d'apporter un soin particulier au développement de l'interfaçage de sa solution avec son client, ces derniers ayant tendance à vouloir recréer des outils internes utilisant les fonctionnalités et les données proposées par les outils externes, dont le logiciel Impero fait partie. Il est donc apparu clairement qu'il faudrait trouver un moyen pour l'entreprise de : 
+Toujours dans sa politique de croissance, Impero a cherché à créer des partenariat avec des entreprises de plus en plus grandes (sans citer d'exemple puisque cette information est confidentielle, le groupe compte plus de 650.000 employés). Avoir des clients d'une telle taille implique d'apporter un soin particulier au développement de l'interfaçage de sa solution avec son client, ces derniers ayant tendance à vouloir recréer des outils internes utilisant les fonctionnalités et les données proposées par les outils externes, dont le logiciel Impero fait partie. Il apparaît donc clairement qu'il faut trouver un moyen pour l'entreprise de :
 
 * Mettre en place un accès exterieur sur son API[^api] publique. 
 * Documenter celui-ci 
-* Faire en sorte qu'il respecte au maximum les standards de l'industrie du logiciel, dans le cas présent, une API REST
+* Faire en sorte qu'elle respecte au maximum les standards de l'industrie du logiciel, dans le cas présent, une API REST
 
 L'objectif du projet de recherche qui a été mené était de faciliter l'écriture et le maintien de nouveaux services complexes, qui seront directement exposés au client. 
 
