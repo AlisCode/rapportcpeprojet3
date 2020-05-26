@@ -414,7 +414,7 @@ Warp est un framework montant de l'écosystème Rust qui a beaucoup gagné en po
 L'idée du framework est la suivante : pour chaque requête d'un client, on fait passer celle-ci dans un filtre (le premier de la chaîne). Puis : 
 
 * Soit celui-ci a réussi à extraire une information (il retourne son type d'Extraction). On passe alors ce résultat au filtre suivant s'il est composé, par exemple avec `map`, `and` ou `and_then`, sinon, ce type est renvoyé au client comme réponse à la requête.
-* Soit celui-ci a échoué dans son traitement (il a produit son type de Rejection). On va alors chercher à éxécuter un filtre composé par `or`. Si celui-ci n'est pas composé, on appellera la méthode dite de `recover`, qui permet de gérer les erreurs. Celle-ci enverra la réponse au client, le plus souvent avec un code d'erreur comme 400, 403, 404, 422, 500 ... 
+* Soit celui-ci a échoué dans son traitement (il a produit son type de Rejection). On va alors chercher à éxécuter un filtre composé par `or`. Si celui-ci n'est pas composé, on appellera la méthode dite de `recover`, qui permet de gérer les erreurs. Celle-ci enverra la réponse au client, le plus souvent avec un code d'erreur comme `400 Bad Request`, `403 Forbidden`, `404 Not Found`, `422 Unprocessable entity`, `500 Internal Server Error` ... 
 
 L'auteur fournit des filtres prédéfinis permettant de gérer informations sur la requête HTTP qui arrive au serveur. Par exemple :
 
@@ -444,7 +444,7 @@ Notes pour la compréhension :
 
 * La requête `GET /hello/Olivier` retourne "Hello, Olivier!",
 * Ici, le serveur sera hebergé à l'adresse 127.0.0.1:3030,
-* Le filtre path est généré par la macro `path!`. On signale que la route qu'on déclare ici est de la forme `/hello/<name>`, où name doit être de type String. Si name n'est pas un string, une Rejection est générée, et on retournera une erreur 404.
+* Le filtre path est généré par la macro `path!`. On signale que la route qu'on déclare ici est de la forme `/hello/<name>`, où name doit être de type String. Si name n'est pas un string, une Rejection est générée, et on retournera une erreur `404 Not Found`.
 * On transforme le résultat en "Hello, <name>!", et on retourne cette String au client. 
 
 On s'apperçoit que la création de route est manuelle puisqu'on compose la logique des routes en même temps que la déclaration de son chemin et du verbe HTTP. 
