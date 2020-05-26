@@ -950,7 +950,7 @@ La partie "Contexte" rappelle :
 * Les tickets précédents dont on va potentiellement réutiliser le travail
 * Eventuellement, le ticket qui découlera de l'implémentation de celui-ci
 
-Optionellement, on ajoutera une note à l'intention de l'implémenteur. Par exemple, elle servira à dire qu'on limite la portée de ce ticket à telle partie de la fonctionnalité. 
+Optionnellement, on ajoutera une note à l'intention de l'implémenteur. Par exemple, elle servira à dire qu'on limite la portée de ce ticket à telle partie de la fonctionnalité. 
 
 #### Objectif technique 
 
