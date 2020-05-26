@@ -42,7 +42,7 @@ Finalement, je remercie l'ensemble de mes collègues chez Impero avec qui j'ai b
 
 ## Société Impero 
 
-**Impero A/S** est une société **Danoise** basée à **Aarhus**, dont l'activité réside dans le développement d'une solution logicielle de type **Software As A Service** (SAAS) permettant à ses clients d'assurer le suivi interne en ce qui concerne la **conformité** (compliance en anglais), c'est à dire leurs **obligations légales**. Par sa fléxibilité, l'outil permet notamment de suivre :
+**Impero A/S** est une société **Danoise** basée à **Aarhus**, dont l'activité réside dans le développement d'une solution logicielle de type **Software As A Service** (SAAS) permettant à ses clients d'assurer le suivi interne en ce qui concerne la **conformité** (compliance en anglais), c'est à dire leurs **obligations légales**. Par sa flexibilité, l'outil permet notamment de suivre :
 
 * La déclarations des taxes,
 * La **gestion des risques** liés à l'activité de l'entreprise, 
