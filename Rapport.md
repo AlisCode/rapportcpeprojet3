@@ -446,7 +446,7 @@ Notes pour la compréhension :
 * La requête `GET /hello/Olivier` retourne "Hello, Olivier!",
 * Ici, le serveur sera hebergé à l'adresse 127.0.0.1:3030,
 * Le filtre path est généré par la macro `path!`. On signale que la route qu'on déclare ici est de la forme `/hello/<name>`, où name doit être de type String. Si name n'est pas un string, une Rejection est générée, et on retournera une erreur `404 Not Found`.
-* On transforme le résultat en "Hello, <name>!", et on retourne cette String au client. 
+* On transforme le résultat en "Hello, \<name\>!", et on retourne cette String au client. 
 
 On s'apperçoit que la création de route est manuelle puisqu'on compose la logique des routes en même temps que la déclaration de son chemin et du verbe HTTP. 
 
