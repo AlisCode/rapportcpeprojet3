@@ -204,7 +204,7 @@ L'objectif du projet de recherche qui a été mené était de faciliter l'écrit
 
 Afin de résoudre la problématique d'ouverture de l'API que nous venons d'énoncer, il est important de comprendre le contexte dans lequel le backend est développé, et quels objectifs ce projet de recherche se propose d'atteindre. 
 
-Le travail s'articule autour de l'outil Diesel, déjà utilisé en année deux (cf. Rapport 2, [@rapport2]) que nous qualifierons d'ORM[^orm]. Cette librairie ajoute de la sureté lorsque l'on travaille avec du SQL[^sql], uniquement sur les systèmes de gestion de base de données relationnelles, au prix de l'écriture d'un code un peu plus verbeux. Cette sureté se traduit concrètement de la façon suivante : 
+Le travail s'articule autour de l'outil Diesel, déjà utilisé en année deux (cf. Rapport 2, [@rapport2]) que nous qualifierons d'ORM[^orm]. Cette bibliothèque ajoute de la sureté lorsque l'on travaille avec du SQL[^sql], uniquement sur les systèmes de gestion de base de données relationnelles, au prix de l'écriture d'un code un peu plus verbeux. Cette sureté se traduit concrètement de la façon suivante : 
 
 * La requête SQL que l'on écrit est vérifiée **statiquement** (comprendre : à la compilation), et est garantie d'être valide. Il n'y a **aucune** possibilité de faire une faute de frappe, de requêter des champs d'une autre table par mégarde, mais surtout lorsqu'une modification est apportée à la structure de la base de données, si la requête devenait invalide, le compilateur en avertirait aussitôt le programmeur ce qui représente un gain de temps et de sécurité non-négligeable. 
 * Les structures de données qu'un programmeur écrit sont également vérifiées pour qu'elle puisse accueillir le résultat d'une requête, sans quoi le compilateur ne générera pas de code exécutable.
@@ -217,7 +217,7 @@ Cette glue s'appelle un Service. Il s'agit d'un groupe d'endpoints (notion que n
 
 Le projet de recherche s'appelle **PEWS**. C'est un anagramme récursif pour **PEWS : Easy Web Services**. Son but est de faciliter, voire retirer la nécessité d'écrire cette glue, ce qui permet d'exposer l'interface en écrivant moins de code, donc d'obtenir une meilleure maintenabilité, et de la rapidité de développement sans pour autant sacrifier les performances de Rust ni la sûreté de Diesel. Il faut voir PEWS comme **une surcouche à un framework Web**, qui aura pour tâche d'écrire l'intégration des Services à la place du développeur qui n'aura plus qu'à écrire la logique métier si celle-ci varie du fonctionnement classique du service (par exemple si l'on cherche à valider des données ou à vérifier des accès). PEWS vise en quelque sorte le paradigme de **Convention over configuration** que l'on retrouve dans des frameworks comme **Spring** (Java) et **Rails** (Ruby), pièce manquante de l'écosystème Web en Rust. 
 
-Dans un soucis de pérennité, il est prévu de publier la librairie sous une licence Open-Source (type **MIT**), puisqu'il nous a semblé que PEWS correspondait à un besoin de la communauté Rust de manière générale. Afin de favoriser l'utilisation au sein de ladite communauté, et de rendre l'outil le plus flexible et correct possible, il s'agit de faire en sorte que PEWS puisse faire abstraction du framework Web de l'utilisateur, auquel on ajoute des fonctionnalités. 
+Dans un soucis de pérennité, il est prévu de publier la bibliothèque sous une licence Open-Source (type **MIT**), puisqu'il nous a semblé que PEWS correspondait à un besoin de la communauté Rust de manière générale. Afin de favoriser l'utilisation au sein de ladite communauté, et de rendre l'outil le plus flexible et correct possible, il s'agit de faire en sorte que PEWS puisse faire abstraction du framework Web de l'utilisateur, auquel on ajoute des fonctionnalités. 
 
 Afin de comprendre comment nous pouvons aborder ce problème et les raisons qui ont poussées vers l'architecture de PEWS, il faut d'abord appréhender le fonctionnement d'un framework web.
 
@@ -340,7 +340,7 @@ Note pour la compréhension:
 
 Comme on peut le constater, on trouve ici la définition du verbe HTTP, de la route (URI), et de la logique interne associée, ici le formattage de la réponse en chaîne de caractères.
 
-Rocket définit un système de "Gardes de requête" pour accéder à des ressources internes. Ceux-ci permettent de tirer avantage de la sûreté apportée par Rust pour écrire des services Web qui seront plus résistants aux erreurs. Dans l'exemple précédent, l'âge est de type `u8`. Si un client envoyait la requête `GET /hello/Olivier/abc`, abc n'étant pas transformable en un nombre compris entre 0 et 255, la requête doit échouer. Rocket effectue cette analyse tout seul, se rend compte que la transformation a échoué, et continue à chercher une autre route qui correspond à ce que l'utilisateur a demandé. Eventuellement, si le serveur ne définit pas de route qui correspond, il retournera le code d'erreur HTTP `404 Not Found`.
+Rocket définit un système de **"Gardes de requête"** pour accéder à des ressources internes. Ceux-ci permettent de tirer avantage de la sûreté apportée par Rust pour écrire des services Web qui seront plus résistants aux erreurs. Dans l'exemple précédent, l'âge est de type `u8`. Si un client envoyait la requête `GET /hello/Olivier/abc`, abc n'étant pas transformable en un nombre compris entre 0 et 255, la requête doit échouer. Rocket effectue cette analyse tout seul, se rend compte que la transformation a échoué, et continue à chercher une autre route qui correspond à ce que l'utilisateur a demandé. Eventuellement, si le serveur ne définit pas de route qui correspond, il retournera le code d'erreur HTTP `404 Not Found`.
 
 Les gardes sont appellés sous la forme d'un type que l'on donne en paramètre d'une fonction, puis grâce à ses macros procédurales, Rocket se charge d'écrire tout seul le code permettant d'appliquer le comportement de ceux-ci. 
 
@@ -348,13 +348,13 @@ Enfin, Rocket possède une grosse communauté qui a développé beaucoup d'outil
 
 ### Second cas d'étude : Actix-Web
 
-Actix-web est l'un des deux frameworks les plus populaires de l'écosystème Rust. Pour rappel, c'est la technologie qui a été utilisée dans le cadre du projet 2. Selon son site (cf. [@actixweb]):  
+Actix-web est l'un des deux frameworks les plus populaires de l'écosystème Rust. Pour rappel, c'est la technologie qui a été utilisée dans le cadre du projet 2. Selon son site web (cf. [@actixweb]) :  
 
 > Actix est le puissant système d'Acteurs de Rust, et le framework web le plus divertissant.
 
-Actix-web dérive en effet à l'origine d'Actix, le système d'acteur évoqué en projet 2. Depuis la version 2.0 du framework, il n'existe cependant plus de dépendance directe entre le framework web et Actix, cette approche ayant été jugée trop inefficace. Depuis, les deux frameworks partagent le nom uniquement puisque l'auteur original l'a souhaité. 
+Actix-web dérive en effet à l'origine d'Actix, le système d'acteur évoqué en projet 2 (cf. "Conception et implémentation d'une suite d'outils géospatiaux", [@rapport2]). Depuis la version 2.0 du framework, il n'existe cependant plus de dépendance directe entre le framework web et Actix, cette approche ayant été jugée trop inefficace. Depuis, les deux frameworks partagent le nom uniquement puisque l'auteur original l'a souhaité. 
 
-Cette technologie se veut être le point de référence du secteur: actix-web est constamment dans le haut des tests de comparaison de performance (appellés benchmarks) de TechEmpower (cf. [@techempower]). Ces très hautes performances représentent le plus gros avantage du Framework. Celui-ci compile sur la chaîne stable de Rust, garantie importante pour beaucoup de professionnels, et vient avec son lot de fonctionnalités très intéressantes, notamment :
+Cette technologie se veut être le **point de référence** du secteur: actix-web est constamment dans le haut des tests de comparaison de performance (appellés **benchmarks**) de TechEmpower (cf. [@techempower]). Ces **très hautes performances** représentent le plus gros avantage du Framework. Celui-ci compile sur la chaîne stable de Rust, garantie importante pour beaucoup de professionnels, et vient avec son lot de fonctionnalités très intéressantes, notamment :
 
 * Une implémentation du protocole WebSocket,
 * Support pour HTTP SSE (similaire à WebSocket), 
@@ -362,9 +362,9 @@ Cette technologie se veut être le point de référence du secteur: actix-web es
 * Support pour HTTP/2,
 * Intégration simple avec Actix (utilisation du même exécuteur asynchrone : Tokio).
 
-Ce dernier point est capital même si nous ne rentrerons pas dans le détail du fonctionnement de la programmation asynchrone en Rust. Des documents sont disponibles dans la bibliographie à ce sujet (cf. Asynchronous Programming in Rust [@asyncbook]). Afin d'obtenir des performances toujours meilleures lui permettant de se classer régulièrement premier des tests, Actix-web rend ses réponses asynchrones. Cela veut dire que pendant que le serveur est en attente de quelque chose, comme un fichier qu'il essaie de servir à son client, ou une requête sur la base de données, il peut répondre en parallèle à un autre client, mettant les opérations à la queue dans son exécuteur asynchrone. 
+Ce dernier point est capital même si nous ne rentrerons pas dans le détail du fonctionnement de la programmation asynchrone en Rust. Des documents sont disponibles dans la bibliographie à ce sujet (cf. Asynchronous Programming in Rust [@asyncbook]). Afin d'obtenir des **performances** toujours meilleures lui permettant de se classer régulièrement premier des tests, Actix-web rend ses réponses **asynchrones**. Cela veut dire que pendant que le serveur est en attente de quelque chose, comme un fichier qu'il essaie de servir à son client, ou une requête sur la base de données, il peut répondre en parallèle à un autre client, mettant les opérations à la queue dans son exécuteur asynchrone. 
 
-Cette particularité complique la tâche de l'abstraction de PEWS. En effet, on ne peut pas implémenter de surcouche permettant de rendre un framework asynchrone. Il est toutefois possible - c'est la solution qu'utilise PEWS - d'embarquer une opération synchrone dans une opération asynchrone, et donc d'en émuler le fonctionnement. Cependant, il est évident qu'une telle méthode implique nécessairement un sacrifice de performances et la perte de l'intérêt de l'utilisation d'un framework asynchrone. A ce jour, PEWS n'a pas de solutions efficace pour résoudre ce problème vu que la cible principale est Rocket. 
+Cette particularité complique la tâche de l'abstraction de PEWS. En effet, on ne peut pas implémenter de surcouche permettant de rendre un framework asynchrone. Il est toutefois possible - c'est la solution qu'utilise PEWS - d'embarquer une opération synchrone dans une opération asynchrone, et donc d'en émuler le fonctionnement. Cependant, il est évident qu'une telle méthode implique nécessairement un sacrifice de performances et la perte de l'intérêt de l'utilisation d'un framework asynchrone. A ce jour, PEWS n'a pas de solutions efficace pour résoudre ce problème vu que **sa cible principale est Rocket**. Cependant, la prochaine version de ce framework (Rocket v0.5) permettra d'exposer des endpoints asynchrones, ce qui fera certainment évoluer certains choix de conception de PEWS.
 
 La déclaration d'une route avec Actix-web s'effectue de la manière suivante (code simplifié pour la fonction `main`): 
 
@@ -389,15 +389,15 @@ Notes pour la compréhension :
 * `impl Responder` correspond à n'importe quel type implémentant le trait `Responder`. `String`, retourné par la macro `format!`, implémente ce trait.
 * La logique appliquée par le serveur est encore une fois contenue dans une unique fonction: la fonction `greet`. 
 
-On voit ici un système similaire aux Gardes de Rocket: on passe une structure `HttpRequest` à la fonction qui contient la logique de la route, puis on s'en sert pour extraire des informations (*e.g.* le nom de la personne à saluer).
+On voit ici un **système similaire aux Gardes de Rocket** : on passe une structure `HttpRequest` à la fonction qui contient la logique de la route, puis on s'en sert pour extraire des informations (*e.g.* le nom de la personne à saluer).
 
 Si on voulait extraire un JSON du corps de la requête HTTP, on ajouterait en paramètre de greet le garde `web::Json<StructureADeserializer>`. Si on voulait accéder à une ressource interne stockée dans le serveur, on ajouterait en paramètre le garde `web::State<RessourceInterneARecuperer>`.
 
 La création de route est manuelle: on monte une route sur une structure `App` en spécifiant le chemin, le verbe HTTP, et la logique à appliquer.
 
-Notons qu'Actix-web version 3.0 propose également une macro procédurale pour générer ses routes comme Rocket le fait. 
+Notons qu'Actix-web version 3.0 propose également une **macro procédurale** pour générer ses routes comme Rocket le fait. 
 
-Enfin, il est important de noter que le focus sur Actix-web est principalement dû à son énorme popularité dans l'écosystème Rust. Beaucoup d'entreprises et d'individuels refusent de travailler sur celui-ci car le framework s'appuie énormément sur l'utilisation d'`unsafe`[^unsafe], de manière déraisonnée, et parce qu'historiquement il a fait l'objet de controverses au sein de la communauté Rust à cause de problèmes de sécurité potentiels.
+Enfin, il est important de noter que le focus sur Actix-web est principalement dû à son énorme **popularité** dans l'écosystème Rust. Cependant, beaucoup d'entreprises et d'individuels se refusent à travailler sur celui-ci car le framework s'appuie énormément sur l'utilisation d'`unsafe`[^unsafe], de manière déraisonnée, et parce qu'historiquement il a fait l'objet de **controverses** au sein de la communauté Rust à cause de problèmes de sécurité potentiels.
  
 [^unsafe]: Rust est un langage qui force un programme a être sécurisé et enlève la possibilité de travailler avec des valeurs pouvant causer des comportements indéfinis. `unsafe` permet d'enlever certaines restrictions pour des raisons de performance, mais il faut alors garantir soi-même la sécurité du code. 
 
@@ -413,17 +413,17 @@ Warp est un framework montant de l'écosystème Rust qui a beaucoup gagné en po
 
 L'idée du framework est la suivante : pour chaque requête d'un client, on fait passer celle-ci dans un filtre (le premier de la chaîne). Puis : 
 
-* Soit celui-ci a réussi à extraire une information (il retourne son type d'Extraction). On passe alors ce résultat au filtre suivant s'il est composé, par exemple avec `map`, `and` ou `and_then`, sinon, ce type est renvoyé au client comme réponse à la requête.
-* Soit celui-ci a échoué dans son traitement (il a produit son type de Rejection). On va alors chercher à éxécuter un filtre composé par `or`. Si celui-ci n'est pas composé, on appellera la méthode dite de `recover`, qui permet de gérer les erreurs. Celle-ci enverra la réponse au client, le plus souvent avec un code d'erreur comme `400 Bad Request`, `403 Forbidden`, `404 Not Found`, `422 Unprocessable entity`, `500 Internal Server Error` ... 
+* Soit celui-ci a réussi à **extraire une information** (il retourne son type d'Extraction). On passe alors ce résultat au filtre suivant s'il est composé, par exemple avec `map`, `and` ou `and_then`, sinon, ce type est renvoyé au client comme réponse à la requête.
+* Soit celui-ci a **échoué dans son traitement** (il a produit son type de Rejection). On va alors chercher à éxécuter un filtre composé par `or`. Si celui-ci n'est pas composé, on appellera la méthode dite de `recover`, qui permet de gérer les erreurs. Celle-ci enverra la réponse au client, le plus souvent avec un code d'erreur comme `400 Bad Request`, `403 Forbidden`, `404 Not Found`, `422 Unprocessable Entity`, `500 Internal Server Error` ... 
 
-L'auteur fournit des filtres prédéfinis permettant de gérer informations sur la requête HTTP qui arrive au serveur. Par exemple :
+L'auteur fournit des filtres prédéfinis permettant de gérer des informations sur la requête HTTP qui arrive au serveur. Par exemple :
 
 * Le filtre `path` sert à vérifier que le chemin de la requête correspond bien à ce que l'on souhaite, 
 * Le filtre `get` permet de vérifier qu'une requête utilise le verbe HTTP GET,
 * Le filtre `json` permet de désérialiser le contenu d'une requête avec le format JSON en une structure utilisable en Rust 
 * Le filtre `map` permet de transformer le résultat, mais aussi d'embarquer une ressource externe comme une connexion à la base de données. 
 
-On peut approximer les filtres comme des gardes de requête. Ils servent à extraire des informations du framework, la différence principale résidant dans la composition qui offre plus de flexibilité, et une gestion des erreurs plus granulaire. 
+On peut **approximer les filtres comme des gardes de requête**, ils remplissent un rôle très similaire : ils servent à extraire des informations du framework. La différence principale résidant dans la composition qui offre plus de flexibilité, et une **gestion des erreurs plus granulaire**. 
 
 Example d'utilisation de Warp : 
 
@@ -450,9 +450,9 @@ Notes pour la compréhension :
 
 On s'apperçoit que la création de route est manuelle puisqu'on compose la logique des routes en même temps que la déclaration de son chemin et du verbe HTTP. 
 
-Afin que l'on puisse lancer le serveur, il faut que le type d'Extraction du Filtre implémente le trait Reply défini par Warp, et que son type de Rejection implémente le trait Reject. Ainsi, on peut être certain à la compilation de la capacité du framework à répondre à n'importe quelle requête qu'il devra gérer.
+Afin que l'on puisse lancer le serveur, il faut que le **type d'Extraction** du Filtre implémente le **trait Reply** défini par Warp, et que son **type de Rejection** implémente le **trait Reject**. Ainsi, on peut être certain à la compilation de la capacité du framework à répondre à n'importe quelle requête qu'il devra gérer.
 
-Warp est entièrement asynchrone. La composition de filtre inspirée du paradigme fonctionnel marche très bien ici: chaque filtre attend le résultat du précédent avant d'être éxécuté, et peut filtrer d'autres requêtes par la suite. Il faut voir le filtre comme un tuyau qui va effectuer tout le temps les mêmes opérations avec des entrées différentes (les requêtes des clients). 
+Warp est entièrement **asynchrone**. La composition de filtre inspirée du paradigme fonctionnel marche très bien : chaque filtre attend le résultat du précédent avant d'être éxécuté, et peut filtrer d'autres requêtes par la suite. Il faut voir le filtre comme un tuyau qui va effectuer tout le temps les mêmes opérations avec des entrées différentes (les requêtes des clients), donnant des réponses différentes (les reponses aux clients). 
 
 
 ### Bilan et analyse des cas d'étude 
@@ -465,22 +465,26 @@ Suite à ces trois études de cas, on peut tirer le tableau suivant :
 | Actix-web | Manuelle ou Macro procédurale        | Trait "actix_web::Responder" | Gardes de requête    | Oui                  | Stable                |
 | Warp      | Manuelle                             | Trait "Reply"                | Filtre ( ~Gardes )   | Oui                  | Stable                |
 
-Son étude conditionne les choix qui ont été faits durant le développement de PEWS. Une couche d'abstraction doit offrir les possibilités de plusieurs frameworks, il est donc primordial de choisir une méthode qui puisse s'appliquer aux technologies que nous venons d'étudier tout en ne nivelant pas les fonctionnalités par le bas.
+Son étude conditionne les choix qui ont été faits durant le développement de PEWS. Une couche d'abstraction doit **offrir les possibilités communes à plusieurs frameworks**, il est donc primordial de choisir une méthode qui puisse s'appliquer aux technologies que nous venons d'étudier **tout en ne nivelant pas les fonctionnalités par le bas**.
 
-Dans un premier temps, un framework cible est libre de choisir une chaîne de compilation (nightly ou stable). Si un framework fonctionne sur stable, l'utilisateur cherchera en général à éviter une librairie nightly. On ne peut donc pas fournir une seule librairie qui fonctionnerait avec tout framework. A la place, il faut séparer l'implémentation en plusieurs blocs : 
+Dans un premier temps, un framework cible est libre de choisir une chaîne de compilation (nightly ou stable). Si un framework fonctionne sur stable, l'utilisateur cherchera en général à éviter une bibliothèque nightly. On ne peut donc pas fournir une seule bibliothèque qui fonctionnerait avec tout framework. A la place, il faut séparer l'implémentation en plusieurs blocs : 
 
-* Une librairie principale, appellée `pews_core`, basée sur stable pour être utilisable sur tous les framework, 
-* Une librairie secondaire pour chaque framework cible, *e.g.* `pews_rocket`, qui peut utiliser nightly si le framework cible utilise cette chaîne. 
+* Une bibliothèque principale, appellée `pews_core`, basée sur stable pour être utilisable sur tous les framework, 
+* Une bibliothèque secondaire pour chaque framework cible, *e.g.* `pews_rocket`, qui peut utiliser nightly si le framework cible utilise cette chaîne. 
 
-Comme l'approche des gardes de requêtes semble être une norme, le rôle de PEWS sera de fournir des extracteurs qui pourront être transformés en gardes compatibles avec chaque framework. 
+Comme l'approche des gardes de requêtes semble être une norme, le rôle de PEWS sera de fournir des extracteurs qui pourront être **transformés en gardes** compatibles avec chaque framework. 
 
-On voit que chaque librairie expose son propre trait lui permettant de gérer l'envoi d'une réponse au client de sa propre façon. PEWS devra, selon la cible, retourner une structure qui implémente le trait imposé par la plateforme. 
+On voit que chaque bibliothèque expose son propre trait lui permettant de gérer l'envoi d'une réponse au client de sa propre façon. PEWS devra, selon la cible, retourner une structure qui implémente le trait adéquat. 
 
-Enfin, les approches pour la création de routes sont variées. Chaque implémentation devra fournir un moyen d'importer les routes générées par PEWS dans le framework cible de manière idiomatique. Cela nécessite dans le cadre des frameworks utilisant les macros procédurales, d'écrire manuellement le code généré par celles-ci.  
+Enfin, les approches pour la création de routes sont variées. Chaque implémentation devra fournir un moyen d'importer les services générées par PEWS dans le framework cible **de manière idiomatique**, c'est à dire en suivant la norme du framework cible. Cela nécessite dans le cadre des frameworks utilisant les macros procédurales, d'écrire manuellement le code généré par celles-ci.  
 
-On peut donc voir `pews_core` comme une spécification qui va fournir un ensemble de contraintes (traits). Chaque framework supporté par PEWS aura sa propre librairie *e.g.* `pews_rocket`, qui fournira les implémentations de cette spécification pour sa cible. Celle-ci aura également la charge de fournir un mécanisme pour monter les routes de PEWS sur la framework cible. 
+On peut donc voir `pews_core` comme une spécification qui va fournir un ensemble de contraintes (que l'on représentera par des Traits). Chaque framework supporté par PEWS aura sa propre bibliothèque *e.g.* `pews_rocket`, qui fournira les implémentations de cette spécification pour sa cible. Celle-ci aura également la charge de fournir un mécanisme pour monter les routes de PEWS sur la framework cible. 
 
-Pour définir facilement les Services (que nous avons défini précédemment comme une abstraction pour effectuer des actions sur la base de données), la librairie `pews_derive` implémentera des macros procédurales qui écriront pour l'utilisateur l'implémentation des traits de pews_core sans que l'utilisateur n'ait à s'en soucier. 
+Pour définir facilement les services (que nous avons défini précédemment comme une abstraction pour effectuer des actions sur la base de données), la bibliothèque `pews_derive` implémentera des **macros procédurales** qui écriront pour l'utilisateur l'implémentation des traits de pews_core sans que l'utilisateur n'ait à s'en soucier. 
+
+Nous ne rentrerons volontairement pas dans les détails des macros procédurales de Rust qui sont trop complexes pour ce rapport. Il s'agit d'un outil proposé par le langage permettant de traîter du code, de l'annoter (comme on le ferait avec les annotations en Java) et d'écrire du nouveau code à partir de celui-ci. Par exemple, la bibliothèque `serde` propose des macros procédurales que l'on peut utiliser pour implémenter automatique les traits Serialize et Deserialize pour n'importe quelle structure. Elles permettent non seulement de faciliter l'utilisation de PEWS, mais aussi d'écrire moins de code et donc d'obtenir une maintenabilité accrue.
+
+En d'autres termes, Rust remplace l'analyse du code lors de l'**éxécution** (ce que l'on appelle de la **réfléxion**) par ses macros procédurales, qui permettent l'analyse (et l'écriture automatique) de code **à la compilation**.
 
 Ces observations nous amènent à l'architecture suivante : 
 
@@ -527,14 +531,14 @@ Comme expliqué en introduction, une route sur un framework web est composée au
 
 Le chemin de la route est représentable par une variable de type String. 
 
-Le verbe HTTP est représentable par une variable de type String ou par une énumération, mais il est préférable d'utiliser des types HTTP connus. En l'occurence, il existe une librairie `http` (sur laquelle la plupart des frameworks sont basés) qui fournit une définition des constantes du protocole.  
+Le verbe HTTP est représentable par une variable de type String ou par une énumération, mais il est préférable d'utiliser des types HTTP connus. En l'occurence, il existe une bibliothèque `http` (sur laquelle la plupart des frameworks sont basés) qui fournit une définition des constantes du protocole.  
 
 Nous avons vu que la logique était composée de deux parties. Premièrement, l'extraction des donnée qui proviennent du serveur via les gardes de requête (*e.g.* récupérer une connexion à la base de données). Deuxièmement, la logique applicative du endpoint (que l'on appellera par la suite `handler`), qui peut être composée de plusieurs actions (*e.g.* désérialiser une structure en format JSON ou aller récupérer la définition d'une ressource dans la base de données).
 
 PEWS définit une liste d'extracteurs qui peuvent être paramétrés. Ceux-ci prennent le rôle des gardes de requêtes. 
 
 * PewsBody<T>: Lit le contenu de la requête et le transforme en structure de type T 
-* PewsDeserializer<T>: Similaire à PewsBody, mais spécialisé dans la désérialisation de contenu en structure de type T. Note: Pews n'intègre pas de définition pour la désérialisation, elle se base sur une librairie externe nommée **serde**, standard dans l'écosystème Rust. 
+* PewsDeserializer<T>: Similaire à PewsBody, mais spécialisé dans la désérialisation de contenu en structure de type T. Note: Pews n'intègre pas de définition pour la désérialisation, elle se base sur une bibliothèque externe nommée **serde**, standard dans l'écosystème Rust. 
 * PewsState<T>: Extrait de l'état du framework (s'il existe) une structure de type T. Permet notamment de récupérer une connexion à la base de données, au système de logs, à un cache ... 
 * PewsRequest<T>: Extrait une information de la requête (Cookies, Headers HTTP, IP Source, ...) où l'opération est supportée par le framework. 
 * PewsUrlParam<T>: Extrait une information depuis l'URL de la requête cliente.
@@ -645,11 +649,11 @@ Le trait Retriever ne gèrait pas les erreurs remontées par le framework. En ch
 
 #### 3 - La règle de l'orphelin
 
-La détection de ce problème a entraîné la première ré-écriture de PEWS. L'architecture que nous avions défini impliquait l'écriture d'une librairie `core`, et d'une spécialisation pour chaque framework. Or, dans l'état actuel des choses, cette approche rentre en collision avec la règle de l'orphelin, dite "orphan rule". 
+La détection de ce problème a entraîné la première ré-écriture de PEWS. L'architecture que nous avions défini impliquait l'écriture d'une bibliothèque `core`, et d'une spécialisation pour chaque framework. Or, dans l'état actuel des choses, cette approche rentre en collision avec la règle de l'orphelin, dite "orphan rule". 
 
-Cette règle est issue des nombreuses garanties statiques de Rust. Elle empêche à une librairie d'implémenter des traits définis dans une librairie externe pour des structures définies dans une librairie externe. Or dans notre cas, pews_core définit le trait Retriever et les structures d'extraction (PewsDeserializer, etc.). Il est donc impossible pour pews_rocket (par exemple) d'implémenter le trait Retriever qui prendrait PewsDeserializer comme générique puisque ce dernier type vient également de pews_core.  
+Cette règle est issue des nombreuses garanties statiques de Rust. Elle empêche à une bibliothèque d'implémenter des traits définis dans une bibliothèque externe pour des structures définies dans une bibliothèque externe. Or dans notre cas, pews_core définit le trait Retriever et les structures d'extraction (PewsDeserializer, etc.). Il est donc impossible pour pews_rocket (par exemple) d'implémenter le trait Retriever qui prendrait PewsDeserializer comme générique puisque ce dernier type vient également de pews_core.  
 
-La raison derrière cette restriction est simple et se comprend par le problème suivant : imaginons une librairie A qui définit un trait TA et une structure SA. Puis imaginons les librairies B et C qui dépendent de A.  
+La raison derrière cette restriction est simple et se comprend par le problème suivant : imaginons une bibliothèque A qui définit un trait TA et une structure SA. Puis imaginons les bibliothèques B et C qui dépendent de A.  
 
 Sans la règle de l'orphelin, B et C pourraient définir une implementation de TA pour SA. Si un projet dépend de B et de C, il ne peut alors pas déterminer de laquelle il doit se servir.
 
@@ -678,17 +682,17 @@ impl TA for SA | impl TA for SA
 
 Ce problème est aussi appelé le problème d'héritage en diamant et concerne tous les langages proposant une fonctionnalité d'héritage multiple. Rust l'a résolu d'une façon élégante, mais qui empêche PEWS de fonctionner comme voulu.  
 
-Pour contourner cette difficulté, dans l'approche originale (pré-réécriture), pews_core définissait les implémentations à l'aide de feature-gate. Il s'agit d'indiquer à la librairie qu'on veut utiliser la fonctionnalité X, et on peut désactiver ou non des parties du code en fonction de ce choix. 
+Pour contourner cette difficulté, dans l'approche originale (pré-réécriture), pews_core définissait les implémentations à l'aide de feature-gate. Il s'agit d'indiquer à la bibliothèque qu'on veut utiliser la fonctionnalité X, et on peut désactiver ou non des parties du code en fonction de ce choix. 
 
-A ce moment-là, PEWS devait être la seule librairie, et l'implémentation concrète pour un framework aurait été cachée derrière cette fonctionnalité de feature-gate. Cette solution fonctionne dans un premier temps, mais elle n'est pas assez modulaire. Préférant le design basé sur l'écriture d'une librairie par framework, PEWS a été ré-écrit d'une autre façon. 
+A ce moment-là, PEWS devait être la seule bibliothèque, et l'implémentation concrète pour un framework aurait été cachée derrière cette fonctionnalité de feature-gate. Cette solution fonctionne dans un premier temps, mais elle n'est pas assez modulaire. Préférant le design basé sur l'écriture d'une bibliothèque par framework, PEWS a été ré-écrit d'une autre façon. 
 
 Dans PewsV2, pews_core est toujours en charge de définir le trait Retriever et les structures extracteurs. Mais au lieu de demander à l'implémenteur d'un backend d'écrire directement le code `impl Retriever<PewsDeserializer> for Backend`, PEWS définit un trait pour CHAQUE extracteur. Par exemple, le trait `PewsDeserializer<T>` définit la logique nécéssaire à la désérialisation d'un type T. Ensuite, grâce à ce que l'on appelle une "implémentation couverture", tout type `T: PewsDeserializer<T>` implémente automatiquement le trait Retriever<PewsDeserialize<T>>. 
  
-Ce pattern nettement plus composable permet à chaque implémentation concrète d'être écrite dans sa propre librairie.  
+Cette approche nettement plus composable permet à chaque implémentation concrète d'être écrite dans sa propre bibliothèque (qu'on appelle **crate**, dans l'écosystème Rust).  
  
 ### Les abstractions Services et Repository
 
-Le principe de PEWS est d'exposer sur un framework cible des services qui peuvent être implémentés dans une librairie à part. 
+Le principe de PEWS est d'exposer sur un framework cible des services qui peuvent être implémentés dans une bibliothèque à part. 
 
 PEWS caractérise un Service par tout endpoint montable sur un backend. Par exemple, l'ensemble de Services PEWS suivant expose une API REST[^rest] permettant d'effectuer les opérations de traitement basiques sur une ressource, qu'on appelle CRUD (pour Create, Read, Update, Delete) : 
 
@@ -701,10 +705,10 @@ PEWS caractérise un Service par tout endpoint montable sur un backend. Par exem
 
 L'ensemble de service ainsi formé est appelé un Repository.
 
-Repository est un patterne présent dans beaucoup de librairies visant à faciliter la création de services web, comme Spring ou Rails. Dans sa définition la plus simple, un Repository est une couche d'abstraction permettant d'éditer et d'accéder au contenu d'une partie de la base de données. Dans le langage de PEWS, Repository correspond à un ensemble de Services. 
+Repository est un patterne présent dans beaucoup de bibliothèques visant à faciliter la création de services web, comme Spring ou Rails. Dans sa définition la plus simple, un Repository est une couche d'abstraction permettant d'éditer et d'accéder au contenu d'une partie de la base de données. Dans le langage de PEWS, Repository correspond à un ensemble de Services. 
 
 
-Nous avons vu comment PEWS gérait la création de services, il convient maintenant d'étudier comment PEWS expose un moyen pour des librairies externes d'implémenter les Repository.   
+Nous avons vu comment PEWS gérait la création de services, il convient maintenant d'étudier comment PEWS expose un moyen pour des bibliothèques externes d'implémenter les Repository.   
 
 #### Le problème des Repository 
 
@@ -732,9 +736,9 @@ Heureusement, les contraintes à appliquer sont majoritairement les mêmes en ce
 
 L'implémentation de ces traits est soumise à quelques conditions. Pour tous les frameworks, la structure doit être `'static`, c'est à dire valide pour le lifetime `'static`. Cette particularité de Rust est complexe, il convient de comprendre que cela oblige la structure à être valide (non nulle, en d'autre termes la mémoire allouée à la structure ne doit pas être libérée) pendant toute la durée du scope où elle est crée au moins. Dans le cas de nos routes, cela veut dire "toute la durée du programme". Cela s'explique par le fait que le framework web va en permanence appeller ces implémentations de route, il faut que la logique soit toujours accessible à ce moment-là. Heureusement pour nous, les fonctions en Rust sont écrites dans la mémoire code du binaire généré, donc leur accès est protégé et ne peut être modifié, impliquant qu'elles sont valides pour le lifetime 'static. Notons que ce n'est cependant pas forcément le cas des structures que les implémentations concrètes vont fournir.  
 
-Dans un second temps, la structure doit être `Send + Sync`, c'est à dire qu'elle implémente les traits Send et Sync. Ceux sont des traits définis par la librairie standard de Rust qui permettent d'assurer qu'une structure peut être envoyée d'un thread à un autre sans problème (Send) et qu'on peut partager une référence à cette structure depuis un autre thread (Sync). Cela permet aux frameworks de dupliquer les routes sur plusieurs threads pour pouvoir gérer les requêtes client en parallèle. Là encore, ces deux traits sont automatiquement implémentés pour les fonctions, mais pas forcément pour les structures issues des implémentations concrètes. 
+Dans un second temps, la structure doit être `Send + Sync`, c'est à dire qu'elle implémente les traits Send et Sync. Ceux sont des traits définis par la bibliothèque standard de Rust qui permettent d'assurer qu'une structure peut être envoyée d'un thread à un autre sans problème (Send) et qu'on peut partager une référence à cette structure depuis un autre thread (Sync). Cela permet aux frameworks de dupliquer les routes sur plusieurs threads pour pouvoir gérer les requêtes client en parallèle. Là encore, ces deux traits sont automatiquement implémentés pour les fonctions, mais pas forcément pour les structures issues des implémentations concrètes. 
 
-Enfin, la plupart du temps, ces structures doivent implémenter `Clone`, encore un trait de la librairie standard de Rust permettant de cloner la structure. Les frameworks préfèrent en général cloner les endpoints sur différents thread plutôt que de les avoir par référence afin d'éviter d'avoir à écrire explicitement la gestion des durées de vie (lifetimes), souvent fastidieuse et compliquée. Encore une fois, les fonctions de rust implémentent Clone, il s'agit uniquement de copier un pointeur.  
+Enfin, la plupart du temps, ces structures doivent implémenter `Clone`, encore un trait de la bibliothèque standard de Rust permettant de cloner la structure. Les frameworks préfèrent en général cloner les endpoints sur différents thread plutôt que de les avoir par référence afin d'éviter d'avoir à écrire explicitement la gestion des durées de vie (lifetimes), souvent fastidieuse et compliquée. Encore une fois, les fonctions de rust implémentent Clone, il s'agit uniquement de copier un pointeur.  
 
 Chaque implémentation concrète fournit une structure qui suit les contraintes du framework cible, ces contraintes n'ont pas amenés de difficultés majeures. 
 
@@ -748,7 +752,7 @@ Dans la première itération, on prenait une structure `Service<S, M>` avec deux
 
 ## Démonstration du projet 
 
-Pour conclure cette partie du rapport traitant de PEWS, il convient de donner un exemple d'utilisation de la librairie. Il est important de noter qu'elle est toujours très en développement, de plus les ré-écritures ont un peu changé l'interface. 
+Pour conclure cette partie du rapport traitant de PEWS, il convient de donner un exemple d'utilisation de la bibliothèque. Il est important de noter qu'elle est toujours très en développement, de plus les ré-écritures ont un peu changé l'interface. 
 
 Le but était de faciliter l'écriture de services. Voici par exemple le code nécéssaire pour générer une API permettant d'exposer un service de type REST permettant d'effectuer les opérations type **CRUD** (Create Read Update Delete).
 
@@ -889,7 +893,7 @@ Il ne fait aucun doute qu'un travail d'architecture plus poussé et mené par pl
 
 Afin de montrer l'avancement du projet, des réunions de suivi ont eu lieu avec le maître d'apprentissage, le lead développeur et le CTO. Celles-ci servaient à montrer les nouvelles fonctionnalités, expliquer l'architecture mise en place, recueillir des conseils et fixer les objectifs fonctionnels de la prochaine réunion. 
 
-Enfin, une démonstration du projet a eu lieu lors d'une visite au Danemark par l'ensemble de l'équipe de développement. Celle-ci avait pour objectif de montrer ce que la librairie permettait d'accomplir, et quels enjeux pour l'entreprise elle représente. Elle a donné lieu à quelques retours constructifs, mais surtout permis de mettre en évidence les diverses difficultés que cette méthode de travail avait engendré.  
+Enfin, une démonstration du projet a eu lieu lors d'une visite au Danemark par l'ensemble de l'équipe de développement. Celle-ci avait pour objectif de montrer ce que la bibliothèque permettait d'accomplir, et quels enjeux pour l'entreprise elle représente. Elle a donné lieu à quelques retours constructifs, mais surtout permis de mettre en évidence les diverses difficultés que cette méthode de travail avait engendré.  
 
 ### Difficultés rencontrées
 
