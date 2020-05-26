@@ -956,7 +956,7 @@ Optionnellement, on ajoutera une note à l'intention de l'implémenteur. Par exe
 
 La spécification correspond à une explication technique pouvant aller jusqu'à une reférence pour l'implémentation. On ne cherche pas à écrire l'algorithme exact, mais à en définir les attentes et les résultats. 
 
-On définit la structure de données pour l'échange entre le serveur et le client, en général en langageTypeScript, ou en Rust si le ticket concerne le backend. On définit également les traits qui seraient à ajouter. On cherche donc avec l'écriture de ces tickets à définir l'abstraction et les attentes, laissant libre choix à l'implémenteur. 
+On définit la structure de données pour l'échange entre le serveur et le client, en général en langage TypeScript, ou en Rust si le ticket concerne le backend. On définit également les traits qui seraient à ajouter. On cherche donc avec l'écriture de ces tickets à définir l'abstraction et les attentes, laissant libre choix à l'implémenteur. 
  
 Enfin, si le ticket concerne le backend, on définit une liste de tests unitaires à mettre en place afin d'éviter de potentielles régressions par la suite et de vérifier l'implémentation correcte du ticket. Impero ne garde pas pour l'instant d'information sur le coverage[^coverage] de sa base de code.
 
