@@ -899,7 +899,7 @@ L'experience apportée par ce projet montre qu'il est très compliqué de défin
 
 Pour contourner cette difficulté, une solution peut être de voir la tâche comme l'exploration d'une hypothèse, et fixer à l'avance une limite de temps pour l'investiguer. Si on a plusieurs solutions, on sait alors trouver celle qui semble la plus fiable, ou qui donne les meilleurs résultats.  
 
-#### Les réunions à caractère trop techniques étaient confusantes
+#### Les réunions à caractère trop techniques étaient source de confusion
 
 Il s'est avéré que les réunions étaient souvent une explication trop technique et proche du code, plutôt qu'une explication des enjeux puis des problématiques techniques rencontrées. Ces meetings ont de manière générale été assez peu productifs puisque le public ne pouvait pas gérer le flux d'information trop complexe auquel ils étaient exposés. 
 
