@@ -941,7 +941,7 @@ Le travail de rédaction d'un ticket technique correspond à la réfléxion sur 
 
 La première étape est de contextualiser la demande technique. Cela permet à l'implémenteur d'obtenir des références sur l'existant, sur l'objectif et sur quoi son travail doit s'appuyer. 
 
-La partie "Contexte" rapelle :
+La partie "Contexte" rappelle :
 
 * Le besoin fonctionnel (cas d'utilisation), exprimé sous la forme suivante : 
 	* En tant que (persona)
