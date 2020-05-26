@@ -684,7 +684,7 @@ A ce moment-là, PEWS devait être la seule librairie, et l'implémentation conc
 
 Dans PewsV2, pews_core est toujours en charge de définir le trait Retriever et les structures extracteurs. Mais au lieu de demander à l'implémenteur d'un backend d'écrire directement le code `impl Retriever<PewsDeserializer> for Backend`, PEWS définit un trait pour CHAQUE extracteur. Par exemple, le trait `PewsDeserializer<T>` définit la logique nécéssaire à la désérialisation d'un type T. Ensuite, grâce à ce que l'on appelle une "implémentation couverture", tout type `T: PewsDeserializer<T>` implémente automatiquement le trait Retriever<PewsDeserialize<T>>. 
  
-Ce paterne nettement plus composable permet à chaque implémentation concrète d'être écrite dans sa propre librairie.  
+Ce pattern nettement plus composable permet à chaque implémentation concrète d'être écrite dans sa propre librairie.  
  
 ### Les abstractions Services et Repository
 
