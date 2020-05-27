@@ -844,7 +844,7 @@ Le travail de cette année 3 a également été la participation à la gestion d
 
 Impero est une organisation jeune et dynamique, basé sur un modèle de type start-up ; elle applique une méthode de gestion de projet moderne et standard de l'industrie : la méthode **agile**. Si l'entreprise emprunte certains principes et met en place la plupart des artéfacts agiles, elle ne définit pas son fonctionnement par une méthode précise comme **Scrum** ou **Kanban**. Celle-ci s'organise de la façon suivante :
 
-* Des réunions nommées "**Dev Meeting**" se tiennent **tous les lundis et mercredis à 10h**, elles servent à la fois de **rétrospection** sur la semaine passée, et de **planning** pour la semaine à suivre, permettant au passage de vérifier que personne n'est bloqué sur le travail d'un autre.
+* Des réunions nommées "**Dev Meeting**" se tiennent **tous les lundis et mercredis à 10h**, elles servent à la fois de **rétrospective** sur la semaine passée, et de **planning** pour la semaine à suivre, permettant au passage de vérifier que personne n'est bloqué sur le travail d'un autre.
 * Un outil de **suivi de tâches** est utilisé quasi-quotidiennement par toute l'équipe. Il s'agit de Clubhouse, qui offre certains avantages comme la possibilité d'être intégré à Slack et à Bitbucket pour faciliter le flux de travail de tout un chacun. A l'heure actuelle, le CTO de l'entreprise gère la rédaction de la majorité des tickets, nous verrons par la suite que ceci est en train de changer. 
 * L'évolution du logiciel est menée par l'un des co-fondateurs, Morten Balle, Product Owner du logiciel Impero, qui veille à ce que le produit reste dans sa vision et atteigne l'objectif définit par la stratégie d'entreprise.
 
