@@ -469,7 +469,7 @@ Son étude conditionne les choix qui ont été faits durant le développement de
 
 Dans un premier temps, un framework cible est libre de choisir une chaîne de compilation (nightly ou stable). Si un framework fonctionne sur stable, l'utilisateur cherchera en général à éviter une bibliothèque nightly. On ne peut donc pas fournir une seule bibliothèque qui fonctionnerait avec tout framework. A la place, il faut séparer l'implémentation en plusieurs blocs : 
 
-* Une bibliothèque principale, appellée `pews_core`, basée sur stable pour être utilisable sur tous les framework, 
+* Une bibliothèque principale, appelée `pews_core`, basée sur stable pour être utilisable sur tous les framework, 
 * Une bibliothèque secondaire pour chaque framework cible, *e.g.* `pews_rocket`, qui peut utiliser nightly si le framework cible utilise cette chaîne. 
 
 Comme l'approche des gardes de requêtes semble être une norme, le rôle de PEWS sera de fournir des extracteurs qui pourront être **transformés en gardes** compatibles avec chaque framework. 
@@ -482,7 +482,7 @@ On peut donc voir `pews_core` comme une spécification qui va fournir un ensembl
 
 Pour définir facilement les services (que nous avons défini précédemment comme une abstraction pour effectuer des actions sur la base de données), la bibliothèque `pews_derive` implémentera des **macros procédurales** qui écriront pour l'utilisateur l'implémentation des traits de pews_core sans que l'utilisateur n'ait à s'en soucier. 
 
-Nous ne rentrerons volontairement pas dans les détails des macros procédurales de Rust qui sont trop complexes pour ce rapport. Il s'agit d'un outil proposé par le langage permettant de traîter du code, de l'annoter (comme on le ferait avec les annotations en Java) et d'écrire du nouveau code à partir de celui-ci. Par exemple, la bibliothèque `serde` propose des macros procédurales que l'on peut utiliser pour implémenter automatique les traits Serialize et Deserialize pour n'importe quelle structure. Elles permettent non seulement de faciliter l'utilisation de PEWS, mais aussi d'écrire moins de code et donc d'obtenir une maintenabilité accrue.
+Nous ne rentrerons volontairement pas dans les détails des macros procédurales de Rust qui sont trop complexes pour ce rapport. Il s'agit d'un outil proposé par le langage permettant de traiter du code, de l'annoter (comme on le ferait avec les annotations en Java) et d'écrire du nouveau code à partir de celui-ci. Par exemple, la bibliothèque `serde` propose des macros procédurales que l'on peut utiliser pour implémenter automatique les traits Serialize et Deserialize pour n'importe quelle structure. Elles permettent non seulement de faciliter l'utilisation de PEWS, mais aussi d'écrire moins de code et donc d'obtenir une maintenabilité accrue.
 
 En d'autres termes, Rust remplace l'analyse du code lors de l'**éxécution** (ce que l'on appelle de la **réfléxion**) par ses macros procédurales, qui permettent l'analyse (et l'écriture automatique) de code **à la compilation**.
 
@@ -514,7 +514,7 @@ L'application de l'utilisateur dépendra au final de quatres bibliothèques:
 
 En résumé : 
 
-* L'abstraction commune, pews_core, définit le fonctionnement interne: à quoi ressemble une route, quels extracteurs sont à définir, comment la logique d'un endpoint est executée, comment représenter un Service... C'est une sorte de spécification que chaque implémentation concrète, ou `backend`, cherchera à exprimer pour sa cible.  
+* L'abstraction commune, pews_core, définit le fonctionnement interne: à quoi ressemble une route, quels extracteurs sont à définir, comment la logique d'un endpoint est exécutée, comment représenter un Service... C'est une sorte de spécification que chaque implémentation concrète, ou `backend`, cherchera à exprimer pour sa cible.  
 * pews_derive est un outil qui permettra de créer les Repository de manière automatisée grâce à des macros procédurales (nous ne rentrerons pas dans ces détails, mais nous montrerons tout de même à quoi ressemble le code final que l'utilisateur doit écrire), 
 * L'implémentation concrète contient la définition d'un "Backend PEWS". Celui-ci doit fournir la capacité de prendre les routes abstraites crées par PEWS et les monter sur la cible, ainsi que d'exposer le mécanisme de partage de ressources pour répondre correctement aux extracteurs de PEWS.
 * Le framework cible peut être utilisé normalement, et avec le mécanisme de montage de l'implémentation concrète. Ainsi, PEWS peut être utilisé pour créer rapidement des routes dont la logique est générique, sans impacter du code pré-existant et donc sacrifier la flexibilité de la cible. 
@@ -531,7 +531,7 @@ Comme expliqué en introduction, une route sur un framework web est composée au
 
 Le chemin de la route est représentable par une variable de type String. 
 
-Le verbe HTTP est représentable par une variable de type String ou par une énumération, mais il est préférable d'utiliser des types HTTP connus. En l'occurence, il existe une bibliothèque `http` (sur laquelle la plupart des frameworks sont basés) qui fournit une définition des constantes du protocole.  
+Le verbe HTTP est représentable par une variable de type String ou par une énumération, mais il est préférable d'utiliser des types HTTP connus. En l'occurrence, il existe une bibliothèque `http` (sur laquelle la plupart des frameworks sont basés) qui fournit une définition des constantes du protocole.  
 
 Nous avons vu que la logique était composée de deux parties. Premièrement, l'extraction des donnée qui proviennent du serveur via les gardes de requête (*e.g.* récupérer une connexion à la base de données). Deuxièmement, la logique applicative du endpoint (que l'on appellera par la suite `handler`), qui peut être composée de plusieurs actions (*e.g.* désérialiser une structure en format JSON ou aller récupérer la définition d'une ressource dans la base de données).
 
