@@ -846,7 +846,7 @@ Impero est une organisation jeune et dynamique, basé sur un modèle de type sta
 
 * Des réunions nommées "**Dev Meeting**" se tiennent **tous les lundis et mercredis à 10h**, elles servent à la fois de **rétrospective** sur la semaine passée, et de **planning** pour la semaine à suivre, permettant au passage de vérifier que personne n'est bloqué dans sa tache courante.
 * Un outil de **suivi de tâches** est utilisé quasi-quotidiennement par toute l'équipe. Il s'agit de Clubhouse, qui offre certains avantages comme la possibilité d'être intégré à Slack et à Bitbucket pour faciliter le flux de travail de tout un chacun. A l'heure actuelle, le CTO de l'entreprise gère la rédaction de la majorité des tickets, nous verrons par la suite que ceci est en train de changer. 
-* L'évolution du logiciel est menée par l'un des co-fondateurs, Morten Balle, Product Owner du logiciel Impero, qui veille à ce que le produit reste dans sa vision et atteigne l'objectif définit par la stratégie d'entreprise.
+* L'évolution du logiciel est menée par l'un des co-fondateurs, Morten Balle, Product Owner du logiciel Impero, qui veille à ce que le produit reste dans sa vision et atteigne l'objectif défini par la stratégie d'entreprise.
 
 Le processus de développement suit le schéma suivant  
 
@@ -877,7 +877,7 @@ Le processus de développement suit le schéma suivant
                                           |
 ```
 
-La phase de raffinement correspond à l'identification du problème, suite à un besoin remonté par un client ou une volonté d'évolution du logiciel. Au cours de nombreuses réunions, appellées **refinement meeting**, le besoin client est analysé. Elle a lieu avec le Product Owner de l'entreprise qui a la vision du produit, le directeur artistique qui garde en tête l'expérience utilisateur de l'application, et le directeur technique qui connaît l'architecture de la solution et estime la faisabilité des demandes. On cherche à définir une fonctionnalité qui comblera le besoin identifié de la façon la plus générique possible (en évitant par exemple d'avoir une fonctionnalité qui ne servira qu'à un seul client).
+La phase de raffinement correspond à l'identification du problème, suite à un besoin remonté par un client ou une volonté d'évolution du logiciel. Au cours de nombreuses réunions, appelées **refinement meeting**, le besoin client est analysé. Elle a lieu avec le Product Owner de l'entreprise qui a la vision du produit, le directeur artistique qui garde en tête l'expérience utilisateur de l'application, et le directeur technique qui connaît l'architecture de la solution et estime la faisabilité des demandes. On cherche à définir une fonctionnalité qui comblera le besoin identifié de la façon la plus générique possible (en évitant par exemple d'avoir une fonctionnalité qui ne servira qu'à un seul client).
 
 ## Gestion d'un projet de recherche 
 
