@@ -535,7 +535,7 @@ Le verbe HTTP est représentable par une variable de type String ou par une énu
 
 Nous avons vu que la logique était composée de deux parties. Premièrement, l'extraction des donnée qui proviennent du serveur via les gardes de requête (*e.g.* récupérer une connexion à la base de données). Deuxièmement, la logique applicative du endpoint (que l'on appellera par la suite `handler`), qui peut être composée de plusieurs actions (*e.g.* désérialiser une structure en format JSON ou aller récupérer la définition d'une ressource dans la base de données).
 
-PEWS définit une liste d'extracteurs qui peuvent être paramétrés. Ceux-ci prennent le rôle des gardes de requêtes. 
+PEWS définit une liste d'extracteurs qui peuvent être paramétrés. Ceux-ci jouent le rôle des gardes de requêtes. 
 
 * PewsBody<T>: Lit le contenu de la requête et le transforme en structure de type T 
 * PewsDeserializer<T>: Similaire à PewsBody, mais spécialisé dans la désérialisation de contenu en structure de type T. Note: Pews n'intègre pas de définition pour la désérialisation, elle se base sur une bibliothèque externe nommée **serde**, standard dans l'écosystème Rust. 
