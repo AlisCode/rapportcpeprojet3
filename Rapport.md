@@ -262,7 +262,7 @@ Dans l'exemple d'endpoint :
 
 [^uri]: Uniform Resource Identifier, chaîne de caractères représentant l'adresse d'une ressource comme une page web, ou une donnée.
 
-Un framework web expose donc un moyen de déclarer à quelle "route", ou plutôt à quelle requête HTTP comme expliqué ci-dessus, nous pouvons répondre. En face de cette route, le serveur doit mettre une logique associée. Dans le cadre de notre exemple, il pourrait s'agir d'aller chercher le titre du blog et son contenu associé dans une base de données, de formatter le contenu, puis de retourner au client une page web valide à afficher sur son navigateur. 
+Un framework web expose donc un moyen de déclarer à quelle "route", ou plutôt à quelle requête HTTP comme expliqué ci-dessus, nous pouvons répondre. En face de cette route, le serveur doit mettre une logique associée. Dans le cadre de notre exemple, il pourrait s'agir d'aller chercher le titre du blog et son contenu associé dans une base de données, de formater le contenu, puis de retourner au client une page web valide à afficher sur son navigateur. 
 
 ```{.svgbob name="UML - Diagramme de séquence montrant le fonctionnement d'un endpoint"}
 
@@ -282,9 +282,9 @@ Base de données           framework Web                           Client
       
 ```
 
-Dans ce cas, la logique interne peut valider l'accès d'un client via un cookie ou un header HTTP, puis initier une connexion à la base de données, récupérer le contenu de l'article, le formatter et l'afficher. 
+Dans ce cas, la logique interne peut valider l'accès d'un client via un cookie ou un header HTTP, puis initier une connexion à la base de données, récupérer le contenu de l'article, le formater et l'afficher. 
 
-Le formattage de la donnée peut varier selon l'architecture du backend, comme dans les cours vus en 4ème année : 
+Le formatage de la donnée peut varier selon l'architecture du backend, comme dans les cours vus en 4ème année : 
 
 * En Web dynamique, le serveur gèrera le rendu de la page et retournera une page HTML valide,
 * En Web statique, la donnée est retournée telle quelle, après l'avoir **sérialisée** dans un format compréhensible par le client. 
@@ -338,7 +338,7 @@ Note pour la compréhension:
 * `format!()` est une macro mettant les paramètres sous la forme d'une variable de type String (chaîne de caractères).
 * Ici, pour un client qui envoie une requête sur `GET /hello/Olivier/22`, on retourne `Hello, 22 year old named Olivier!`.
 
-Comme on peut le constater, on trouve ici la définition du verbe HTTP, de la route (URI), et de la logique interne associée, ici le formattage de la réponse en chaîne de caractères.
+Comme on peut le constater, on trouve ici la définition du verbe HTTP, de la route (URI), et de la logique interne associée, ici le formatage de la réponse en chaîne de caractères.
 
 Rocket définit un système de **"Gardes de requête"** pour accéder à des ressources internes. Ceux-ci permettent de tirer avantage de la sûreté apportée par Rust pour écrire des services Web qui seront plus résistants aux erreurs. Dans l'exemple précédent, l'âge est de type `u8`. Si un client envoyait la requête `GET /hello/Olivier/abc`, abc n'étant pas transformable en un nombre compris entre 0 et 255, la requête doit échouer. Rocket effectue cette analyse tout seul, se rend compte que la transformation a échoué, et continue à chercher une autre route qui correspond à ce que l'utilisateur a demandé. Eventuellement, si le serveur ne définit pas de route qui correspond, il retournera le code d'erreur HTTP `404 Not Found`.
 
@@ -576,7 +576,7 @@ fn display_age(user: User) -> String {
 }
 ```
 
-Ici, l'extracteur est paramétré pour désérialiser un contenu JSON du corps de la requête, qui représente une structure User. Puis la logique prend cet utilisateur, et en retourne l'âge en formattant la réponse en String. Nous verrons ensuite comment Pews s'assure que le framework cible puisse retourner un type String à son client. 
+Ici, l'extracteur est paramétré pour désérialiser un contenu JSON du corps de la requête, qui représente une structure User. Puis la logique prend cet utilisateur, et en retourne l'âge en formatant la réponse en String. Nous verrons ensuite comment Pews s'assure que le framework cible puisse retourner un type String à son client. 
 
 Cette approche impose que les extracteurs soient définis comme des structures, et que chaque backend puisse traîter ces structures comme des extracteurs. La première définition a donc été le trait "Retriever". 
 
