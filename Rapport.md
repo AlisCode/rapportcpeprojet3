@@ -258,7 +258,7 @@ Dans l'exemple d'endpoint :
 	* PATCH - pour appliquer des modifications partielles sur une ressource 
 	* DELETE - pour supprimer la ressource 
 * `/actualite/` est la base de l'**URI[^uri]**, (ou le chemin), auquel l'utilisateur souhaite avoir accès. 
-* `<nom_article>` est une notation qui permet d'indiquer que ce qui est à cet endroit de l'URI est une **variable** que l'on va devoir traîter côté serveur. Ici, `nom_article = actu-chimie-nouveau-diplome-en-chimie`. Cela pourraît être un identifiant qui permettrait de signaler au serveur à quel post du blog nous souhaitons accéder. 
+* `<nom_article>` est une notation qui permet d'indiquer que ce qui est à cet endroit de l'URI est une **variable** que l'on va devoir traiter côté serveur. Ici, `nom_article = actu-chimie-nouveau-diplome-en-chimie`. Cela pourraît être un identifiant qui permettrait de signaler au serveur à quel post du blog nous souhaitons accéder. 
 
 [^uri]: Uniform Resource Identifier, chaîne de caractères représentant l'adresse d'une ressource comme une page web, ou une donnée.
 
@@ -547,8 +547,8 @@ PEWS définit une liste d'extracteurs qui peuvent être paramétrés. Ceux-ci jo
 
 La première approche a été de décomposer la logique en deux fonctions : 
 
-* Une fonction qui crée les extracteurs, les paramètrent selon la logique qu'on va chercher à appliquer, puis les retournent. Les informations sur le contenu extrait sont stockées au niveau de type.
-* Une fonction qui utilise les résultats des extracteurs afin d'appliquer différentes actions (effectuer la logique applicative du endpoint).  
+* Une fonction qui crée les extracteurs, les paramètrent selon la logique qu'on va chercher à appliquer, puis les retournent. Les informations sur le contenu extrait sont stockées au niveau du type.
+* Une fonction qui utilise les résultats des extracteurs afin d'appliquer différentes actions (effectuer la logique applicative de l'endpoint).  
 
 Imaginons un endpoint dont le but est d'afficher l'âge d'un utilisateur dont la définition JSON serait passée dans le corps de la requête.  
 
@@ -578,9 +578,9 @@ fn display_age(user: User) -> String {
 
 Ici, l'extracteur est paramétré pour désérialiser un contenu JSON du corps de la requête, qui représente une structure User. Puis la logique prend cet utilisateur, et en retourne l'âge en formatant la réponse en String. Nous verrons ensuite comment Pews s'assure que le framework cible puisse retourner un type String à son client. 
 
-Cette approche impose que les extracteurs soient définis comme des structures, et que chaque backend puisse traîter ces structures comme des extracteurs. La première définition a donc été le trait "Retriever". 
+Cette approche impose que les extracteurs soient définis comme des structures, et que chaque backend puisse traiter ces structures comme des extracteurs. La première définition a donc été le trait "Retriever". 
 
-Ce trait est exprimé `Retriever<T>`, où T est un des types d'extracteur définit par Pews. Chaque implémentation concrète peut alors définir une logique pour traîter l'extracteur et en sortir un type associé nommé Output. Un exemple est noté ici : 
+Ce trait est exprimé `Retriever<T>`, où T est un des types d'extracteur définit par Pews. Chaque implémentation concrète peut alors définir une logique pour traiter l'extracteur et en sortir un type associé nommé Output. Un exemple est noté ici : 
 
 ```rust
 
@@ -615,7 +615,7 @@ pub struct endpoint<Extractors, Input, Response> {
 }
 ```
 
-Pews s'assure enfin que le backend ciblé implémente `Retriever<Extractors, Output = Input>`. De cette façon, on a garantit à la compilation que les extracteurs étaient gérés correctement par l'implémentation concrète, et qu'on pouvait donc effectuer la logique de traitement d'une route au complet : extraire des données du framework cible, puis les traîter avec le handler.
+Pews s'assure enfin que le backend ciblé implémente `Retriever<Extractors, Output = Input>`. De cette façon, on a garantit à la compilation que les extracteurs étaient gérés correctement par l'implémentation concrète, et qu'on pouvait donc effectuer la logique de traitement d'une route au complet : extraire des données du framework cible, puis les traiter avec le handler.
 
 L'abstraction d'endpoint basique est désormais complète ; PEWS l'a abstrait en imposant une procédure à tout framework cible. Cette approche est bonne dans son intention, mais elle soulève quelques difficultés qu'il a fallu identifier et contourner. 
  
@@ -643,19 +643,19 @@ Bien entendu, cette logique etant générique, elle s'applique pour tout tuple (
 
 En effet, les extracteurs peuvent échouer. Par exemple, la communication avec la base de données peut échouer, la structure à désérialiser peut ne pas être écrite correctement... 
 
-Le cas d'étude sur Warp a rendu cela explicite: ce framework obligé un filtre à définit le type d'Extraction, mais également le type de Rejection au cas où la requête échoue. Rocket et actix-web, quant à eux, gèrent cela au niveau de leurs gardes de requêtes: si l'extraction échoué, le framework sait quelle erreur est à retourner. Comment abstraire cela ?  
+Le cas d'étude sur Warp a rendu cela explicite: ce framework oblige un filtre à définir le type d'Extraction, mais également le type de Rejection au cas où la requête échoue. Rocket et actix-web, quant à eux, gèrent cela au niveau de leurs gardes de requêtes: si l'extraction échoué, le framework sait quelle erreur est à retourner. Comment abstraire cela ?  
 
-Le trait Retriever ne gèrait pas les erreurs remontées par le framework. En changeant le type de retour de la fonction `retrieve` du trait Retriever, nous pouvons faire remonter un au niveau du type l'information sur le traitement d'un Retriever, puis la traiter en interne dans PEWS. Chaque Retriever devra donc définir un type d'Erreur associé, comme il définit son type d'Output, et la fonction retrieve ressemble maintenant à `fn retrieve(...) -> Result<Output, Error>`. Si une erreur a eu lieu, il faut appeler la fonction du framework cible pour la gérer. PEWS sait alors gérer efficacement les erreurs qui peuvent survenir lors de l'extraction d'une donnée. 
+Le trait Retriever ne gérait pas les erreurs remontées par le framework. En changeant le type de retour de la fonction `retrieve` du trait Retriever, nous pouvons faire remonter au niveau du type l'information sur le traitement d'un Retriever, puis la traiter en interne dans PEWS. Chaque Retriever devra donc définir un type d'Erreur associé, comme il définit son type d'Output, et la fonction retrieve ressemble maintenant à `fn retrieve(...) -> Result<Output, Error>`. Si une erreur a eu lieu, il faut appeler la fonction du framework cible pour la gérer. PEWS sait alors gérer efficacement les erreurs qui peuvent survenir lors de l'extraction d'une donnée. 
 
 #### 3 - La règle de l'orphelin
 
 La détection de ce problème a entraîné la première ré-écriture de PEWS. L'architecture que nous avions défini impliquait l'écriture d'une bibliothèque `core`, et d'une spécialisation pour chaque framework. Or, dans l'état actuel des choses, cette approche rentre en collision avec la règle de l'orphelin, dite "orphan rule". 
 
-Cette règle est issue des nombreuses garanties statiques de Rust. Elle empêche à une bibliothèque d'implémenter des traits définis dans une bibliothèque externe pour des structures définies dans une bibliothèque externe. Or dans notre cas, pews_core définit le trait Retriever et les structures d'extraction (PewsDeserializer, etc.). Il est donc impossible pour pews_rocket (par exemple) d'implémenter le trait Retriever qui prendrait PewsDeserializer comme générique puisque ce dernier type vient également de pews_core.  
+Cette règle est issue des nombreuses garanties statiques de Rust. Elle empêche une bibliothèque d'implémenter des traits définis dans une bibliothèque externe pour des structures définies dans une bibliothèque externe. Or dans notre cas, pews_core définit le trait Retriever et les structures d'extraction (PewsDeserializer, etc.). Il est donc impossible pour pews_rocket (par exemple) d'implémenter le trait Retriever qui prendrait PewsDeserializer comme générique puisque ce dernier type vient également de pews_core.  
 
 La raison derrière cette restriction est simple et se comprend par le problème suivant : imaginons une bibliothèque A qui définit un trait TA et une structure SA. Puis imaginons les bibliothèques B et C qui dépendent de A.  
 
-Sans la règle de l'orphelin, B et C pourraient définir une implementation de TA pour SA. Si un projet dépend de B et de C, il ne peut alors pas déterminer de laquelle il doit se servir.
+Sans la règle de l'orphelin, B et C pourraient définir une implémentation de TA pour SA. Si un projet dépend de B et de C, il ne peut alors pas déterminer de laquelle il doit se servir.
 
 ```{.svgbob width="40%" name="Explication de la règle de l'orphelin"}
 
@@ -714,7 +714,7 @@ Nous avons vu comment PEWS gérait la création de services, il convient mainten
 
 Dans sa première version, PEWS cherchait à encoder le maximum d'information sur un endpoint au niveau de son type. La structure endpoint contenait dans ses génériques les informations sur les types qui rentraient en jeu durant l'éxécution de la logique. Cette approche comporte un problème majeur: le trait Service ne peut refléter ces informations. En effet, en Rust, le polymorphisme est limité à cause des contraintes de design du langage qui permettent de garantir "l'object-safety". Pour plus de contexte sur le sujet, cf. l'article sur l'Object-safety [@objectsafety] et "The Rust Programming Language". On ne peut actuellement, en Rust, pas stocker une liste d'endpoints contenant des informations de type différentes, comme on pourrait le faire en Java en utilisant l'abstraction Service définie précédemment. En d'autres termes, il était impossible d'implémenter Repository, ceux-ci devant effectivement stocker une liste de Services. Il a donc fallu effacer de l'abstraction Service toute information de type sur le fonctionnement interne d'un endpoint. 
 
-De plus, le design ne permettait pas de composer les services en ajoutant des bouts de logiques. Cela veut dire que PWS était peu flexible: on ne pouvait pas brancher de bouts de logique permettant la validation d'une donnée ou le contrôle d'accès, par exemple.  
+De plus, le design ne permettait pas de composer les services en ajoutant des bouts de logique. Cela veut dire que PWS était peu flexible: on ne pouvait pas brancher de bouts de logique permettant la validation d'une donnée ou le contrôle d'accès, par exemple.  
 
 Ce problème majeur d'architecture a été résolu par une ré-écriture suivant une architecture un peu plus proche conceptuellement des Filtres de Warp. Cependant, elle perd la sécurité au niveau des types que nous avons vu précédemment.
 
