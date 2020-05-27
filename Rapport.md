@@ -840,7 +840,7 @@ Pour l'utilisateur final, le code requis pour créer un **service REST basique**
 
 Le travail de cette année 3 a également été la participation à la gestion de projet au sein de l'entreprise. Dans la suite du document, nous évoquerons le travail de spécification et de planification qui a été effectué au sein d'Impero. D'abord dans le cadre de PEWS, puis dans le cadre du développement de nouvelles fonctionnalités. 
 
-## Méthode de travail agile en remote
+## Méthode de travail agile à distance
 
 Impero est une organisation jeune et dynamique, basé sur un modèle de type start-up ; elle applique une méthode de gestion de projet moderne et standard de l'industrie : la méthode **agile**. Si l'entreprise emprunte certains principes et met en place la plupart des artéfacts agiles, elle ne définit pas son fonctionnement par une méthode précise comme **Scrum** ou **Kanban**. Celle-ci s'organise de la façon suivante :
 
