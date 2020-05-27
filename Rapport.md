@@ -728,7 +728,7 @@ Dans le cadre d'un framework comme Rocket ou actix qui définit les routes à l'
 
 Heureusement, les contraintes à appliquer sont majoritairement les mêmes en ce qui concernent les routes. Sur les trois frameworks étudiés, tous exposent leur propre trait qui doit être implémenté par toute structure pour être considéré comme une route : 
 
-* Rocket expose le trait Handler, et une structure Route qui contient un implémenteur d'Handler.
+* Rocket expose le trait Handler, et une structure Route qui contient une implémentation de Handler.
 * Actix expose le trait HttpServiceFactory 
 * Warp expose le trait IntoWarpService
 
