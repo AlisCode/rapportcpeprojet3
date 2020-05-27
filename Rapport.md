@@ -550,7 +550,7 @@ La première approche a été de décomposer la logique en deux fonctions :
 * Une fonction qui crée les extracteurs, les paramètrent selon la logique qu'on va chercher à appliquer, puis les retournent. Les informations sur le contenu extrait sont stockées au niveau de type.
 * Une fonction qui utilise les résultats des extracteurs afin d'appliquer différentes actions (effectuer la logique applicative du endpoint).  
 
-Imaginons un endpoint dont le but est d'afficher l'âge d'un utilisateur dont la définition JSON seraitpassée dans le corps de la requête.  
+Imaginons un endpoint dont le but est d'afficher l'âge d'un utilisateur dont la définition JSON serait passée dans le corps de la requête.  
 
 On pourrait donc définir la fonction qui crée les extracteurs comme ceci : 
 
@@ -684,9 +684,9 @@ Ce problème est aussi appelé le problème d'héritage en diamant et concerne t
 
 Pour contourner cette difficulté, dans l'approche originale (pré-réécriture), pews_core définissait les implémentations à l'aide de feature-gate. Il s'agit d'indiquer à la bibliothèque qu'on veut utiliser la fonctionnalité X, et on peut désactiver ou non des parties du code en fonction de ce choix. 
 
-A ce moment-là, PEWS devait être la seule bibliothèque, et l'implémentation concrète pour un framework aurait été cachée derrière cette fonctionnalité de feature-gate. Cette solution fonctionne dans un premier temps, mais elle n'est pas assez modulaire. Préférant le design basé sur l'écriture d'une bibliothèque par framework, PEWS a été ré-écrit d'une autre façon. 
+A ce moment là, PEWS devait être la seule bibliothèque, et l'implémentation concrète pour un framework aurait été cachée derrière cette fonctionnalité de feature-gate. Cette solution fonctionne dans un premier temps, mais elle n'est pas assez modulaire. Préférant le design basé sur l'écriture d'une bibliothèque par framework, PEWS a été ré-écrit d'une autre façon. 
 
-Dans PewsV2, pews_core est toujours en charge de définir le trait Retriever et les structures extracteurs. Mais au lieu de demander à l'implémenteur d'un backend d'écrire directement le code `impl Retriever<PewsDeserializer> for Backend`, PEWS définit un trait pour CHAQUE extracteur. Par exemple, le trait `PewsDeserializer<T>` définit la logique nécéssaire à la désérialisation d'un type T. Ensuite, grâce à ce que l'on appelle une "implémentation couverture", tout type `T: PewsDeserializer<T>` implémente automatiquement le trait Retriever<PewsDeserialize<T>>. 
+Dans PewsV2, pews_core est toujours en charge de définir le trait Retriever et les structures extracteurs. Mais au lieu de demander à l'implémenteur d'un backend d'écrire directement le code `impl Retriever<PewsDeserializer> for Backend`, PEWS définit un trait pour CHAQUE extracteur. Par exemple, le trait `PewsDeserializer<T>` définit la logique nécessaire à la désérialisation d'un type T. Ensuite, grâce à ce que l'on appelle une "implémentation couverture", tout type `T: PewsDeserializer<T>` implémente automatiquement le trait Retriever<PewsDeserialize<T>>. 
  
 Cette approche nettement plus composable permet à chaque implémentation concrète d'être écrite dans sa propre bibliothèque (qu'on appelle **crate**, dans l'écosystème Rust).  
  
@@ -705,7 +705,7 @@ PEWS caractérise un Service par tout endpoint montable sur un backend. Par exem
 
 L'ensemble de service ainsi formé est appelé un Repository.
 
-Repository est un patterne présent dans beaucoup de bibliothèques visant à faciliter la création de services web, comme Spring ou Rails. Dans sa définition la plus simple, un Repository est une couche d'abstraction permettant d'éditer et d'accéder au contenu d'une partie de la base de données. Dans le langage de PEWS, Repository correspond à un ensemble de Services. 
+Repository est un pattern présent dans beaucoup de bibliothèques visant à faciliter la création de services web, comme Spring ou Rails. Dans sa définition la plus simple, un Repository est une couche d'abstraction permettant d'éditer et d'accéder au contenu d'une partie de la base de données. Dans le langage de PEWS, Repository correspond à un ensemble de Services. 
 
 
 Nous avons vu comment PEWS gérait la création de services, il convient maintenant d'étudier comment PEWS expose un moyen pour des bibliothèques externes d'implémenter les Repository.   
@@ -714,7 +714,7 @@ Nous avons vu comment PEWS gérait la création de services, il convient mainten
 
 Dans sa première version, PEWS cherchait à encoder le maximum d'information sur un endpoint au niveau de son type. La structure endpoint contenait dans ses génériques les informations sur les types qui rentraient en jeu durant l'éxécution de la logique. Cette approche comporte un problème majeur: le trait Service ne peut refléter ces informations. En effet, en Rust, le polymorphisme est limité à cause des contraintes de design du langage qui permettent de garantir "l'object-safety". Pour plus de contexte sur le sujet, cf. l'article sur l'Object-safety [@objectsafety] et "The Rust Programming Language". On ne peut actuellement, en Rust, pas stocker une liste d'endpoints contenant des informations de type différentes, comme on pourrait le faire en Java en utilisant l'abstraction Service définie précédemment. En d'autres termes, il était impossible d'implémenter Repository, ceux-ci devant effectivement stocker une liste de Services. Il a donc fallu effacer de l'abstraction Service toute information de type sur le fonctionnement interne d'un endpoint. 
 
-De plus, le design ne permettait pas de composer les services en ajoutant des bouts de logiques. Cela veut dire que PEWS était peu flexible: on ne pouvait pas brancher de bouts de logique permettant la validation d'une donnée ou le contrôle d'accès, par exemple.  
+De plus, le design ne permettait pas de composer les services en ajoutant des bouts de logiques. Cela veut dire que PWS était peu flexible: on ne pouvait pas brancher de bouts de logique permettant la validation d'une donnée ou le contrôle d'accès, par exemple.  
 
 Ce problème majeur d'architecture a été résolu par une ré-écriture suivant une architecture un peu plus proche conceptuellement des Filtres de Warp. Cependant, elle perd la sécurité au niveau des types que nous avons vu précédemment.
 
@@ -791,7 +791,7 @@ pub struct UpdatableHero {
 pub struct ExampleDb(diesel::pg::PgConnection);
 ```
 
-Ces structures utilisent l'API de Diesel pour intéragir automatiquement avec la base de données. La structure `ExampleDb` utilise l'API de Rocket pour créer automatique une connection à une base de données PostgreSQL définie dans le fichier de configuration de Rocket. Ensuite, on utilise PEWS pour déclarer le template Rest :  
+Ces structures utilisent l'API de Diesel pour interagir automatiquement avec la base de données. La structure `ExampleDb` utilise l'API de Rocket pour créer automatique une connexion à une base de données PostgreSQL définie dans le fichier de configuration de Rocket. Ensuite, on utilise PEWS pour déclarer le template Rest :  
 
 ```rust 
 #[derive(Repository)]
@@ -813,7 +813,7 @@ Ces structures utilisent l'API de Diesel pour intéragir automatiquement avec la
 pub struct MyHeroTemplate;
 ``` 
 
-Ce Repository utilise le template Rest, pour lequel on doit spécifier les types pour les opérations de type CRUD. On spécifie l'URL à laquelle monter les services, et on définit également la table que l'on modifie et la connection à la base de données (ici, `ExampleDb` qu'on ne montre pas pour rester simple).  
+Ce Repository utilise le template Rest, pour lequel on doit spécifier les types pour les opérations de type CRUD. On spécifie l'URL à laquelle monter les services, et on définit également la table que l'on modifie et la connexion à la base de données (ici, `ExampleDb` qu'on ne montre pas pour rester simple).  
 
 Enfin, on peut monter les routes dans le style manuel de Rocket :  
 
@@ -830,11 +830,11 @@ Les endpoints ainsi exposés sont :
 
 * `GET /api/hero/` : Retourne tous les héros de la base de données 
 * `GET /api/hero/<id>` : Retourne la définition d'un héros de la base de données dont l'ID est donné en paramètre dans l'URI. 
-* `POST /api/hero` : Crée un nouveau héros. Nécéssite en corps de la requête HTTP une représentation JSON d'un InsertableHero.  
+* `POST /api/hero` : Crée un nouveau héros. Nécessite en corps de la requête HTTP une représentation JSON d'un InsertableHero.  
 * `PATCH /api/hero/<id>` : Met à jour la définition d'un héros dont l'ID est donné en paramètre dans l'URI, et le contenu en représentation JSON d'un UpdatableHero.  
 * `DELETE /api/hero/<id>` : Supprime un héros de la base de données dont l'ID est donné en paramètre dans l'URI.
 
-Pour l'utilisateur final, le code requis pour créer un **service REST basique** qui bénéficie de la **sûreté** apportée par Diesel et des **performances** de Rust, sans sacrifier la **flexibilité** de Rocket est donc d'environ une trentaine de lignes. Le code est hautement maintenable est requiert très peu de modifications. Il manque cependant dans cet exemple quelques fonctionnalités comme évoqué plus haut, notamment la possibilité d'intégrer des passes personalisées pour pouvoir gérer des accès ou valider des données. Ce seront les prochains objectifs à atteindre quand le développement de PEWS reprendra. 
+Pour l'utilisateur final, le code requis pour créer un **service REST basique** qui bénéficie de la **sûreté** apportée par Diesel et des **performances** de Rust, sans sacrifier la **flexibilité** de Rocket est donc d'environ une trentaine de lignes. Le code est hautement maintenable et requiert très peu de modifications. Il manque cependant dans cet exemple quelques fonctionnalités comme évoqué plus haut, notamment la possibilité d'intégrer des passes personnalisées pour pouvoir gérer des accès ou valider des données. Ce seront les prochains objectifs à atteindre quand le développement de PEWS reprendra. 
  
 # Gestion de projet, planification et spécification de nouvelles fonctionnalités 
 
@@ -877,7 +877,7 @@ Le processus de développement suit le schéma suivant
                                           |
 ```
 
-La phase de rafinement correspond à l'identification du problème, suite à un besoin remonté par un client ou une volonté d'évolution du logiciel. Au cours de nombreuses réunions, appellées **refinement meeting**, le besoin client est analysé. Elle a lieu avec le Product Owner de l'entreprise qui a la vision du produit, le directeur artistique qui garde en tête l'experience utilisateur de l'application, et le directeur technique de qui connaît l'architecture de la solution et estime la faisabilité des demandes. On cherche à définir une fonctionnalité qui comblera le besoin identifié de la façon la plus générique possible (en évitant par exemple d'avoir une fonctionnalité qui ne servira qu'à un seul client).
+La phase de raffinement correspond à l'identification du problème, suite à un besoin remonté par un client ou une volonté d'évolution du logiciel. Au cours de nombreuses réunions, appellées **refinement meeting**, le besoin client est analysé. Elle a lieu avec le Product Owner de l'entreprise qui a la vision du produit, le directeur artistique qui garde en tête l'expérience utilisateur de l'application, et le directeur technique qui connaît l'architecture de la solution et estime la faisabilité des demandes. On cherche à définir une fonctionnalité qui comblera le besoin identifié de la façon la plus générique possible (en évitant par exemple d'avoir une fonctionnalité qui ne servira qu'à un seul client).
 
 ## Gestion d'un projet de recherche 
 
@@ -885,9 +885,9 @@ La phase de rafinement correspond à l'identification du problème, suite à un 
 
 Au début de ce projet de recherche, nous avons essayé de suivre le processus de développement de l'entreprise. Dans un premier temps, l'objectif a été d'écrire des spécifications techniques pour PEWS qui permettraient d'aboutir à un travail plus structuré. 
  
-Avec le recul, cet exercice n'a pas vraiment été effectué comme il l'aurait fallu. Le problème rencontré réside dans mon inexpérience relative dans le travail de spécifications technique en septembre dernier. Plutôt que d'adopter le processus standard pour le développement de nouvelles fonctionnalités que nous déveloperons plus bas, des documents présentant l'état de l'art et des traces de réfléxion abordant chaque problématique ont été rédigés, mais ces derniers ne constituaient pas de base de travail sufisament solides pour travailler en collaboration sur le projet. Cette première étape d'écriture a donc été plutôt remplacée par un travail de recherche, d'hypothèses et d'expérimentation autour des services web.  
+Avec le recul, cet exercice n'a pas vraiment été effectué comme il l'aurait fallu. Le problème rencontré réside dans mon inexpérience relative dans le travail de spécifications technique en septembre dernier. Plutôt que d'adopter le processus standard pour le développement de nouvelles fonctionnalités que nous développerons plus bas, des documents présentant l'état de l'art et des traces de réflexion abordant chaque problématique ont été rédigés, mais ces derniers ne constituaient pas de base de travail suffisamment solides pour travailler en collaboration sur le projet. Cette première étape d'écriture a donc été plutôt remplacée par un travail de recherche, d'hypothèses et d'expérimentation autour des services web.  
 
-De plus, cette première phase de réfléxion a servi à fixer les objectifs du projet, de sorte à pouvoir garder en mémoire ce que l'on cherchait à accomplir avec PEWS.
+De plus, cette première phase de réflexion a servi à fixer les objectifs du projet, de sorte à pouvoir garder en mémoire ce que l'on cherchait à accomplir avec PEWS.
 
 Il ne fait aucun doute qu'un travail d'architecture plus poussé et mené par plusieurs personnes (comme la suite sur les nouvelles fonctionnalités le présentera), accompagné par l'écriture de spécifications complètes aurait certainement amené à de meilleurs résultats.  
 
@@ -899,7 +899,7 @@ Enfin, une démonstration du projet a eu lieu lors d'une visite au Danemark par 
 
 #### L'estimation d'une tâche dans un projet de recherche 
 
-L'experience apportée par ce projet montre qu'il est très compliqué de définir une tâche de A à Z dans la recherche. En effet, la tâche elle-même consiste à trouver une manière de résoudre une problématique mise en évidence. Cette particularité rend la tâche particulièrement complexe à estimer puisqu'on ne sait pas à l'avance quels problèmes on va rencontrer, ni si l'approche que l'on prend est la bonne. 
+L'expérience apportée par ce projet montre qu'il est très compliqué de définir une tâche de A à Z dans la recherche. En effet, la tâche elle-même consiste à trouver une manière de résoudre une problématique mise en évidence. Cette particularité rend la tâche particulièrement complexe à estimer puisqu'on ne sait pas à l'avance quels problèmes on va rencontrer, ni si l'approche que l'on prend est la bonne. 
 
 Pour contourner cette difficulté, une solution peut être de voir la tâche comme l'exploration d'une hypothèse, et fixer à l'avance une limite de temps pour l'investiguer. Si on a plusieurs solutions, on sait alors trouver celle qui semble la plus fiable, ou qui donne les meilleurs résultats.  
 
@@ -919,7 +919,7 @@ En mettant en place des jalons comme une démonstration avec l'équipe ou une r�
 
 ### Contexte et objectif
 
-Dans le cadre du développement de sa solution logicelle, Impero cherche à décentraliser le processus de spécification de ses nouvelles fonctionnalités. C'est à dire éviter qu'une seule personne fasse l'intermédiaire entre l'aspect fonctionnel et technique du logiciel, au risque que cette personne devienne un point de blocage ralentissant l'entreprise. Le travail de spécification correspond à ce qu'on appellerait - dans de plus grandes entreprises - la combinaison du métier d'analyste programmeur et d'architecte logiciel. 
+Dans le cadre du développement de sa solution logicielle, Impero cherche à décentraliser le processus de spécification de ses nouvelles fonctionnalités. C'est à dire éviter qu'une seule personne fasse l'intermédiaire entre l'aspect fonctionnel et technique du logiciel, au risque que cette personne devienne un point de blocage ralentissant l'entreprise. Le travail de spécification correspond à ce qu'on appellerait - dans de plus grandes entreprises - la combinaison du métier d'analyste programmeur et d'architecte logiciel. 
 
 L'entreprise va re-développer pendant la prochaine période (~Q3 2020) le module d'administration des utilisateurs de sa plateforme. Le but de celui-ci est de fournir un ensemble de composants au sein de l'application où l'on peut trouver clairement à quel ressource un utilisateur est assigné, qu'il s'agisse d'un Contrôle, d'un groupe, d'une entité, ou de tout élément de la logique métier d'Impero qui pourrait être implémenté par la suite, et de gérer facilement ses accès sur ces ressources. 
 
@@ -927,9 +927,9 @@ L'objectif pendant la période d'apprentissage était de participer aux réunion
 
 Le déroulement d'un meeting suit en général le même plan. Dans un premier temps, on rappelle ce qui a été couvert lors du dernier point, afin de redonner aux participants le contexte de la discussion. Cela permet également de réfléchir "à froid" aux choix qui ont été faits pendant la réunion précédente et ainsi de revenir sur une décision qui pourrait être améliorée. 
 
-Ensuite, on fixe de nouveaux objectifs pour donner un cadre à cette réunion - sans quoi la discussion à tendance à divaguer sur divers sujets et à devenir contre-productive. En général, l'objectif de réunion correspond à définir le fonctionnement exact d'un écran ou d'un ensemble de fonctionnalités. Cela nécéssite une préparation en amont : le directeur artistique de l'entreprise (Thomas) a en général préparé des maquettes d'application via l'outil Sketch, sur lesquelles l'équipe s'appuie pour discuter des fonctionnalités. Il est toujours plus facile de discuter du comportement attendu de quelque chose quand on en a un exemple sous les yeux.  
+Ensuite, on fixe de nouveaux objectifs pour donner un cadre à cette réunion - sans quoi la discussion à tendance à divaguer sur divers sujets et à devenir contre-productive. En général, l'objectif de réunion correspond à définir le fonctionnement exact d'un écran ou d'un ensemble de fonctionnalités. Cela nécessite une préparation en amont : le directeur artistique de l'entreprise (Thomas) a en général préparé des maquettes d'application via l'outil Sketch, sur lesquelles l'équipe s'appuie pour discuter des fonctionnalités. Il est toujours plus facile de discuter du comportement attendu de quelque chose quand on en a un exemple sous les yeux.  
 
-Pour assurer le bon suivi de ces réunions, un backlog de sujets mentionnés a été mis en place. Sobrement intitulé "journal", il permet de retracer les discussions qui ont été faites pendant le meeting et note une suggestion pour le prochain, tout en gardant en tête les sujets qui n'ont pas encore été traîtés. Pour chaque sujet abordé, des notes (plutôt techniques) sont prises par les deux personnes de la réunion ayant à charge le point de vue technique (le CTO Emmanuel et moi-même). Ces notes servent de point de repère lorsque nous rediscutons par la suite des tickets qu'il s'agit de créer pour l'implémentation d'une fonctionnalité qui a été identifiée.  
+Pour assurer le bon suivi de ces réunions, un backlog de sujets mentionnés a été mis en place. Sobrement intitulé "journal", il permet de retracer les discussions qui ont été faites pendant le meeting et note une suggestion pour le prochain, tout en gardant en tête les sujets qui n'ont pas encore été traités. Pour chaque sujet abordé, des notes (plutôt techniques) sont prises par les deux personnes de la réunion ayant à charge le point de vue technique (le CTO Emmanuel et moi-même). Ces notes servent de point de repère lorsque nous rediscutons par la suite des tickets qu'il s'agit de créer pour l'implémentation d'une fonctionnalité qui a été identifiée.  
 
 Cette dernière étape avant la rédaction technique correspond à l'analyse. Après avoir découpé en plusieurs étapes le besoin fonctionnel qui a été mis en évidence de la manière la plus unitaire possible[^unit] , on crée les tickets sur l'outil de gestion de projet (Clubhouse) et les notons "FIXME", de sorte à savoir quels tickets ont été complètement spécifiés, et lesquels restent encore à faire. On note également à ce moment-là les relations entre tickets : si une étape dépend d'une autre, il est important de le noter afin de pouvoir paralléliser les tâches au maximum lors de l'implémentation. Pour mieux catégoriser les tickets, on applique également des étiquettes dessus. On sait alors si un ticket est testable par l'équipe de relation client ou pas, et s'il impacte le frontend ou le backend du logiciel.On marque également s'il s'agit d'une correction de bug, d'une nouvelle fonctionnalité, ou d'un travail de dette technique à corriger afin de pouvoir prioriser efficacement. 
 
@@ -939,7 +939,7 @@ Cette dernière étape avant la rédaction technique correspond à l'analyse. Ap
 
 ### L'écriture d'une spécification 
 
-Le travail de rédaction d'un ticket technique correspond à la réfléxion sur l'architecture logicielle qu'il convient de mettre en place pour résoudre un besoin technique unitaire identifié précédemment. Celui-ci suit en général un plan-type dont il peut dériver librement : 
+Le travail de rédaction d'un ticket technique correspond à la réflexion sur l'architecture logicielle qu'il convient de mettre en place pour résoudre un besoin technique unitaire identifié précédemment. Celui-ci suit en général un plan-type dont il peut dériver librement : 
 
 #### Définition de la fonctionnalité 
 
@@ -952,13 +952,13 @@ La partie "Contexte" rappelle :
 	* Je souhaite (action à effectuer)...
 	* Afin de (objectif)...
 * Les tickets précédents dont on va potentiellement réutiliser le travail
-* Eventuellement, le ticket qui découlera de l'implémentation de celui-ci
+* Éventuellement, le ticket qui découlera de l'implémentation de celui-ci
 
 Optionnellement, on ajoutera une note à l'intention de l'implémenteur. Par exemple, elle servira à dire qu'on limite la portée de ce ticket à telle partie de la fonctionnalité. 
 
 #### Objectif technique 
 
-La spécification correspond à une explication technique pouvant aller jusqu'à une reférence pour l'implémentation. On ne cherche pas à écrire l'algorithme exact, mais à en définir les attentes et les résultats. 
+La spécification correspond à une explication technique pouvant aller jusqu'à une référence pour l'implémentation. On ne cherche pas à écrire l'algorithme exact, mais à en définir les attentes et les résultats. 
 
 On définit la structure de données pour l'échange entre le serveur et le client, en général en langage TypeScript, ou en Rust si le ticket concerne le backend. On définit également les traits qui seraient à ajouter. On cherche donc avec l'écriture de ces tickets à définir l'abstraction et les attentes, laissant libre choix à l'implémenteur. 
  
@@ -971,15 +971,15 @@ En revanche, si le ticket concerne le frontend, le ticket contiendra impérative
 * Prérequis, la liste d'opération à faire qui conditionnent la bonne mise en situation
 * Une liste d'opérations, *e.g.* "je clique sur cette icône, puis sur ce bouton, l'écran affiche cela"
 
-Dans les commentaires du ticket, l'équipe des relations clients pourra marquer des commentaires s'il y a eu un problème lors de l'éxécution du test sur le serveur de pré-production.
+Dans les commentaires du ticket, l'équipe des relations clients pourra marquer des commentaires s'il y a eu un problème lors de l'exécution du test sur le serveur de pré-production.
 
 ### Planification  
 
 A la suite de l'écriture des spécifications techniques, nous planifions le travail et fournissons des estimations afin de pouvoir rendre compte à la hiérarchie des avancements du logiciel. 
 
-Ces estimations sont données en tant qu'équipe. L'entreprise appliquant une méthodologie agile, nous effectuons l'estimation des tâches avec du Poker Planning. Pour ce faire, on organise une réunion sur Slack. Nous choisissons une unité de mesurement, dans notre cas les nombres de la suite de Fibonacci (c'est un standard de la méthode Poker Planning, pratique puisque les nombres rendent bien compte de l'évolution de la difficulté d'une taĉhe). Puis nous montrons la liste des tickets, et expliquons à l'équipe l'objectif. Chaque membre de l'équipe donne une approximation en points, et défend son point de vue avec le reste de l'équipe jusqu'à ce que l'on arrive à un consensus. La tâche est alors estimée qualitativement, les points ne pouvant être transformés directement en mesure de temps. 
+Ces estimations sont données en tant qu'équipe. L'entreprise appliquant une méthodologie agile, nous effectuons l'estimation des tâches avec du Poker Planning. Pour ce faire, on organise une réunion sur Slack. Nous choisissons une unité de mesure, dans notre cas les nombres de la suite de Fibonacci (c'est un standard de la méthode Poker Planning, pratique puisque les nombres rendent bien compte de l'évolution de la difficulté d'une taĉhe). Puis nous montrons la liste des tickets, et expliquons à l'équipe l'objectif. Chaque membre de l'équipe donne une approximation en points, et défend son point de vue avec le reste de l'équipe jusqu'à ce que l'on arrive à un consensus. La tâche est alors estimée qualitativement, les points ne pouvant être transformés directement en mesure de temps. 
 
-On utilise ensuite cette analyse qualitative pour produire une estimation du nombres d'heures nécéssaires à la réalisation d'une tâche technique. Le problème majoritaire de la gestion de projet chez Impero repose dans l'estimation des tâches, qui est toujours compliquée dans l'informatique. Cependant, le processus de développement mis en place permet de réduire en grande partie les problèmes de délais. 
+On utilise ensuite cette analyse qualitative pour produire une estimation du nombre d'heures nécessaire à la réalisation d'une tâche technique. Le problème majoritaire de la gestion de projet chez Impero repose dans l'estimation des tâches, qui est toujours compliquée dans l'informatique. Cependant, le processus de développement mis en place permet de réduire en grande partie les problèmes de délais. 
 
 Finalement, on pourra utiliser des outils de gestion de projet classique comme les diagrammes de Gantt ou l'analyse du chemin critique pour déterminer une date de fin de projet. L'assignation des tâches est faite par le lead développeur et le CTO de l'entreprise lors de réunions ayant lieu avant les deux **dev meetings** hebdomadaires.  
 
@@ -991,7 +991,7 @@ Cette partie de planification est encore en cours de réalisation au moment de l
 
 A l'issue de cette formation en alternance, il convient de faire le point sur les compétences acquises au cours des 3 années, en les appuyant sur des exemples d'application précis au sein de l'entreprise qui m'a embauché. 
 
-Par la réalisation en **autonomie** d'un projet de recherche complexe incluant l'écriture de **spécification techniques** et la réfléxion sur **l'architecture logicielle** induite, j'ai pu développer mon sens de la réfléxion et de la **résolution de problèmes complexes** de manière itérative. Le **télétravail** permanent proposé par l'entreprise est également une bonne chose pour apprendre à se **responsabiliser** et à **gérer son temps**. 
+Par la réalisation en **autonomie** d'un projet de recherche complexe incluant l'écriture de **spécification techniques** et la réflexion sur **l'architecture logicielle** induite, j'ai pu développer mon sens de la réflexion et de la **résolution de problèmes complexes** de manière itérative. Le **télétravail** permanent proposé par l'entreprise est également une bonne chose pour apprendre à se **responsabiliser** et à **gérer son temps**. 
 
 Tout au long de cette dernière année, j'ai pu mettre en place la **méthode de travail** agile dans un cadre plus précisé que durant les deux années précédentes. Par le processus de code review mis en place au sein d'Impero, j'ai obtenu des retours sur mon code et appris quelques **bonnes pratiques**. De plus, j'ai appris l'importance de comprendre et travailler autour d'une implémentation pré-existante. J'ai également été sensibilisé au milieu du **DevOps**, particulièrement aux problématiques liées au déploiement et à l'intégration continue. 
 
