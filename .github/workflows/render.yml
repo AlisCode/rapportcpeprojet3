@@ -10,7 +10,7 @@ jobs:
       - run: mkdir rendered
       - uses: docker://opinon/pandoc_svgbob:latest
         with:
-          args: ./compile.sh 
+          args: ./compile_global.sh 
       - uses: actions/upload-artifact@master
         with: 
           name: rendered
