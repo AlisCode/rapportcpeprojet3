@@ -26,7 +26,7 @@ abstract: Au cours de cette troisième année d'alternance, j'ai travaillé pour
 
 **Remerciements**: 
 
-J'adresse mes premiers remerciements à Monsieur Grégory Obanos, maître d'apprentissage durant la majorité de ma formation, pour le soutien dont il a fait preuve à mon égard. Son expérience et sa sympathie ont fait de ces 3 années l'expérience enrichissante qu'elle a été. 
+J'adresse mes  premiers remerciements à Monsieur Grégory Obanos, maître d'apprentissage durant la majorité de ma formation, pour le soutien dont il a fait preuve à mon égard. Son expérience et sa sympathie ont fait de ces 3 années l'expérience enrichissante qu'elle a été. 
 
 \
 
